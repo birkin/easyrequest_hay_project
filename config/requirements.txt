@@ -1,4 +1,4 @@
-Django
+Django==1.11.8
 git+https://github.com/birkin/shellvars-py.git
-PyMySQL
-requests
+PyMySQL==0.7.11
+requests==2.18.4
