@@ -1,0 +1,4 @@
+Django
+git+https://github.com/birkin/shellvars-py.git
+PyMySQL
+requests
