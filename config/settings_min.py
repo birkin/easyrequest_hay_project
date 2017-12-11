@@ -24,14 +24,14 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ['DJANGO_TEMPLATE__SECRET_KEY']
+SECRET_KEY = os.environ['EZRQST_HAY__SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = json.loads( os.environ['DJANGO_TEMPLATE__DEBUG_JSON'] )  # will be True or False
+DEBUG = json.loads( os.environ['EZRQST_HAY__DEBUG_JSON'] )  # will be True or False
 
-ADMINS = json.loads( os.environ['DJANGO_TEMPLATE__ADMINS_JSON'] )
+ADMINS = json.loads( os.environ['EZRQST_HAY__ADMINS_JSON'] )
 
-ALLOWED_HOSTS = json.loads( os.environ['DJANGO_TEMPLATE__ALLOWED_HOSTS'] )  # list
+ALLOWED_HOSTS = json.loads( os.environ['EZRQST_HAY__ALLOWED_HOSTS'] )  # list
 
 
 # Application definition
@@ -59,7 +59,7 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'config.urls'
 
-# template_dirs = json.loads( os.environ['DJANGO_TEMPLATE__TEMPLATES_JSON'] )
+# template_dirs = json.loads( os.environ['EZRQST_HAY__TEMPLATES_JSON'] )
 # TEMPLATES = [
 #     {
 #         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -82,7 +82,7 @@ WSGI_APPLICATION = 'config.passenger_wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
-# DATABASES = json.loads( os.environ['DJANGO_TEMPLATE__DATABASES_JSON'] )
+# DATABASES = json.loads( os.environ['EZRQST_HAY__DATABASES_JSON'] )
 
 
 # Password validation
@@ -121,13 +121,13 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
-# STATIC_URL = os.environ['DJANGO_TEMPLATE__STATIC_URL']
-# STATIC_ROOT = os.environ['DJANGO_TEMPLATE__STATIC_ROOT']  # needed for collectstatic command
+# STATIC_URL = os.environ['EZRQST_HAY__STATIC_URL']
+# STATIC_ROOT = os.environ['EZRQST_HAY__STATIC_ROOT']  # needed for collectstatic command
 
 
 # Email
-EMAIL_HOST = os.environ['DJANGO_TEMPLATE__EMAIL_HOST']
-EMAIL_PORT = int( os.environ['DJANGO_TEMPLATE__EMAIL_PORT'] )
+EMAIL_HOST = os.environ['EZRQST_HAY__EMAIL_HOST']
+EMAIL_PORT = int( os.environ['EZRQST_HAY__EMAIL_PORT'] )
 
 
 # sessions
@@ -158,7 +158,7 @@ LOGGING = {
         'logfile': {
             'level':'DEBUG',
             'class':'logging.FileHandler',  # note: configure server to use system's log-rotate to avoid permissions issues
-            'filename': os.environ.get(u'DJANGO_TEMPLATE__LOG_PATH'),
+            'filename': os.environ.get(u'EZRQST_HAY__LOG_PATH'),
             'formatter': 'standard',
         },
         'console':{
@@ -170,7 +170,7 @@ LOGGING = {
     'loggers': {
         'easyrequest_hay_app': {
             'handlers': ['logfile'],
-            'level': os.environ.get(u'DJANGO_TEMPLATE__LOG_LEVEL'),
+            'level': os.environ.get(u'EZRQST_HAY__LOG_LEVEL'),
             'propagate': False
         },
     }
