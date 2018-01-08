@@ -15,7 +15,7 @@ def info( request ):
     """ Returns basic info. """
     log.debug( 'request.__dict__, ```%s```' % pprint.pformat(request.__dict__) )
     start = datetime.datetime.now()
-    rtrn_dct = {
+    context = {
         'query': {
             'date_time': str( start ),
             'url': '{schm}://{hst}{uri}'.format( schm=request.scheme, hst=request.META['HTTP_HOST'], uri=request.META.get('REQUEST_URI', request.META['PATH_INFO']) ) },
@@ -23,4 +23,23 @@ def info( request ):
             'documentation': settings_app.README_URL,
             'elapsed_time': str( datetime.datetime.now() - start ),
             'message': 'ok' } }
-    return HttpResponse( json.dumps(rtrn_dct, sort_keys=True, indent=2), content_type='application/javascript; charset=utf-8' )
+    if request.GET.get('format', '') == 'json':
+        resp = HttpResponse( json.dumps(context, sort_keys=True, indent=2), content_type='application/javascript; charset=utf-8' )
+    else:
+        resp = render( request, 'easyrequest_hay_app_templates/info.html', context )
+    return resp
+
+
+# def info( request ):
+#     """ Returns basic info. """
+#     log.debug( 'request.__dict__, ```%s```' % pprint.pformat(request.__dict__) )
+#     start = datetime.datetime.now()
+#     rtrn_dct = {
+#         'query': {
+#             'date_time': str( start ),
+#             'url': '{schm}://{hst}{uri}'.format( schm=request.scheme, hst=request.META['HTTP_HOST'], uri=request.META.get('REQUEST_URI', request.META['PATH_INFO']) ) },
+#         'response': {
+#             'documentation': settings_app.README_URL,
+#             'elapsed_time': str( datetime.datetime.now() - start ),
+#             'message': 'ok' } }
+#     return HttpResponse( json.dumps(rtrn_dct, sort_keys=True, indent=2), content_type='application/javascript; charset=utf-8' )
