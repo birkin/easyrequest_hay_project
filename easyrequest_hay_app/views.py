@@ -23,10 +23,13 @@ def info( request ):
             'documentation': settings_app.README_URL,
             'elapsed_time': str( datetime.datetime.now() - start ),
             'message': 'ok' } }
+    context_json = json.dumps(context, sort_keys=True, indent=2)
     if request.GET.get('format', '') == 'json':
-        resp = HttpResponse( json.dumps(context, sort_keys=True, indent=2), content_type='application/javascript; charset=utf-8' )
+        resp = HttpResponse( context_json, content_type='application/javascript; charset=utf-8' )
     else:
-        resp = render( request, 'easyrequest_hay_app_templates/info.html', context )
+        log.debug( 'context, ```%s```' % pprint.pformat(context) )
+        data = { 'context_handle': context_json }
+        resp = render( request, 'easyrequest_hay_app_templates/info.html', data )
     return resp
 
 
