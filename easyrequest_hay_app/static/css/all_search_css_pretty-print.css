@@ -1949,7 +1949,8 @@ html {
     -webkit-tap-highlight-color: transparent;
 }
 body {
-    font-family: "Helvetica Neue",  Helvetica,  Arial,  sans-serif;
+    /*font-family: "Helvetica Neue",  Helvetica,  Arial,  sans-serif;*/
+    font-family: 'Source Sans Pro', sans-serif;
     font-size: 14px;
     line-height: 1.42857143;
     color: #333333;
@@ -5764,7 +5765,8 @@ button.close {
     position: absolute;
     z-index: 1070;
     display: block;
-    font-family: "Helvetica Neue",  Helvetica,  Arial,  sans-serif;
+    /*font-family: "Helvetica Neue",  Helvetica,  Arial,  sans-serif;*/
+    font-family: 'Source Sans Pro', sans-serif;
     font-style: normal;
     font-weight: normal;
     letter-spacing: normal;
@@ -5882,7 +5884,8 @@ button.close {
     display: none;
     max-width: 276px;
     padding: 1px;
-    font-family: "Helvetica Neue",  Helvetica,  Arial,  sans-serif;
+    /*font-family: "Helvetica Neue",  Helvetica,  Arial,  sans-serif;*/
+    font-family: 'Source Sans Pro', sans-serif;
     font-style: normal;
     font-weight: normal;
     letter-spacing: normal;
@@ -6725,7 +6728,8 @@ button.ajax-modal-close.close {
     margin-left: 2em;
 }
 body {
-    font-family: 'Source Sans Pro',  'Helvetica',  'Arial',  sans-serif;
+    /*font-family: 'Source Sans Pro',  'Helvetica',  'Arial',  sans-serif;*/
+    font-family: 'Source Sans Pro', sans-serif;
     font-size: 150%;
     overflow-x: hidden;
 }
@@ -7162,10 +7166,12 @@ button.info-box {
     margin: 0 !important;
 }
 .gs-title, .gs-snippet {
-    font-family: 'Source Sans Pro',  'Helvetica',  'Arial',  sans-serif;
+    /*font-family: 'Source Sans Pro',  'Helvetica',  'Arial',  sans-serif;*/
+    font-family: 'Source Sans Pro', sans-serif;
     font-size: 150%}
 #libweb-search .gs-title, .gs-snippet {
-    font-family: 'Source Sans Pro',  'Helvetica',  'Arial',  sans-serif;
+    /*font-family: 'Source Sans Pro',  'Helvetica',  'Arial',  sans-serif;*/
+    font-family: 'Source Sans Pro', sans-serif;
 }
 #website .gsc-resultsRoot, #website .gsc-above-wrapper-area {
     background-color: #f7f6f2;
@@ -7209,6 +7215,11 @@ button.info-box {
     font-size: 13px !important;
     line-height: 1.6 !important;
 }
+
+
+/* STACKVIEW START */
+
+/*
 .stackview {
     font-family: "Helvetica Neue",  sans-serif;
     position: relative;
@@ -8221,6 +8232,11 @@ button.info-box {
     min-height: 20px;
     font-size: 16px;
 }
+*/
+
+/* STACKVIEW END */
+
+
 .inclusive_or.appliedFilter {
     display: inline-block;
     padding: 4px 8px;
