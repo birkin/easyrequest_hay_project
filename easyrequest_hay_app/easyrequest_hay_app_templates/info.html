@@ -2,29 +2,75 @@
 
 
 {% block page_title %}
-info
+easyrequest-hay info
 {% endblock page_title %}
 
 
 {% block extra_css %}
 <style type="text/css">
+    div#info_text {
+        margin-top: 2em;
+    }
     pre#info {
-        margin-top: 1em;
-        margin-right: 2em;
-        margin-bottom: 0em;
-        margin-left: 2em;
+        margin:0 auto;
+        width: 80%;
+    }
 </style>
 {% endblock extra_css %}
 
 
 {% block content %}
 
-    <h1>info</h1>
+<h1>easyrequest-hay info</h1>
 
+<div id="info_text">
+
+    <p><strong>This service is under-construction; it is not yet fully implemented.</strong></p>
+
+    <p>
+        This easyrequest-hay service helps users get the items they need which are managed by Brown's special-collections Libray, the <a href="https://library.brown.edu/hay/" rel="nofollow">John Hay Library</a>.
+    </p>
+    <p>
+        Here's a typical flow...
+    </p>
+    <ul>
+        <li>
+        <p>
+            You'll start in <a href="https://search.library.brown.edu" rel="nofollow">Josiah</a>, the Brown-Library catalog.
+        </p>
+        </li>
+        <li>
+        <p>
+            You'll do a search on Thomas Jefferson, and eventually find an item you want to look at, published in 1897: <a href="https://search.library.brown.edu/catalog/b2994396" rel="nofollow">The Autobiography of Thomas Jefferson</a>.
+        </p>
+        <ul>
+            <li>Because of its age, this book is managed by Brown's special-collections Library, the John Hay Library. Special-collections materials may only be used in this building.</li>
+        </ul>
+        </li>
+        <li>
+        <p>
+            You'll see that the 'Status' is 'Available', and to the right is the link 'request-access' <em>(again, under-construction, not-yet-available)</em>. Clicking that link gets you to this easyrequest-hay service.
+        </p>
+        </li>
+        <li>
+        <p>
+            After logging in, you'll land at a web-page where you can provide the Special-Collections staff with additional information about what you need (you won't have to re-type information about the item you want).
+        </p>
+        <ul>
+            <li>If it's your very first time landing at that additional-information page, you'll be asked to create an account in that software, and then you'll land at the additional-information page.</li>
+        </ul>
+        </li>
+    </ul>
+    <p>
+        If you have questions, the Hay staff can help you. More information can be found at our <a href="https://library.brown.edu/hay/specol.php" rel="nofollow">Special Collections help page</a>, where you can also find staff contact information.
+    </p>
+
+</div>  <!-- end <div id="info_text"> -->
+
+{% comment %}
 <pre id="info">
 {{ context_handle }}
 </pre>
-
-    <br/>
+{% endcomment %}
 
 {% endblock content %}
