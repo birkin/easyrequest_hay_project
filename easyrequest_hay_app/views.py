@@ -33,16 +33,9 @@ def info( request ):
     return resp
 
 
-# def info( request ):
-#     """ Returns basic info. """
-#     log.debug( 'request.__dict__, ```%s```' % pprint.pformat(request.__dict__) )
-#     start = datetime.datetime.now()
-#     rtrn_dct = {
-#         'query': {
-#             'date_time': str( start ),
-#             'url': '{schm}://{hst}{uri}'.format( schm=request.scheme, hst=request.META['HTTP_HOST'], uri=request.META.get('REQUEST_URI', request.META['PATH_INFO']) ) },
-#         'response': {
-#             'documentation': settings_app.README_URL,
-#             'elapsed_time': str( datetime.datetime.now() - start ),
-#             'message': 'ok' } }
-#     return HttpResponse( json.dumps(rtrn_dct, sort_keys=True, indent=2), content_type='application/javascript; charset=utf-8' )
+def bul_search( request ):
+    """ Triggered by user entering search term into banner.
+        Redirects query to search.library.brown.edu """
+    log.debug( 'request.__dict__, ```%s```' % pprint.pformat(request.__dict__) )
+    redirect_url = 'https://search.library.brown.edu?%s' % request.META['QUERY_STRING']
+    return HttpResponseRedirect( redirect_url )
