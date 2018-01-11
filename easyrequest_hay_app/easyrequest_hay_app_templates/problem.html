@@ -1,0 +1,41 @@
+{% extends "easyrequest_hay_app_templates/base.html" %}
+
+
+{% block page_title %}
+easyrequest-hay problem
+{% endblock page_title %}
+
+
+{% block extra_css %}
+<style type="text/css">
+    div#info_text {
+        margin-top: 1.5em;
+    }
+    pre#info {
+        margin:0 auto;
+        width: 80%;
+    }
+</style>
+{% endblock extra_css %}
+
+
+{% block content %}
+
+<h1>easyrequest-hay problem</h1>
+
+<div id="info_text">
+    <p>
+        This web-application may only be accessed from
+        <a href="https://search.library.brown.edu/" rel="nofollow">Josiah</a>,
+        the Library's search web-application. If you think you should be able to access this url, please contact
+        <a href="mailto:bart_hollingsworth@brown.edu">bart_hollingsworth@brown.edu</a>.
+    </p>
+</div>
+
+{% comment %}
+<pre id="info">
+{{ context_handle }}
+</pre>
+{% endcomment %}
+
+{% endblock content %}
