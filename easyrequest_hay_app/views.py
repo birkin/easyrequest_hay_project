@@ -5,15 +5,16 @@ from . import settings_app
 from django.conf import settings as project_settings
 from django.contrib.auth import logout
 from django.core.urlresolvers import reverse
-from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
-from django.template import loader
 from easyrequest_hay_app.lib import info_view_helper
-from easyrequest_hay_app.lib.login_view_helper import LoginViewHelper
+from easyrequest_hay_app.lib.validator import Validator
+# from easyrequest_hay_app.lib.login_view_helper import LoginViewHelper
 
 
 log = logging.getLogger(__name__)
-lv_helper = LoginViewHelper()
+validator = Validator()
+# lg_vw_helper = LoginViewHelper()
 
 
 def info( request ):
@@ -38,23 +39,32 @@ def bul_search( request ):
     return HttpResponseRedirect( redirect_url )
 
 
-def login( request ):
+def time_period( request ):
     """ Triggered by user clicking on an Annex-Hay Josiah `request-access` link.
         Stores referring url, bib, and item-barcode in session.
-        Presents shib and manual log in options. """
-    log.debug( 'request.__dict__, ```%s```' % pprint.pformat(request.__dict__) )
-    if not ( lv_helper.validate_source(request) and lv_helper.validate_params(request) ):
-        # return HttpResponseBadRequest( "This web-application supports Josiah, the Library's search web-application. If you think you should be able to access this url, please contact '%s'." % lv_helper.EMAIL_AUTH_HELP )
-        template = loader.get_template('easyrequest_hay_app_templates/problem.html')
-        context = {
-            'help_email': lv_helper.EMAIL_AUTH_HELP,
-        }
-        return HttpResponseBadRequest( template.render(context, request) )
+        Presents time-period option. """
+    log.debug( 'starting time_period view' )
+    if not validator.validate_source(request) and validator.validate_params(request):
+        resp = validator.prepare_badrequest_response( request )
+    else:
+        tm_prd_helper.initialize_session( request )
+        ( bib, item_barcode, title, author, publisher, callnumber, location, referring_url ) = tm_prd_helper.prep_data( request.GET )
+        tm_prd_helper.update_session( bib, item_barcode, title, author, publisher, callnumber, location, referring_url )
+        context = tm_prd_helper.prepare_context()
+        resp = render( request, 'easyrequest_hay_app_templates/time_period.html', context )
+    return resp
 
-
-        resp = HttpResponseBadRequest( context_json, content_type='application/javascript; charset=utf-8' )
-    lv_helper.initialize_session( request )
-    ( title, callnumber, item_id ) = lv_helper.get_item_info( request.GET['bibnum'], request.GET['barcode'] )
-    lv_helper.update_session( request, title, callnumber, item_id )
-    context = lv_helper.prepare_context( request )
-    return render( request, 'easyrequest_hay_app_templates/login.html', context )
+# def login( request ):
+#     """ Triggered by user clicking on an Annex-Hay Josiah `request-access` link.
+#         Stores referring url, bib, and item-barcode in session.
+#         Presents shib and manual log in options. """
+#     log.debug( 'starting login view' )  # log.debug( 'request.__dict__, ```%s```' % pprint.pformat(request.__dict__) )
+#     if not ( lg_vw_helper.validate_source(request) and lg_vw_helper.validate_params(request) ):
+#         resp = lg_vw_helper.prepare_badrequest_response( request )
+#     else:
+#         lg_vw_helper.initialize_session( request )
+#         ( title, callnumber, item_id ) = lg_vw_helper.get_item_info( request.GET['bibnum'], request.GET['barcode'] )
+#         lg_vw_helper.update_session( request, title, callnumber, item_id )
+#         context = lg_vw_helper.prepare_context( request )
+#         resp = render( request, 'easyrequest_hay_app_templates/login.html', context )
+#     return resp
