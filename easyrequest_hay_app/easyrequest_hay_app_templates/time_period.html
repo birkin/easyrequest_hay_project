@@ -1,0 +1,74 @@
+{% extends "easyrequest_hay_app_templates/base.html" %}
+
+
+{% block page_title %}
+easyrequest-hay time-period
+{% endblock page_title %}
+
+
+{% block extra_css %}
+<style type="text/css">
+    div#info_text {
+        margin-top: 2em;
+    }
+    form {
+        margin-top: 2em;
+    }
+    input#later {
+        margin-left: 2em;
+    }
+    /* item info... */
+    div#item {
+      margin: 0;
+      padding: 0;
+      padding-bottom: 1.25em;
+    }
+    div#item label {
+      margin: 0;
+      padding: 0;
+      display: block;
+      font-size: 100%;
+      padding-right: .75em;
+      width: 6em;
+      text-align: right;
+      float: left;
+    }
+    div#item p#actual_title {
+      margin: 0;
+      padding: 0;
+      display: block;
+      font-size: 100%;
+      font-weight: bold;
+    }
+    /* END -- item info... */
+</style>
+{% endblock extra_css %}
+
+
+{% block content %}
+
+<h1>easyrequest-hay &mdash; time-period question</h1>
+
+<div id="info_text">
+
+    <p><strong>This service is under-construction; it is not yet fully implemented.</strong></p>
+
+    <p>You&rsquo;ve requested the item:</p>
+    <div id="item">
+        <label for="name">Title:</label>
+        <p id="actual_title">{{ title }}The title</p>
+    </div>
+
+
+    <p>Before proceeding, one question&hellip;</p>
+    <p>Is this an item you would like to this special-collection item, in the John Hay Library, within the next two weeks?</p>
+    <p>Select one of the two following options to continue. Thanks.</p>
+
+    <form action="">
+        <input id="soon" type="submit" value="Yes &mdash; I&rsquo;d like to use this item within the next two weeks">
+        <input id="later" type="submit" value="No &mdash; I want to use this item &ndash; but not within the next two weeks">
+    </form>
+
+</div>  <!-- end <div id="info_text"> -->
+
+{% endblock content %}

@@ -8,11 +8,15 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from easyrequest_hay_app.lib import info_view_helper
+from easyrequest_hay_app.lib.session import SessionHelper
+from easyrequest_hay_app.lib.time_period_helper import TimePeriodHelper
 from easyrequest_hay_app.lib.validator import Validator
 # from easyrequest_hay_app.lib.login_view_helper import LoginViewHelper
 
 
 log = logging.getLogger(__name__)
+sess = SessionHelper()
+tm_prd_helper = TimePeriodHelper()
 validator = Validator()
 # lg_vw_helper = LoginViewHelper()
 
@@ -47,12 +51,11 @@ def time_period( request ):
     if not validator.validate_source(request) and validator.validate_params(request):
         resp = validator.prepare_badrequest_response( request )
     else:
-        tm_prd_helper.initialize_session( request )
-        ( bib, item_barcode, title, author, publisher, callnumber, location, referring_url ) = tm_prd_helper.prep_data( request.GET )
-        tm_prd_helper.update_session( bib, item_barcode, title, author, publisher, callnumber, location, referring_url )
+        sess.initialize_session( request )
         context = tm_prd_helper.prepare_context()
         resp = render( request, 'easyrequest_hay_app_templates/time_period.html', context )
     return resp
+
 
 # def login( request ):
 #     """ Triggered by user clicking on an Annex-Hay Josiah `request-access` link.
