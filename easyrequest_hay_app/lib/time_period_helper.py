@@ -17,10 +17,11 @@ class TimePeriodHelper( object ):
         """ Holds env-vars. """
         pass
 
-    def prepare_context( self ):
+    def prepare_context( self, r_session ):
         """ Prepares vars for template.
             Called by views.login() """
-        context = {}
+        context = { 'item_title': r_session['item_title'] }
+        log.debug( 'context, ```%s```' % context )
         return context
 
     # end class TimePeriodHelper
