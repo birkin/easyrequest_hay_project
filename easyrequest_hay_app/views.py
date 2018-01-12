@@ -2,13 +2,14 @@
 
 import datetime, json, logging, os, pprint
 from . import settings_app
-from easyrequest_hay_app.lib.login_view_helper import LoginViewHelper
 from django.conf import settings as project_settings
 from django.contrib.auth import logout
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.template import loader
+from easyrequest_hay_app.lib import info_view_helper
+from easyrequest_hay_app.lib.login_view_helper import LoginViewHelper
 
 
 log = logging.getLogger(__name__)
@@ -19,21 +20,13 @@ def info( request ):
     """ Returns basic info. """
     log.debug( 'request.__dict__, ```%s```' % pprint.pformat(request.__dict__) )
     start = datetime.datetime.now()
-    context = {
-        'query': {
-            'date_time': str( start ),
-            'url': '{schm}://{hst}{uri}'.format( schm=request.scheme, hst=request.META['HTTP_HOST'], uri=request.META.get('REQUEST_URI', request.META['PATH_INFO']) ) },
-        'response': {
-            'documentation': settings_app.README_URL,
-            'elapsed_time': str( datetime.datetime.now() - start ),
-            'message': 'ok' } }
-    context_json = json.dumps(context, sort_keys=True, indent=2)
     if request.GET.get('format', '') == 'json':
+        context = info_view_helper.build_json_context( start, request.scheme, request.META['HTTP_HOST'], request.META.get('REQUEST_URI', request.META['PATH_INFO'])  )
+        context_json = json.dumps(context, sort_keys=True, indent=2)
         resp = HttpResponse( context_json, content_type='application/javascript; charset=utf-8' )
     else:
-        log.debug( 'context, ```%s```' % pprint.pformat(context) )
-        data = { 'context_handle': context_json }
-        resp = render( request, 'easyrequest_hay_app_templates/info.html', data )
+        context = {}
+        resp = render( request, 'easyrequest_hay_app_templates/info.html', context )
     return resp
 
 
