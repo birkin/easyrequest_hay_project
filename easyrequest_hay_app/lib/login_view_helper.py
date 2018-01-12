@@ -64,7 +64,7 @@
 #         request.session.setdefault( 'source_url', source_url )  # ensures initial valid referrer is stored, and not localhost if there's a server redirect on a login-error
 #         request.session.setdefault( 'shib_login_error', False )
 #         request.session['shib_authorized'] = False
-#         request.session.setdefault( 'barcode_login_error', False)
+#         request.session.setdefault( 'patron_barcode_login_error', False)
 #         request.session['barcode_authorized'] = False
 #         log.debug( 'request.session after initialization, `%s`' % pprint.pformat(request.session.items()) )
 #         return
@@ -86,8 +86,8 @@
 #         request.session['user_full_name'] = ''  # for email
 #         request.session['user_last_name'] = ''  # for possible second josiah-api attempt if default shib firstname fails
 #         request.session['user_email'] = ''
-#         request.session.setdefault( 'barcode_login_name', '' )  # for barcode login form
-#         request.session.setdefault( 'barcode_login_barcode', '21236' )  # for barcode login form
+#         request.session.setdefault( 'patron_barcode_login_name', '' )  # for barcode login form
+#         request.session.setdefault( 'patron_barcode_login_barcode', '21236' )  # for barcode login form
 #         request.session['josiah_api_barcode'] = ''  # for josiah-patron-accounts call
 #         request.session['josiah_api_name'] = ''  # for josiah-patron-accounts call
 #         return
@@ -153,9 +153,9 @@
 #             'HAY_display': self.pic_loc_helper.pickup_location_dct['HAY']['display'],
 #             'ORWIG_code': self.pic_loc_helper.pickup_location_dct['ORWIG']['code'],
 #             'ORWIG_display': self.pic_loc_helper.pickup_location_dct['ORWIG']['display'],
-#             'barcode_login_name': request.session['barcode_login_name'],
-#             'barcode_login_barcode': request.session['barcode_login_barcode'],
-#             'barcode_login_error': request.session['barcode_login_error'],
+#             'patron_barcode_login_name': request.session['patron_barcode_login_name'],
+#             'patron_barcode_login_barcode': request.session['patron_barcode_login_barcode'],
+#             'patron_barcode_login_error': request.session['patron_barcode_login_error'],
 #             'shib_login_error': request.session['shib_login_error'],
 #             'PHONE_AUTH_HELP': self.PHONE_AUTH_HELP,
 #             'EMAIL_AUTH_HELP': self.EMAIL_AUTH_HELP,
