@@ -66,6 +66,7 @@ easyrequest-hay time-period
     <p>Select one of the two following options to continue. Thanks.</p>
 
     <form action="{{ action_url }}" method="GET">
+        <input type="hidden" name="original_params_json" value="{{ original_params_json }}">
         <input type="submit" value="Yes &mdash; I&rsquo;d like to use this item within the next two weeks" name="soon">
         <input type="submit" value="No &mdash; I want to use this item &ndash; but not within the next two weeks" name="later">
     </form>

@@ -31,10 +31,10 @@ class SessionHelper( object ):
         log.debug( 'request.session after initialization, ```%s```' % pprint.pformat(request.session.items()) )
         return
 
-    def update_session( self, request, key, val ):
-        """ Updates session value.
-            Called by views.time_period """
-        assert key in self.item_info_keys + self.patron_info_keys + self.other_info_keys
-        request.session[key] = val
-        log.debug( 'request.session after update, ```%s```' % pprint.pformat(request.session.items()) )
-        return
+    # def update_session( self, request, key, val ):
+    #     """ Updates session value.
+    #         Called by views.time_period() """
+    #     assert key in self.item_info_keys + self.patron_info_keys + self.other_info_keys
+    #     request.session[key] = val
+    #     log.debug( 'request.session after update, ```%s```' % pprint.pformat(request.session.items()) )
+    #     return
