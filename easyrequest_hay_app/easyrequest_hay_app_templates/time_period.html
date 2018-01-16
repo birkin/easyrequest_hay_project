@@ -14,8 +14,8 @@ easyrequest-hay time-period
     form {
         margin-top: 2em;
     }
-    input#later {
-        margin-left: 2em;
+    input {
+        margin-right: 2em;
     }
     /* item info... */
     div#item {
@@ -61,14 +61,13 @@ easyrequest-hay time-period
         <p id="actual_title">{{ item_title }}</p>
     </div>
 
-
     <p>Before proceeding, one question&hellip;</p>
     <p>Would like to use this special-collection item &mdash; in the John Hay Library &mdash; within the next two weeks?</p>
     <p>Select one of the two following options to continue. Thanks.</p>
 
-    <form action="">
-        <input id="soon" type="submit" value="Yes &mdash; I&rsquo;d like to use this item within the next two weeks">
-        <input id="later" type="submit" value="No &mdash; I want to use this item &ndash; but not within the next two weeks">
+    <form action="/time_period_handler/" method="GET">
+        <input type="submit" value="Yes &mdash; I&rsquo;d like to use this item within the next two weeks" name="soon">
+        <input type="submit" value="No &mdash; I want to use this item &ndash; but not within the next two weeks" name="later">
     </form>
 
 </div>  <!-- end <div id="info_text"> -->
