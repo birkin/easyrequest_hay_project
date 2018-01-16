@@ -21,6 +21,14 @@ validator = Validator()
 # lg_vw_helper = LoginViewHelper()
 
 
+def bul_search( request ):
+    """ Triggered by user entering search term into banner-search-field.
+        Redirects query to search.library.brown.edu """
+    log.debug( 'request.__dict__, ```%s```' % pprint.pformat(request.__dict__) )
+    redirect_url = 'https://search.library.brown.edu?%s' % request.META['QUERY_STRING']
+    return HttpResponseRedirect( redirect_url )
+
+
 def info( request ):
     """ Returns basic info. """
     log.debug( 'request.__dict__, ```%s```' % pprint.pformat(request.__dict__) )
@@ -33,14 +41,6 @@ def info( request ):
         context = {}
         resp = render( request, 'easyrequest_hay_app_templates/info.html', context )
     return resp
-
-
-def bul_search( request ):
-    """ Triggered by user entering search term into banner-search-field.
-        Redirects query to search.library.brown.edu """
-    log.debug( 'request.__dict__, ```%s```' % pprint.pformat(request.__dict__) )
-    redirect_url = 'https://search.library.brown.edu?%s' % request.META['QUERY_STRING']
-    return HttpResponseRedirect( redirect_url )
 
 
 def time_period( request ):
@@ -56,6 +56,10 @@ def time_period( request ):
         context = tm_prd_helper.prepare_context( request.session )
         resp = render( request, 'easyrequest_hay_app_templates/time_period.html', context )
     return resp
+
+
+def time_period_handler( request ):
+    return HttpResponse( 'coming' )
 
 
 # def login( request ):

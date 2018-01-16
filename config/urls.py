@@ -13,11 +13,13 @@ urlpatterns = [
 
     url( r'^admin/', admin.site.urls ),  # eg host/project_x/admin/
 
-    url( r'^info/$', views.info, name='info_url' ),
-
     url( r'^bul_search/$', views.bul_search, name='bul_search_url' ),
 
+    url( r'^info/$', views.info, name='info_url' ),
+
     url( r'^time_period/$', views.time_period, name='time_period_url' ),
+
+    url( r'^time_period_handler/$', views.time_period_handler, name='time_period_handler_url' ),
 
     # url( r'^login/$', views.login, name='login_url' ),
 
