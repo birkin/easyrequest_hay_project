@@ -62,10 +62,10 @@ easyrequest-hay time-period
     </div>
 
     <p>Before proceeding, one question&hellip;</p>
-    <p>Would like to use this special-collection item &mdash; in the John Hay Library &mdash; within the next two weeks?</p>
+    <p>Would you like to use this special-collection item &mdash; in the John Hay Library &mdash; within the next two weeks?</p>
     <p>Select one of the two following options to continue. Thanks.</p>
 
-    <form action="/time_period_handler/" method="GET">
+    <form action="{{ action_url }}" method="GET">
         <input type="submit" value="Yes &mdash; I&rsquo;d like to use this item within the next two weeks" name="soon">
         <input type="submit" value="No &mdash; I want to use this item &ndash; but not within the next two weeks" name="later">
     </form>
