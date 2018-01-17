@@ -19,11 +19,14 @@ class TimePeriodHelper( object ):
         """ Holds env-vars. """
         pass
 
-    def save_data( self, request_path ):
+    def save_data( self, request_path, jsonified_querydct ):
         """ Saves data.
             Called by views.time_period() """
+        log.debug( 'type(request_path, `%s`' % type(request_path) )
+        log.debug( 'jsonified_querydct, ```%s```' % jsonified_querydct )
+
         itmrqst = ItemRequest()
-        itmrqst.full_url_params = request_path
+        itmrqst.full_url_params = jsonified_querydct
         itmrqst.short_url_segment = self.epoch_micro_to_str()
         itmrqst.save()
         return
@@ -46,11 +49,9 @@ class TimePeriodHelper( object ):
         """ Returns string for shortlink based on the number of microseconds since the epoch.
             Not currently called.
             Based on code from <http://interactivepython.org/runestone/static/pythonds/Recursion/pythondsConvertinganIntegertoaStringinAnyBase.html> """
-        log.debug( 'n, `%s`' % n )
         if n is None:
             epoch_datetime = datetime.datetime( 1970, 1, 1, tzinfo=datetime.timezone.utc )
             n = epoch_microseconds = int( (datetime.datetime.now(tz=datetime.timezone.utc) - epoch_datetime).total_seconds() * 1000000 )
-            # n = epoch_microseconds
         convert_string = "abcdefghjkmnpqrstuvwxyzABCDEFGHJKMNPQRSTUVWXYZ23456789"
         if base is None:
             base = len( convert_string )

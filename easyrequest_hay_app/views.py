@@ -48,11 +48,12 @@ def time_period( request ):
         Stores referring url, bib, and item-barcode in session.
         Presents time-period option. """
     log.debug( 'starting time_period view' )
+    log.debug( 'request.__dict__, ```%s```' % pprint.pformat(request.__dict__) )
     if not validator.validate_source(request) and validator.validate_params(request):
         resp = validator.prepare_badrequest_response( request )
     else:
         sess.initialize_session( request )
-        tm_prd_helper.save_data( request.GET )
+        tm_prd_helper.save_data( request.META['QUERY_STRING'], json.dumps(request.GET) )
         context = tm_prd_helper.prepare_context( request.GET )
         resp = render( request, 'easyrequest_hay_app_templates/time_period.html', context )
     return resp
