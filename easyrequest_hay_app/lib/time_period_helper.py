@@ -4,11 +4,12 @@ import datetime, json, logging, os, pprint, urllib
 from django.http import HttpResponseBadRequest
 from django.template import loader
 from django.core.urlresolvers import reverse
-from easyrequest_hay_app.lib.pickup_location import PickupLocation
+# from easyrequest_hay_app.lib.pickup_location import PickupLocation
+from easyrequest_hay_app.models import ItemRequest
 
 
 log = logging.getLogger(__name__)
-pick_location = PickupLocation()
+# pick_location = PickupLocation()
 
 
 class TimePeriodHelper( object ):
@@ -17,6 +18,15 @@ class TimePeriodHelper( object ):
     def __init__( self ):
         """ Holds env-vars. """
         pass
+
+    def save_data( self, request_path ):
+        """ Saves data.
+            Called by views.time_period() """
+        itmrqst = ItemRequest()
+        itmrqst.full_url_params = request_path
+        itmrqst.short_url_segment = self.epoch_micro_to_str()
+        itmrqst.save()
+        return
 
     def prepare_context( self, original_params ):
         """ Prepares vars for template.
@@ -32,24 +42,23 @@ class TimePeriodHelper( object ):
         log.debug( 'context, ```%s```' % pprint.pformat(context) )
         return context
 
+    def epoch_micro_to_str( self, n=None, base=None ):
+        """ Returns string for shortlink based on the number of microseconds since the epoch.
+            Not currently called.
+            Based on code from <http://interactivepython.org/runestone/static/pythonds/Recursion/pythondsConvertinganIntegertoaStringinAnyBase.html> """
+        log.debug( 'n, `%s`' % n )
+        if n is None:
+            epoch_datetime = datetime.datetime( 1970, 1, 1, tzinfo=datetime.timezone.utc )
+            n = epoch_microseconds = int( (datetime.datetime.now(tz=datetime.timezone.utc) - epoch_datetime).total_seconds() * 1000000 )
+            # n = epoch_microseconds
+        convert_string = "abcdefghjkmnpqrstuvwxyzABCDEFGHJKMNPQRSTUVWXYZ23456789"
+        if base is None:
+            base = len( convert_string )
+        if n < base:
+            return convert_string[n]
+        else:
+            return self.epoch_micro_to_str( n//base, base ) + convert_string[n%base]  # the `//` is a math.floor() function
+
     # end class TimePeriodHelper
 
 
-## experimentation for shortlinks...
-
-def epoch_micro_to_str( n=None, base=None ):
-    """ Returns string for shortlink based on the number of microseconds since the epoch.
-        Not currently called.
-        Based on code from <http://interactivepython.org/runestone/static/pythonds/Recursion/pythondsConvertinganIntegertoaStringinAnyBase.html> """
-    if n is None:
-        epoch_datetime = datetime.datetime( 1970, 1, 1, tzinfo=datetime.timezone.utc )
-        n = epoch_microseconds = int( (datetime.datetime.now(tz=datetime.timezone.utc) - epoch_datetime).total_seconds() * 1000000 )
-        # n = epoch_microseconds
-    convert_string = "abcdefghjkmnpqrstuvwxyzABCDEFGHJKMNPQRSTUVWXYZ23456789"
-    if base is None:
-        base = len( convert_string )
-    if n < base:
-        return convert_string[n]
-    else:
-        return epoch_micro_to_str( n//base, base ) + convert_string[n%base]  # the `//` is a math.floor() function
-print( epoch_micro_to_str() )

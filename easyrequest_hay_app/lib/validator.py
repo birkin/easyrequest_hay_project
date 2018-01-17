@@ -3,11 +3,11 @@
 import json, logging, os, urllib
 from django.http import HttpResponseBadRequest
 from django.template import loader
-from easyrequest_hay_app.lib.pickup_location import PickupLocation
+# from easyrequest_hay_app.lib.pickup_location import PickupLocation
 
 
 log = logging.getLogger(__name__)
-pick_location = PickupLocation()
+# pick_location = PickupLocation()
 
 
 class Validator( object ):
