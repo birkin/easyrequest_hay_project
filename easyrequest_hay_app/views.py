@@ -53,7 +53,7 @@ def time_period( request ):
         resp = validator.prepare_badrequest_response( request )
     else:
         sess.initialize_session( request )
-        tm_prd_helper.save_data( request.META['QUERY_STRING'], json.dumps(request.GET) )
+        tm_prd_helper.save_data( json.dumps(request.GET) )
         context = tm_prd_helper.prepare_context( request.GET )
         resp = render( request, 'easyrequest_hay_app_templates/time_period.html', context )
     return resp

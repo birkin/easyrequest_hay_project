@@ -19,13 +19,14 @@ class TimePeriodHelper( object ):
         """ Holds env-vars. """
         pass
 
-    def save_data( self, request_path, jsonified_querydct ):
+    def save_data( self, jsonified_querydct ):
         """ Saves data.
             Called by views.time_period() """
-        log.debug( 'type(request_path, `%s`' % type(request_path) )
         log.debug( 'jsonified_querydct, ```%s```' % jsonified_querydct )
-
+        dct = json.loads( jsonified_querydct )
+        log.debug( 'dct, ```%s```' % pprint.pformat(dct) )
         itmrqst = ItemRequest()
+        itmrqst.item_title = dct['item_title']
         itmrqst.full_url_params = jsonified_querydct
         itmrqst.short_url_segment = self.epoch_micro_to_str()
         itmrqst.save()
