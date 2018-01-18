@@ -21,6 +21,8 @@ urlpatterns = [
 
     url( r'^time_period_handler/$', views.time_period_handler, name='time_period_handler_url' ),
 
+    url( r'^problem/$', views.problem, name='problem_url' ),
+
     # url( r'^login/$', views.login, name='login_url' ),
 
     url( r'^$', RedirectView.as_view(pattern_name='info_url') ),
