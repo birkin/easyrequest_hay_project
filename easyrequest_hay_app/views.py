@@ -11,6 +11,7 @@ from easyrequest_hay_app.lib import info_view_helper
 from easyrequest_hay_app.lib.session import SessionHelper
 from easyrequest_hay_app.lib.time_period_helper import TimePeriodHelper
 from easyrequest_hay_app.lib.validator import Validator
+from easyrequest_hay_app.models import ItemRequest
 # from easyrequest_hay_app.lib.login_view_helper import LoginViewHelper
 
 
