@@ -12,9 +12,9 @@ easyrequest-hay time-period
         margin-top: 2em;
     }
     form {
-        margin-top: 2em;
+        margin-top: 1.25em;
     }
-    input {
+    input#yes {
         margin-right: 2em;
     }
     /* item info... */
@@ -40,6 +40,23 @@ easyrequest-hay time-period
       font-size: 100%;
       font-weight: bold;
     }
+    div#yes {
+        float: left;
+    }
+    div#yes input {
+        width: 25em;
+    }
+    div#no {
+        float: left;
+    }
+    div#no input {
+        width: 25em;
+    }
+    div#clear {
+        margin: 0;
+        padding: 0;
+        clear: both;
+    }
     /* END -- item info... */
 </style>
 {% endblock extra_css %}
@@ -62,14 +79,31 @@ easyrequest-hay time-period
     </div>
 
     <p>Before proceeding, one question&hellip;</p>
-    <p>Would you like to use this special-collection item &mdash; in the John Hay Library &mdash; within the next two weeks?</p>
-    <p>Select one of the two following options to continue. Thanks.</p>
+    <p><i>Would you like to use this special-collection item &mdash; in the John Hay Library &mdash; within the next two weeks?</i></p>
+    <!-- <p>Select one of the two following options to continue. Thanks.</p> -->
+
+    <!--
+    <form action="{{ action_url }}" method="GET">
+        <input type="hidden" name="shortlink_segment" value="{{ shortlink_segment }}">
+        <input id="yes" type="submit" value="Yes &mdash; I&rsquo;d like to use this item within the next two weeks" name="soon">
+        <input type="submit" value="No &mdash; I want to use this item &ndash; but not within the next two weeks" name="later">
+    </form>
+    <hr/>
+    -->
 
     <form action="{{ action_url }}" method="GET">
         <input type="hidden" name="shortlink_segment" value="{{ shortlink_segment }}">
-        <input type="submit" value="Yes &mdash; I&rsquo;d like to use this item within the next two weeks" name="soon">
-        <input type="submit" value="No &mdash; I want to use this item &ndash; but not within the next two weeks" name="later">
+        <div id="yes">
+            <input id="yes" type="submit" value="Yes" name="soon">
+            <p><i>Yes &mdash; I&rsquo;d like to use this item within the next two weeks</i></p>
+        </div>
+        <div id="no">
+            <input type="submit" value="No" name="later">
+            <p><i>No &mdash; I want to use this item &ndash; but not within the next two weeks</i></p>
+        </div>
     </form>
+
+    <div id="clear"></div>
 
 </div>  <!-- end <div id="info_text"> -->
 
