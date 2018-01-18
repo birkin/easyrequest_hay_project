@@ -84,6 +84,7 @@ def time_period_handler( request ):
 def problem( request ):
     return HttpResponse( 'problem handler coming -- message, ```%s```' % request.GET.get('message', 'no_message') )
 
+
 # def login( request ):
 #     """ Triggered by user clicking on an Annex-Hay Josiah `request-access` link.
 #         Stores referring url, bib, and item-barcode in session.
