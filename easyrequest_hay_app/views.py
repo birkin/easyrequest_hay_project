@@ -60,8 +60,28 @@ def time_period( request ):
 
 
 def time_period_handler( request ):
-    return HttpResponse( 'coming' )
+    """ Handler for time_period `soon=yes/no` selection.
+        If `soon=no`, builds Aeon url and redirects.
+        Otherwise submits request to millennium, builds Aeon url and redirects. """
+    log.debug( 'starting time_period_handler view' )
+    log.debug( 'request.__dict__, ```%s```' % pprint.pformat(request.__dict__) )
+    item_request = get_object_or_404( ItemRequest, short_url_segment=request.GET.get('shortlink_segment', 'foo') )
+    soon_value = request.GET.get( 'soon', '' ).lower()
+    if soon_value == 'yes':
+        pass
+        resp = HttpResponse( 'soon was yes' )
+    elif soon_value == 'no':
+        # aeon_url = tm_prd_hndlr_helper.build_aeon_url
+        pass
+        resp = HttpResponse( 'soon was no' )
+    else:
+        problem_url = '%s?message=no time-period information found' % reverse( 'problem_url' )
+        resp = HttpResponseRedirect( problem_url )
+    return resp
 
+
+def problem( request ):
+    return HttpResponse( 'problem handler coming -- message, ```%s```' % request.GET.get('message', 'no_message') )
 
 # def login( request ):
 #     """ Triggered by user clicking on an Annex-Hay Josiah `request-access` link.
