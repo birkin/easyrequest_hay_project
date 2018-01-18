@@ -30,19 +30,16 @@ class TimePeriodHelper( object ):
         itmrqst.full_url_params = jsonified_querydct
         itmrqst.short_url_segment = self.epoch_micro_to_str()
         itmrqst.save()
-        return
+        return itmrqst.short_url_segment
 
-    def prepare_context( self, original_params ):
+    def prepare_context( self, original_params, shortlink_segment ):
         """ Prepares vars for template.
             Called by views.time_period() """
-        # log.debug( 'type(original_params), `%s`' % type(original_params) )
-        # log.debug( 'original_params, ```%s```' % pprint.pformat(original_params) )
         context = {
             'item_title': original_params['item_title'],
             'action_url': reverse( 'time_period_handler_url' ),
-            'original_params_json': json.dumps(original_params) # urllib.parse.quote( original_params )
+            'shortlink_segment': shortlink_segment
         }
-        log.debug( 'context, ```%s```' % context )
         log.debug( 'context, ```%s```' % pprint.pformat(context) )
         return context
 
