@@ -4,12 +4,10 @@ import datetime, json, logging, os, pprint, urllib
 from django.http import HttpResponseBadRequest
 from django.template import loader
 from django.core.urlresolvers import reverse
-# from easyrequest_hay_app.lib.pickup_location import PickupLocation
 from easyrequest_hay_app.models import ItemRequest
 
 
 log = logging.getLogger(__name__)
-# pick_location = PickupLocation()
 
 
 class TimePeriodHelper( object ):

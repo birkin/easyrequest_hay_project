@@ -8,18 +8,19 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from easyrequest_hay_app.lib import info_view_helper
+from easyrequest_hay_app.lib.aeon import AeonUrlBuilder
 from easyrequest_hay_app.lib.session import SessionHelper
 from easyrequest_hay_app.lib.time_period_helper import TimePeriodHelper
 from easyrequest_hay_app.lib.validator import Validator
 from easyrequest_hay_app.models import ItemRequest
-# from easyrequest_hay_app.lib.login_view_helper import LoginViewHelper
 
 
 log = logging.getLogger(__name__)
+
+aeon_url_bldr = AeonUrlBuilder()
 sess = SessionHelper()
 tm_prd_helper = TimePeriodHelper()
 validator = Validator()
-# lg_vw_helper = LoginViewHelper()
 
 
 def bul_search( request ):
@@ -72,9 +73,10 @@ def time_period_handler( request ):
         pass
         resp = HttpResponse( 'soon was yes' )
     elif soon_value == 'no':
-        # aeon_url = tm_prd_hndlr_helper.build_aeon_url
-        pass
+        # pass
         resp = HttpResponse( 'soon was no' )
+        aeon_url = aeon_url_bldr.build_aeon_url( item_request.short_url_segment )
+        resp = HttpResponseRedirect( aeon_url )
     else:
         problem_url = '%s?message=no time-period information found' % reverse( 'problem_url' )
         resp = HttpResponseRedirect( problem_url )
@@ -83,19 +85,3 @@ def time_period_handler( request ):
 
 def problem( request ):
     return HttpResponse( 'problem handler coming -- message, ```%s```' % request.GET.get('message', 'no_message') )
-
-
-# def login( request ):
-#     """ Triggered by user clicking on an Annex-Hay Josiah `request-access` link.
-#         Stores referring url, bib, and item-barcode in session.
-#         Presents shib and manual log in options. """
-#     log.debug( 'starting login view' )  # log.debug( 'request.__dict__, ```%s```' % pprint.pformat(request.__dict__) )
-#     if not ( lg_vw_helper.validate_source(request) and lg_vw_helper.validate_params(request) ):
-#         resp = lg_vw_helper.prepare_badrequest_response( request )
-#     else:
-#         lg_vw_helper.initialize_session( request )
-#         ( title, callnumber, item_id ) = lg_vw_helper.get_item_info( request.GET['bibnum'], request.GET['barcode'] )
-#         lg_vw_helper.update_session( request, title, callnumber, item_id )
-#         context = lg_vw_helper.prepare_context( request )
-#         resp = render( request, 'easyrequest_hay_app_templates/login.html', context )
-#     return resp
