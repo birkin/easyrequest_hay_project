@@ -77,6 +77,10 @@ easyrequest-hay time-period
     <div id="item">
         <label for="name">Title:</label>
         <p id="actual_title">{{ item_title }}</p>
+        {% if item_callnumber %}
+        <label for="name">Call Number:</label>
+        <p id="actual_title">{{ item_callnumber }}</p>
+        {% endif %}
     </div>
 
     <p>Before proceeding, one question&hellip;</p>

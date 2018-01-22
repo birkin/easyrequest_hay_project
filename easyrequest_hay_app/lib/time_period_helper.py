@@ -33,8 +33,11 @@ class TimePeriodHelper( object ):
     def prepare_context( self, original_params, shortlink_segment ):
         """ Prepares vars for template.
             Called by views.time_period() """
+        item_request = ItemRequest.objects.get( short_url_segment=shortlink_segment )
+        item_callnumber = json.loads(item_request.full_url_params).get( 'item_callnumber', None )
         context = {
             'item_title': original_params['item_title'],
+            'item_callnumber': item_callnumber,
             'action_url': reverse( 'time_period_handler_url' ),
             'shortlink_segment': shortlink_segment
         }
