@@ -15,7 +15,7 @@ easyrequest-hay login
     div#item {
       margin: 0;
       padding: 0;
-      padding-bottom: 1.25em;
+      /*padding-bottom: 1.25em;*/
     }
     div#item label {
       margin: 0;
@@ -43,7 +43,7 @@ easyrequest-hay login
         /*background: aqua;*/
         margin: auto;
         margin-left: 0;
-        margin-top: 6em;
+        margin-top: 1em;
         padding: 10px;
         }
 
@@ -57,18 +57,20 @@ easyrequest-hay login
             float: left;
             }
         h3#please_shib {
-            font-size: 1.5em;
+            font-size: 1.1em;
             color: maroon;
             }
+/*
         select#shib_location {
             float:left;
             }
+*/
         input#shib_login_button {
             float:left;
             clear:left;
             margin-top: 1.5em;
             }
-
+        /**/
         /* barcode form */
         form#barcode_login {
             margin-left: 45%;
@@ -80,13 +82,17 @@ easyrequest-hay login
             padding-left: 2%;
             }
         h3#please_barcode {
-            font-size: 1.5em;
+            font-size: 1.1em;
             color: maroon;
             }
+
+        /* doing this here because chrome & safari display the select box a bit differently */
+/*
         select#barcode_location {
             display: block;
-            margin-bottom: 1.75em;  /* doing this here because chrome & safari display the select box a bit differently */
+            margin-bottom: 1.75em;
             }
+*/
         p#name_field_label {
             margin-top: 0em;  /* margin specification moved above */
             }
@@ -102,7 +108,7 @@ easyrequest-hay login
             display: block;
             margin-top: 2.75em;
             }
-
+        /**/
 
 </style>
 {% endblock extra_css %}
@@ -155,13 +161,10 @@ easyrequest-hay login
 
         <form id="shib_login" action="/easyrequest/shib_handler/" method="POST">{% csrf_token %}
             <h3 id="please_shib">Log in with your Brown username &amp; password...</h3>
-            <p class="form_pickup_label">Pickup location:</p>
-            <select name="pickup_location" id="shib_location" size="3">
-                <option value="{{ ROCK_code }}" selected="selected">{{ ROCK_display }}</option>
-                <option value="{{ SCI_code }}" >{{ SCI_display }}</option>
-                <!-- <option value="{{ HAY_code }}" >{{ HAY_display }}</option> -->
-                <option value="{{ ORWIG_code }}" >{{ ORWIG_display }}</option>
-            </select>
+
+            <!-- <p class="form_pickup_label">Pickup location:</p> -->
+
+
             {% if shib_login_error %}
             <p class="login_error">Problem: based on your login, it appears you're not authorized to use this requesting service.</p>
             <p class="login_error">If you believe you should be able to request this item, please contact Library staff for assistance, either at {{ PHONE_AUTH_HELP }}, or at {{ EMAIL_AUTH_HELP|urlize }}.</p>
@@ -171,13 +174,9 @@ easyrequest-hay login
 
         <form id="barcode_login" action="/easyrequest/barcode_handler/" method="POST">{% csrf_token %}
             <h3 id="please_barcode">...or with your name and library card barcode</h3>
-            <p class="form_pickup_label">Pickup location:</p>
-            <select name="pickup_location" id="barcode_location" size="3">
-                <option value="{{ ROCK_code }}" selected="selected">{{ ROCK_display }}</option>
-                <option value="{{ SCI_code }}" >{{ SCI_display }}</option>
-                <!-- <option value="{{ HAY_code }}" >{{ HAY_display }}</option> -->
-                <option value="{{ ORWIG_code }}" >{{ ORWIG_display }}</option>
-            </select>
+
+            <!-- <p class="form_pickup_label">Pickup location:</p> -->
+
             <p id="name_field_label">First or Last Name:</p>
             <input id="name_field_input" type="text" name="barcode_login_name" value="{{ barcode_login_name }}">
             <p id="barcode_field_label">Barcode (14-digit barcode, beginning with 21236...):</p>
