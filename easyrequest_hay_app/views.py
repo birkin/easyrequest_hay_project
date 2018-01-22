@@ -10,7 +10,7 @@ from django.shortcuts import get_object_or_404, render
 from easyrequest_hay_app.lib import info_view_helper
 from easyrequest_hay_app.lib.aeon import AeonUrlBuilder
 from easyrequest_hay_app.lib.session import SessionHelper
-from easyrequest_hay_app.lib.time_period_helper import TimePeriodHelper
+from easyrequest_hay_app.lib.time_period_helper import TimePeriodHelper, TimePeriodHandlerHelper
 from easyrequest_hay_app.lib.validator import Validator
 from easyrequest_hay_app.models import ItemRequest
 
@@ -20,6 +20,7 @@ log = logging.getLogger(__name__)
 aeon_url_bldr = AeonUrlBuilder()
 sess = SessionHelper()
 tm_prd_helper = TimePeriodHelper()
+tm_prd_hndler_helper = TimePeriodHandlerHelper()
 validator = Validator()
 
 
@@ -65,21 +66,16 @@ def time_period_handler( request ):
     """ Handler for time_period `soon=yes/no` selection.
         If `soon=no`, builds Aeon url and redirects.
         Otherwise submits request to millennium, builds Aeon url and redirects. """
-    log.debug( 'starting time_period_handler view' )
     log.debug( 'request.__dict__, ```%s```' % pprint.pformat(request.__dict__) )
     item_request = get_object_or_404( ItemRequest, short_url_segment=request.GET.get('shortlink_segment', 'foo') )
     soon_value = request.GET.get( 'soon', '' ).lower()
     if soon_value == 'yes':
-        pass
-        resp = HttpResponse( 'soon was yes' )
+        resp = tm_prd_hndler_helper.build_soon_response( request.GET['shortlink_segment'] )
     elif soon_value == 'no':
-        # pass
-        resp = HttpResponse( 'soon was no' )
         aeon_url = aeon_url_bldr.build_aeon_url( item_request.short_url_segment )
         resp = HttpResponseRedirect( aeon_url )
     else:
-        problem_url = '%s?message=no time-period information found' % reverse( 'problem_url' )
-        resp = HttpResponseRedirect( problem_url )
+        resp = HttpResponseRedirect( '%s?message=no time-period information found' % reverse('problem_url') )
     return resp
 
 

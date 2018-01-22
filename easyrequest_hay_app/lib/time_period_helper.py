@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import datetime, json, logging, os, pprint, urllib
-from django.http import HttpResponseBadRequest
+from django.http import HttpResponseBadRequest, HttpResponseRedirect
 from django.template import loader
 from django.core.urlresolvers import reverse
 from easyrequest_hay_app.models import ItemRequest
@@ -11,7 +11,7 @@ log = logging.getLogger(__name__)
 
 
 class TimePeriodHelper( object ):
-    """ Contains helpers for views.request_def() for handling GET. """
+    """ Contains helpers for views.time_period() for handling GET. """
 
     def __init__( self ):
         """ Holds env-vars. """
@@ -56,6 +56,21 @@ class TimePeriodHelper( object ):
         else:
             return self.epoch_micro_to_str( n//base, base ) + convert_string[n%base]  # the `//` is a math.floor() function
 
-    # end class TimePeriodHelper
+    ## end class TimePeriodHelper
 
 
+class TimePeriodHandlerHelper( object ):
+    """ Contains helpers for views.time_period_handler(). """
+
+    def __init__( self ):
+        """ Holds env-vars. """
+        pass
+
+    def build_soon_response( self, shortlink ):
+        """ Builds redirect response to login for millennium submission. """
+        redirect_url = '%s?%s' % ( reverse('login_url'), shortlink )
+        log.debug( 'redirect_url, ```%s```' % redirect_url )
+        resp = HttpResponseRedirect( redirect_url )
+        return resp
+
+    ## end class TimePeriodHandlerHelper
