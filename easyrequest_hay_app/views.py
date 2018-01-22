@@ -79,5 +79,10 @@ def time_period_handler( request ):
     return resp
 
 
+def login( request ):
+    """ Displays millennium shib and non-shib logins.
+        Triggered by time_period_hander() """
+    return HttpResponse( 'login screen coming' )
+
 def problem( request ):
     return HttpResponse( 'problem handler coming -- message, ```%s```' % request.GET.get('message', 'no_message') )
