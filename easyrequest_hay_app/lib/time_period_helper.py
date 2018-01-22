@@ -30,16 +30,16 @@ class TimePeriodHelper( object ):
         itmrqst.save()
         return itmrqst.short_url_segment
 
-    def prepare_context( self, original_params, shortlink_segment ):
+    def prepare_context( self, original_params, shortlink ):
         """ Prepares vars for template.
             Called by views.time_period() """
-        item_request = ItemRequest.objects.get( short_url_segment=shortlink_segment )
+        item_request = ItemRequest.objects.get( short_url_segment=shortlink )
         item_callnumber = json.loads(item_request.full_url_params).get( 'item_callnumber', None )
         context = {
             'item_title': original_params['item_title'],
             'item_callnumber': item_callnumber,
             'action_url': reverse( 'time_period_handler_url' ),
-            'shortlink_segment': shortlink_segment
+            'shortlink': shortlink
         }
         log.debug( 'context, ```%s```' % pprint.pformat(context) )
         return context
@@ -71,7 +71,7 @@ class TimePeriodHandlerHelper( object ):
 
     def build_soon_response( self, shortlink ):
         """ Builds redirect response to login for millennium submission. """
-        redirect_url = '%s?shortlink_segment=%s' % ( reverse('login_url'), shortlink )
+        redirect_url = '%s?shortlink=%s' % ( reverse('login_url'), shortlink )
         log.debug( 'redirect_url, ```%s```' % redirect_url )
         resp = HttpResponseRedirect( redirect_url )
         return resp

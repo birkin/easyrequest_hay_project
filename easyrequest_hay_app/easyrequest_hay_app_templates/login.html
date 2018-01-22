@@ -119,16 +119,17 @@ easyrequest-hay login
 
     <div id="forms">
 
-        <form id="shib_login" action="{{ shib_handler_url }}" method="POST">{% csrf_token %}
+        <form id="shib_login" action="{{ shib_login_url }}" method="GET">
             <h3 id="please_shib">Log in with your Brown username &amp; password...</h3>
             {% if shib_login_error %}
             <p class="login_error">Problem: based on your login, it appears you're not authorized to use this requesting service.</p>
             <p class="login_error">If you believe you should be able to request this item, please contact Library staff for assistance, either at {{ PHONE_AUTH_HELP }}, or at {{ EMAIL_AUTH_HELP|urlize }}.</p>
             {% endif %}
+            <input type="hidden" name="shortlink" value="{{ shortlink }}">
             <input id="shib_login_button" type="submit" value="Log in" />
         </form>
 
-        <form id="barcode_login" action="{{ barcode_handler_url }}" method="POST">{% csrf_token %}
+        <form id="barcode_login" action="{{ barcode_login_url }}" method="POST">{% csrf_token %}
             <h3 id="please_barcode">...or with your name and library card barcode</h3>
             <p id="name_field_label">First or Last Name:</p>
             <input id="name_field_input" type="text" name="barcode_login_name" value="{{ barcode_login_name }}" />
@@ -138,6 +139,7 @@ easyrequest-hay login
             <p class="login_error">Problem: based on your login, it appears you're not authorized to use this requesting service.</p>
             <p class="login_error">If you believe you should be able to request this item, please contact Library staff for assistance, either at {{ PHONE_AUTH_HELP }}, or at {{ EMAIL_AUTH_HELP|urlize }}.</p>
             {% endif %}
+            <input type="hidden" name="shortlink" value="{{ shortlink }}">
             <br /><input id="barcode_login_button" type="submit" value="Log in" />
         </form>
 

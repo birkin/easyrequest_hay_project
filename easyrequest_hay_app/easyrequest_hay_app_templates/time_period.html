@@ -89,7 +89,7 @@ easyrequest-hay time-period
 
     <!--
     <form action="{{ action_url }}" method="GET">
-        <input type="hidden" name="shortlink_segment" value="{{ shortlink_segment }}">
+        <input type="hidden" name="shortlink" value="{{ shortlink }}">
         <input id="yes" type="submit" value="Yes &mdash; I&rsquo;d like to use this item within the next two weeks" name="soon">
         <input type="submit" value="No &mdash; I want to use this item &ndash; but not within the next two weeks" name="later">
     </form>
@@ -97,7 +97,7 @@ easyrequest-hay time-period
     -->
 
     <form action="{{ action_url }}" method="GET">
-        <input type="hidden" name="shortlink_segment" value="{{ shortlink_segment }}">
+        <input type="hidden" name="shortlink" value="{{ shortlink }}">
         <div id="yes">
             <input id="yes" type="submit" value="Yes" name="soon">
             <p><i>Yes &mdash; I&rsquo;d like to use this item within the next two weeks</i></p>
