@@ -1,16 +1,21 @@
 # -*- coding: utf-8 -*-
 
-import logging, os, pprint
+import json, logging, os, pprint
+from django.conf import settings as project_settings
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect
 from easyrequest_hay_app import settings_app
+from easyrequest_hay_app.lib.patron_api import PatronApiHelper
 
 
 log = logging.getLogger(__name__)
 
+papi_helper = PatronApiHelper()
+
 
 class ShibViewHelper( object ):
-    """ Contains helpers for views.shib_login() """
+    """ Contains helpers for views.shib_login()
+        Called by views.shib_login() """
 
     def check_shib_headers( self, request ):
         """ Grabs and checks shib headers, returns boolean.
@@ -62,7 +67,7 @@ class ShibViewHelper( object ):
 
 class ShibChecker( object ):
     """ Contains helpers for checking Shib.
-        Called by ShibViewHelper """
+        Called by ShibViewHelper() """
 
     def __init__( self ):
         self.TEST_SHIB_JSON = settings_app.TEST_SHIB_JSON
@@ -71,14 +76,16 @@ class ShibChecker( object ):
     def grab_shib_info( self, request ):
         """ Grabs shib values from http-header or dev-settings.
             Called by models.ShibViewHelper.check_shib_headers() """
+        log.debug( 'self.TEST_SHIB_JSON, ```%s```' % self.TEST_SHIB_JSON )
+        log.debug( 'request.get_host(), ```%s```' % request.get_host() )
         shib_dict = {}
         # if 'Shibboleth-eppn' in request.META:
         if 'HTTP_SHIBBOLETH_EPPN' in request.META:
             shib_dict = self.grab_shib_from_meta( request )
         else:
-            if request.get_host() == '127.0.0.1' and project_settings.DEBUG == True:
+            if '127.0.0.1' in request.get_host() and project_settings.DEBUG == True:
                 shib_dict = json.loads( self.TEST_SHIB_JSON )
-        log.debug( 'in models.ShibChecker.grab_shib_info(); shib_dict is: %s' % pprint.pformat(shib_dict) )
+        log.debug( 'shib_dict is: %s' % pprint.pformat(shib_dict) )
         return shib_dict
 
     def grab_shib_from_meta( self, request ):
@@ -97,9 +104,11 @@ class ShibChecker( object ):
         """ Returns boolean.
             Called by models.ShibViewHelper.check_shib_headers() """
         validity = False
-        if self.all_values_present(shib_dict) and self.brown_user_confirmed(shib_dict) and self.authorized(shib_dict['patron_barcode']):
-            validity = True
-        log.debug( 'in models.ShibChecker.evaluate_shib_info(); validity, `%s`' % validity )
+        if self.all_values_present(shib_dict):
+            if self.brown_user_confirmed(shib_dict):
+                if self.authorized( shib_dict['patron_barcode'] ):
+                    validity = True
+        log.debug( 'validity, `%s`' % validity )
         return validity
 
     def all_values_present( self, shib_dict ):
@@ -113,7 +122,7 @@ class ShibChecker( object ):
                     value_test = 'fail'
             if value_test == 'init':
                 present_check = True
-        log.debug( 'in models.ShibChecker.all_values_present(); present_check, `%s`' % present_check )
+        log.debug( 'present_check, `%s`' % present_check )
         return present_check
 
     def brown_user_confirmed( self, shib_dict ):
@@ -122,14 +131,14 @@ class ShibChecker( object ):
         brown_check = False
         if '@brown.edu' in shib_dict['eppn']:
             brown_check = True
-        log.debug( 'in models.ShibChecker.brown_user_confirmed(); brown_check, `%s`' % brown_check )
+        log.debug( 'brown_check, `%s`' % brown_check )
         return brown_check
 
     def authorized( self, patron_barcode ):
         """ Returns boolean.
             Called by evaluate_shib_info() """
         authZ_check = False
-        papi_helper = PatronApiHelper( patron_barcode )
+        papi_helper.process_barcode( patron_barcode )
         if papi_helper.ptype_validity is True:
             authZ_check = True
         log.debug( 'authZ_check, `%s`' % authZ_check )
