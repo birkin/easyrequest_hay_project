@@ -11,7 +11,7 @@ easyrequest-hay login
     div#info_text {
         margin-top: 2em;
     }
-    /* item info... */
+    /* `you've requested` item info... */
     div#item {
       margin: 0;
       padding: 0;
@@ -35,8 +35,6 @@ easyrequest-hay login
       font-weight: bold;
     }
     /**/
-
-
     div#forms {
         width: 80%;
         height: 250px;
@@ -45,74 +43,56 @@ easyrequest-hay login
         margin-left: 0;
         margin-top: 1em;
         padding: 10px;
-        }
-
-
-
-        /* shib form */
-        form#shib_login {
-            /*from `http://jsfiddle.net/watson/Gsj27/3/`*/
-            width: 45%;
-            height: 250px;
-            float: left;
-            }
-        h3#please_shib {
-            font-size: 1.1em;
-            color: maroon;
-            }
-/*
-        select#shib_location {
-            float:left;
-            }
-*/
-        input#shib_login_button {
-            width: 15em;
-            float:left;
-            clear:left;
-            margin-top: 1.5em;
-            }
-        /**/
-        /* barcode form */
-        form#barcode_login {
-            margin-left: 45%;
-            border-width: 0;
-            border-left-width: 1px;
-            border-left-color: maroon;
-            border-style: solid;
-            padding-left: 2%;
-            }
-        h3#please_barcode {
-            font-size: 1.1em;
-            color: maroon;
-            }
-
-        /* doing this here because chrome & safari display the select box a bit differently */
-/*
-        select#barcode_location {
-            display: block;
-            margin-bottom: 1.75em;
-            }
-*/
-        p#name_field_label {
-            margin-top: 0em;
-            margin-bottom: 0em;
-            }
-        p#barcode_field_label {
-            margin-top: 1em;
-            margin-bottom: 0em;
-            }
-        input#barcode_field_input {
-            float:left;
-            margin-top: 0em;
-            }
-        input#barcode_login_button {
-            /*float:left;*/
-            width: 15em;
-            display: block;
-            margin-top: 2.75em;
-            }
-        /**/
-
+    }
+    /* shib form */
+    form#shib_login {
+        /*from `http://jsfiddle.net/watson/Gsj27/3/`*/
+        width: 45%;
+        height: 250px;
+        float: left;
+    }
+    h3#please_shib {
+        font-size: 1.1em;
+        color: maroon;
+    }
+    input#shib_login_button {
+        width: 15em;
+        float:left;
+        clear:left;
+        margin-top: 1.5em;
+    }
+    /**/
+    /* barcode form */
+    form#barcode_login {
+        margin-left: 45%;
+        border-width: 0;
+        border-left-width: 1px;
+        border-left-color: maroon;
+        border-style: solid;
+        padding-left: 2%;
+    }
+    h3#please_barcode {
+        font-size: 1.1em;
+        color: maroon;
+    }
+    p#name_field_label {
+        margin-top: 1em;
+        margin-bottom: 0em;
+    }
+    p#barcode_field_label {
+        margin-top: 1em;
+        margin-bottom: 0em;
+    }
+    input#barcode_field_input {
+        float:left;
+        margin-top: 0em;
+    }
+    input#barcode_login_button {
+        width: 15em;
+        display: block;
+        margin-top: 2.75em;
+    }
+    /**/
 </style>
 {% endblock extra_css %}
 
@@ -127,9 +107,6 @@ easyrequest-hay login
     <p><strong>This service is under-construction; it is not yet fully implemented.</strong></p>
     <hr/>
 
-
-
-
     <p>You&rsquo;ve requested the item:</p>
     <div id="item">
         <label for="name">Title:</label>
@@ -140,34 +117,10 @@ easyrequest-hay login
         {% endif %}
     </div>
 
-
-
-<!--
-     <div id="requested_item">
-
-        <p>You're requesting the item …</p>
-        <br/>
-        <dl>
-            <dt>title:</dt>
-            <dd>{{ title }}</dd>
-
-            {% if callnumber %}
-            <dt>call number:</dt>
-            <dd>{{ callnumber }}</dd>
-            {% endif %}
-        </dl>
-
-    </div>
- -->
-
     <div id="forms">
 
         <form id="shib_login" action="/easyrequest/shib_handler/" method="POST">{% csrf_token %}
             <h3 id="please_shib">Log in with your Brown username &amp; password...</h3>
-
-            <!-- <p class="form_pickup_label">Pickup location:</p> -->
-
-
             {% if shib_login_error %}
             <p class="login_error">Problem: based on your login, it appears you're not authorized to use this requesting service.</p>
             <p class="login_error">If you believe you should be able to request this item, please contact Library staff for assistance, either at {{ PHONE_AUTH_HELP }}, or at {{ EMAIL_AUTH_HELP|urlize }}.</p>
@@ -177,9 +130,6 @@ easyrequest-hay login
 
         <form id="barcode_login" action="/easyrequest/barcode_handler/" method="POST">{% csrf_token %}
             <h3 id="please_barcode">...or with your name and library card barcode</h3>
-
-            <!-- <p class="form_pickup_label">Pickup location:</p> -->
-
             <p id="name_field_label">First or Last Name:</p>
             <input id="name_field_input" type="text" name="barcode_login_name" value="{{ barcode_login_name }}">
             <p id="barcode_field_label">Barcode (14-digit barcode, beginning with 21236...):</p>
@@ -192,9 +142,6 @@ easyrequest-hay login
         </form>
 
     </div>  <!-- end div id="forms" -->
-
-
-
 
 </div>  <!-- end div id="info_text" -->
 
