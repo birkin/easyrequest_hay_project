@@ -82,7 +82,13 @@ def time_period_handler( request ):
 def login( request ):
     """ Displays millennium shib and non-shib logins.
         Triggered by time_period_hander() """
-    context = {}
+    log.debug( 'request.__dict__, ```%s```' % pprint.pformat(request.__dict__) )
+    item_request = get_object_or_404( ItemRequest, short_url_segment=request.GET.get('shortlink_segment', 'foo') )
+    item_callnumber = json.loads(item_request.full_url_params).get( 'item_callnumber', None )
+    context = {
+        'item_title': item_request.item_title,
+        'item_callnumber': item_callnumber
+    }
     resp = render( request, 'easyrequest_hay_app_templates/login.html', context )
     return resp
 

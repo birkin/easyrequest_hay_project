@@ -68,7 +68,7 @@ class TimePeriodHandlerHelper( object ):
 
     def build_soon_response( self, shortlink ):
         """ Builds redirect response to login for millennium submission. """
-        redirect_url = '%s?%s' % ( reverse('login_url'), shortlink )
+        redirect_url = '%s?shortlink_segment=%s' % ( reverse('login_url'), shortlink )
         log.debug( 'redirect_url, ```%s```' % redirect_url )
         resp = HttpResponseRedirect( redirect_url )
         return resp

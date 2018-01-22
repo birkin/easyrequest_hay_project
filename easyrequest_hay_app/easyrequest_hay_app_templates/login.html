@@ -9,26 +9,66 @@ easyrequest-hay login
 {% block extra_css %}
 <style type="text/css">
     div#info_text {
-        margin-top: 1.5em;
+        margin-top: 2em;
     }
     pre#info {
         margin:0 auto;
         width: 80%;
     }
+    /* item info... */
+    div#item {
+      margin: 0;
+      padding: 0;
+      padding-bottom: 1.25em;
+    }
+    div#item label {
+      margin: 0;
+      padding: 0;
+      display: block;
+      font-size: 100%;
+      padding-right: .75em;
+      width: 10em;
+      text-align: right;
+      float: left;
+    }
+    div#item p#actual_title {
+      margin: 0;
+      padding: 0;
+      display: block;
+      font-size: 100%;
+      font-weight: bold;
+    }
+    /**/
 </style>
 {% endblock extra_css %}
 
 
 {% block content %}
 
-<h1>easyrequest-hay login</h1>
+<h1>easyrequest-hay &mdash; login</h1>
 
 <div id="info_text">
-    <p>login screen coming</p>
+
+    <hr/>
+    <p><strong>This service is under-construction; it is not yet fully implemented.</strong></p>
+    <hr/>
 
 
 
 
+    <p>You&rsquo;ve requested the item:</p>
+    <div id="item">
+        <label for="name">Title:</label>
+        <p id="actual_title">{{ item_title }}</p>
+        {% if item_callnumber %}
+        <label for="name">Call Number:</label>
+        <p id="actual_title">{{ item_callnumber }}</p>
+        {% endif %}
+    </div>
+
+
+
+<!--
      <div id="requested_item">
 
         <p>You're requesting the item …</p>
@@ -44,11 +84,11 @@ easyrequest-hay login
         </dl>
 
     </div>
+ -->
 
     <div id="forms">
 
         <form id="shib_login" action="/easyrequest/shib_handler/" method="POST">{% csrf_token %}
-            <!-- <h3 id="please_shib">Select pickup-location, &amp; log in via Shib...</h3> -->
             <h3 id="please_shib">Log in with your Brown username &amp; password...</h3>
             <p class="form_pickup_label">Pickup location:</p>
             <select name="pickup_location" id="shib_location" size="3">
@@ -65,7 +105,6 @@ easyrequest-hay login
         </form>
 
         <form id="barcode_login" action="/easyrequest/barcode_handler/" method="POST">{% csrf_token %}
-            <!-- <h3 id="please_barcode">...or via your patron barcode</h3> -->
             <h3 id="please_barcode">...or with your name and library card barcode</h3>
             <p class="form_pickup_label">Pickup location:</p>
             <select name="pickup_location" id="barcode_location" size="3">
@@ -85,17 +124,11 @@ easyrequest-hay login
             <br /><input id="barcode_login_button" type="submit" value="Log in">
         </form>
 
-    </div>
+    </div>  <!-- end div id="forms" -->
 
 
 
 
-</div>
-
-{% comment %}
-<pre id="info">
-{{ context_handle }}
-</pre>
-{% endcomment %}
+</div>  <!-- end div id="info_text" -->
 
 {% endblock content %}
