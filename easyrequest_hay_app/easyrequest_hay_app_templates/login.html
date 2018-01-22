@@ -11,10 +11,6 @@ easyrequest-hay login
     div#info_text {
         margin-top: 2em;
     }
-    pre#info {
-        margin:0 auto;
-        width: 80%;
-    }
     /* item info... */
     div#item {
       margin: 0;
@@ -39,6 +35,75 @@ easyrequest-hay login
       font-weight: bold;
     }
     /**/
+
+
+    div#forms {
+        width: 80%;
+        height: 250px;
+        /*background: aqua;*/
+        margin: auto;
+        margin-left: 0;
+        margin-top: 6em;
+        padding: 10px;
+        }
+
+
+
+        /* shib form */
+        form#shib_login {
+            /*from `http://jsfiddle.net/watson/Gsj27/3/`*/
+            width: 45%;
+            height: 250px;
+            float: left;
+            }
+        h3#please_shib {
+            font-size: 1.5em;
+            color: maroon;
+            }
+        select#shib_location {
+            float:left;
+            }
+        input#shib_login_button {
+            float:left;
+            clear:left;
+            margin-top: 1.5em;
+            }
+
+        /* barcode form */
+        form#barcode_login {
+            margin-left: 45%;
+            height: 250px;
+            border-width: 0;
+            border-left-width: 1px;
+            border-left-color: maroon;
+            border-style: solid;
+            padding-left: 2%;
+            }
+        h3#please_barcode {
+            font-size: 1.5em;
+            color: maroon;
+            }
+        select#barcode_location {
+            display: block;
+            margin-bottom: 1.75em;  /* doing this here because chrome & safari display the select box a bit differently */
+            }
+        p#name_field_label {
+            margin-top: 0em;  /* margin specification moved above */
+            }
+        p#barcode_field_label {
+            margin-top: 1em;
+            }
+        input#barcode_field_input {
+            float:left;
+            margin-top: 0em;
+            }
+        input#barcode_login_button {
+            /*float:left;*/
+            display: block;
+            margin-top: 2.75em;
+            }
+
+
 </style>
 {% endblock extra_css %}
 
