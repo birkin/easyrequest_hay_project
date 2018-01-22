@@ -25,6 +25,71 @@ easyrequest-hay login
 
 <div id="info_text">
     <p>login screen coming</p>
+
+
+
+
+     <div id="requested_item">
+
+        <p>You're requesting the item …</p>
+        <br/>
+        <dl>
+            <dt>title:</dt>
+            <dd>{{ title }}</dd>
+
+            {% if callnumber %}
+            <dt>call number:</dt>
+            <dd>{{ callnumber }}</dd>
+            {% endif %}
+        </dl>
+
+    </div>
+
+    <div id="forms">
+
+        <form id="shib_login" action="/easyrequest/shib_handler/" method="POST">{% csrf_token %}
+            <!-- <h3 id="please_shib">Select pickup-location, &amp; log in via Shib...</h3> -->
+            <h3 id="please_shib">Log in with your Brown username &amp; password...</h3>
+            <p class="form_pickup_label">Pickup location:</p>
+            <select name="pickup_location" id="shib_location" size="3">
+                <option value="{{ ROCK_code }}" selected="selected">{{ ROCK_display }}</option>
+                <option value="{{ SCI_code }}" >{{ SCI_display }}</option>
+                <!-- <option value="{{ HAY_code }}" >{{ HAY_display }}</option> -->
+                <option value="{{ ORWIG_code }}" >{{ ORWIG_display }}</option>
+            </select>
+            {% if shib_login_error %}
+            <p class="login_error">Problem: based on your login, it appears you're not authorized to use this requesting service.</p>
+            <p class="login_error">If you believe you should be able to request this item, please contact Library staff for assistance, either at {{ PHONE_AUTH_HELP }}, or at {{ EMAIL_AUTH_HELP|urlize }}.</p>
+            {% endif %}
+            <input id="shib_login_button" type="submit" value="Log in">
+        </form>
+
+        <form id="barcode_login" action="/easyrequest/barcode_handler/" method="POST">{% csrf_token %}
+            <!-- <h3 id="please_barcode">...or via your patron barcode</h3> -->
+            <h3 id="please_barcode">...or with your name and library card barcode</h3>
+            <p class="form_pickup_label">Pickup location:</p>
+            <select name="pickup_location" id="barcode_location" size="3">
+                <option value="{{ ROCK_code }}" selected="selected">{{ ROCK_display }}</option>
+                <option value="{{ SCI_code }}" >{{ SCI_display }}</option>
+                <!-- <option value="{{ HAY_code }}" >{{ HAY_display }}</option> -->
+                <option value="{{ ORWIG_code }}" >{{ ORWIG_display }}</option>
+            </select>
+            <p id="name_field_label">First or Last Name:</p>
+            <input id="name_field_input" type="text" name="barcode_login_name" value="{{ barcode_login_name }}">
+            <p id="barcode_field_label">Barcode (14-digit barcode, beginning with 21236...):</p>
+            <input id="barcode_field_input" type="text" name="barcode_login_barcode" value="{{ barcode_login_barcode }}">
+            {% if barcode_login_error %}
+            <p class="login_error">Problem: based on your login, it appears you're not authorized to use this requesting service.</p>
+            <p class="login_error">If you believe you should be able to request this item, please contact Library staff for assistance, either at {{ PHONE_AUTH_HELP }}, or at {{ EMAIL_AUTH_HELP|urlize }}.</p>
+            {% endif %}
+            <br /><input id="barcode_login_button" type="submit" value="Log in">
+        </form>
+
+    </div>
+
+
+
+
 </div>
 
 {% comment %}
