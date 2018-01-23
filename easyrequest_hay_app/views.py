@@ -122,13 +122,19 @@ def barcode_login( request ):
 def processor( request ):
     """ Handles item request:,
         - Ensures user is authenticated.
-        - Saves request.
+        - Gets item-id.
         - Places hold.
         - Emails patron.
         - Triggers shib_logout() view.
         Triggered after a successful shib_login (along with patron-api lookup) """
     log.debug( 'starting processor(); request.__dict__, ```%s```' % request.__dict__ )
-    return HttpResponse( 'processor coming' )
+    shortlink = request.GET['shortlink']
+    ( item_id, err ) = millennium.get_item_id( shortlink )
+    err = millennium.place_hold( item_id )
+    err = emailer.send_email( shortlink )
+    aeon_helper.make_millennium_note( item_id )
+    ( aeon_url, err ) = aeon_helper.build_aeon_url( shortlink )
+    return HttpResponseRedirect( aeon_url )
 
 
 def problem( request ):

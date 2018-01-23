@@ -47,27 +47,9 @@ class ShibViewHelper( object ):
         item_request = ItemRequest.objects.get( short_url_segment=shortlink )
         item_request.patron_info = json.dumps( shib_dict, sort_keys=True, indent=2 )
         item_request.save()
-        # self.update_session( request, shib_dict )
-        # scheme = 'https' if request.is_secure() else 'http'
-        # redirect_url = '%s://%s%s' % ( scheme, request.get_host(), reverse('processor_url') )
         redirect_url = '%s?shortlink=%s' % ( reverse('processor_url'), shortlink )
         log.debug( 'leaving ShibViewHelper; redirect_url `%s`' % redirect_url )
-        resp = HttpResponseRedirect( redirect_url )
-        return resp
-
-    # def update_session( self, request, shib_dict ):
-    #     """ Updates session with shib info.
-    #         Called by build_response() """
-    #     request.session['shib_login_error'] = False
-    #     request.session['shib_authorized'] = True
-    #     request.session['user_full_name'] = '%s %s' % ( shib_dict['firstname'], shib_dict['lastname'] )
-    #     request.session['user_last_name'] = shib_dict['lastname']
-    #     request.session['user_email'] = shib_dict['email']
-    #     request.session['shib_login_error'] = False
-    #     request.session['josiah_api_name'] = shib_dict['firstname']
-    #     request.session['josiah_api_barcode'] = shib_dict['patron_barcode']
-    #     log.debug( 'ShibViewHelper.update_session() completed' )
-    #     return
+        return = HttpResponseRedirect( redirect_url )
 
     ## end class ShibViewHelper
 

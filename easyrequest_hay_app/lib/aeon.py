@@ -15,7 +15,7 @@ class AeonUrlBuilder( object ):
             'ItemPublisher': '',
             'CallNumber': '',
             'Location': '',
-            'SpecialRequest': ''  # notes for staff
+            'SpecialRequest': 'Not needed in next 2 weeks, so not auto-requested through Millennium.'  # notes for staff
         }
 
     def build_aeon_url( self, shortlink ):
@@ -29,6 +29,5 @@ class AeonUrlBuilder( object ):
         self.aeon_params['ItemPublisher'] = request_dct['item_publisher']
         self.aeon_params['CallNumber'] = request_dct['item_callnumber']
         self.aeon_params['Location'] = request_dct['item_location']
-        self.aeon_params['SpecialRequest'] = 'Not needed in next 2 weeks, so not auto-requested through Millennium.'
         aeon_url = '%s&%s' % ( self.aeon_root_url, urllib.parse.urlencode(self.aeon_params) )
         return aeon_url
