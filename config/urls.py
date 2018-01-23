@@ -29,6 +29,8 @@ urlpatterns = [
 
     url( r'^barcode_login/$', views.barcode_login, name='barcode_login_url' ),
 
+    url( r'^processor/$', views.processor, name='processor_url' ),
+
     url( r'^$', RedirectView.as_view(pattern_name='info_url') ),
 
     ]

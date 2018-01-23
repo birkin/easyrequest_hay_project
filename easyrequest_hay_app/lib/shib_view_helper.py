@@ -36,7 +36,7 @@ class ShibViewHelper( object ):
         resp = HttpResponseRedirect( redirect_url )
         return resp
 
-    def build_response( self, request, shib_dict ):
+    def build_processor_response( self, request, shib_dict ):
         """ Sets session vars and redirects to the hidden processor page.
             Called by views.shib_login() """
         log.debug( 'starting ShibViewHelper.build_response()' )
@@ -102,7 +102,7 @@ class ShibChecker( object ):
 
     def evaluate_shib_info( self, shib_dict ):
         """ Returns boolean.
-            Called by models.ShibViewHelper.check_shib_headers() """
+            Called by ShibViewHelper.check_shib_headers() """
         validity = False
         if self.all_values_present(shib_dict):
             if self.brown_user_confirmed(shib_dict):

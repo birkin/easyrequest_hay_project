@@ -119,5 +119,17 @@ def barcode_login( request ):
     return HttpResponse( 'barcode_login response coming, params perceived, ```<pre>%s</pre>```' % json.dumps(request.POST, sort_keys=True, indent=2) )
 
 
+def processor( request ):
+    """ Handles item request:,
+        - Ensures user is authenticated.
+        - Saves request.
+        - Places hold.
+        - Emails patron.
+        - Triggers shib_logout() view.
+        Triggered after a successful shib_login (along with patron-api lookup) """
+    log.debug( 'starting processor()' )
+    return HttpResponse( 'processor coming' )
+
+
 def problem( request ):
     return HttpResponse( 'problem handler coming -- message, ```%s```' % request.GET.get('message', 'no_message') )
