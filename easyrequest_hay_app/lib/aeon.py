@@ -21,8 +21,8 @@ class AeonUrlBuilder( object ):
     def make_millennium_note( self, item_id ):
         """ Sets the staff note when an item has been auto-requested through Millennium.
             Called by views.processor() """
-        now = datetime.datetime.now()
-        self.aeon_params['SpecialRequest'] = 'Auto-requested via easyRequest-Hay at `%s`; item_id, `%s`' % ( now, item_id )
+        now_str = datetime.datetime.now().strftime( '%Y-%b-%d-%a-%I:%M:%S%p' )  # '2018-Jan-23-Tue-03:41:35PM'
+        self.aeon_params['SpecialRequest'] = 'Auto-requested via easyRequest-Hay at `%s`; item_id, `%s`' % ( now_str, item_id )
         return
 
     def build_aeon_url( self, shortlink ):
