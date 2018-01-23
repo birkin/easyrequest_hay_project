@@ -1,13 +1,16 @@
-from __future__ import unicode_literals
+# -*- coding: utf-8 -*-
+
 import logging
 import pprint
 import requests
 import time
 from bs4 import BeautifulSoup
 
-OPAC_BASE_URL = 'https://josiah.brown.edu/'
 
 log = logging.getLogger(__name__)
+
+OPAC_BASE_URL = 'https://josiah.brown.edu/'
+
 
 class IIIAccount():
 
@@ -83,12 +86,14 @@ class IIIAccount():
     def _parse_holds_list(self, content):
         """ Parses holds html.
             Called by get_holds() """
-        content = content if type(content) == unicode else content.decode( 'utf-8', 'replace' )
+        # content = content if type(content) == unicode else content.decode( 'utf-8', 'replace' )
+        content = content if type(content) == str else content.decode( 'utf-8', 'replace' )
         ( doc, holds ) = ( BeautifulSoup(content), [] )
         hold_rows = doc.find_all( 'tr', class_='patFuncEntry' )
         for row in hold_rows:
             holds.append( {
-                'key': unicode( row.select('input[id]')[0]['id'] ),
+                # 'key': unicode( row.select('input[id]')[0]['id'] ),
+                'key': str( row.select('input[id]')[0]['id'] ),
                 'title': row.select('.patFuncTitle')[0].get_text(strip=True),
                 'status': row.select('.patFuncStatus')[0].get_text(strip=True),
                 'pickup': row.select('.patFuncPickup')[0].get_text(strip=True),
@@ -122,7 +127,8 @@ class IIIAccount():
             _k = {}
             cells = r.select( 'td' )
             try:
-                item_num = unicode( cells[0].select('input[type="radio"]')[0]['value'] )
+                # item_num = unicode( cells[0].select('input[type="radio"]')[0]['value'] )
+                item_num = str( cells[0].select('input[type="radio"]')[0]['value'] )
             except IndexError:
                 item_num = None
             item, loc, call, status, barcode = tuple([c.get_text(strip=True) for c in cells])
@@ -180,13 +186,15 @@ class IIIAccount():
         """
         Helper for parsing confirmation screen.
         """
-        content = content if ( type(content) == unicode ) else content.decode( 'utf-8', 'replace' )
+        # content = content if ( type(content) == unicode ) else content.decode( 'utf-8', 'replace' )
+        content = content if ( type(content) == str ) else content.decode( 'utf-8', 'replace' )
         out = {
             'confirmed': False,
             'message': None }
         doc = BeautifulSoup( content )
         try:
-            msg = unicode( doc.find_all( 'span', class_='style1' )[0] )
+            # msg = unicode( doc.find_all( 'span', class_='style1' )[0] )
+            msg = str( doc.find_all( 'span', class_='style1' )[0] )
         except IndexError:
             #These are failures.
             msg = doc.find( 'font', attrs={'color': 'red', 'size': '+2'} ).get_text( strip=True )
@@ -270,7 +278,8 @@ class IIIAccount():
         """
         Parse a given user's current checkouts.
         """
-        content = content if type(content) == unicode else content.decode( 'utf-8', 'replace' )
+        # content = content if type(content) == unicode else content.decode( 'utf-8', 'replace' )
+        content = content if type(content) == str else content.decode( 'utf-8', 'replace' )
         doc = BeautifulSoup( content )
         t_rows = doc.find_all( 'tr', class_='patFuncEntry' )
         def _get(chunk, selector):
@@ -280,8 +289,10 @@ class IIIAccount():
             return chunk.select('td.%s' % selector)[0].get_text(strip=True)
         checkouts = [
             {
-                'key': unicode( row.select('input[id]')[0]['id'] ),
-                'item': unicode( row.select('input[value]')[0]['value'] ),
+                # 'key': unicode( row.select('input[id]')[0]['id'] ),
+                # 'item': unicode( row.select('input[value]')[0]['value'] ),
+                'key': str( row.select('input[id]')[0]['id'] ),
+                'item': str( row.select('input[value]')[0]['value'] ),
                 'title': _get(row, 'patFuncTitle'),
                 'barcode': _get(row, 'patFuncBarcode'),
                 'status': _get(row, 'patFuncStatus'),
