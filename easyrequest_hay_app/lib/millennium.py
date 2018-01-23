@@ -15,6 +15,7 @@ class Millennium( object ):
 
     def __init__( self ):
         self.AVAILABILITY_API_URL_ROOT = settings_app.AVAILABILITY_API_URL_ROOT
+        self.LOCATION_CODE = settings_app.HAY_LOCATION_CODE
         self.item_bib = ''
         self.item_barcode = ''
         self.patron_barcode = ''
@@ -72,13 +73,25 @@ class Millennium( object ):
     def place_hold( self, item_id ):
         """ Calls lib to place hold.
             Called by views.processor() """
-        err = None
+        status = 'init'
         try:
             jos_sess = IIIAccount( name=self.patron_login_name, barcode=self.patron_barcode )
             log.debug( 'jos_sess, ```%s```' % jos_sess )
+            jos_sess.login()
+            log.debug( 'jos_sess, ```%s```' % jos_sess )
+            hold = jos_sess.place_hold( bib=self.item_bib, item=item_id, pickup_location=self.LOCATION_CODE )
+            jos_sess.logout()
+            log.debug( 'hold, `%s`' % hold )
+            status = 'request_placed'
+            return status
         except Exception as e:
             log.error( 'exception, ```%s```' % str(e) )
-        return err
+            try:
+                jos_sess.logout()
+                log.debug( 'jos_sess.logout() succeeded on exception catch' )
+            except Exception as f:
+                log.error( 'exception, ```%s```' % str(f) )
+        return status
 
     ## end class Millennium()
 
