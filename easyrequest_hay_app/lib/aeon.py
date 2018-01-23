@@ -15,8 +15,13 @@ class AeonUrlBuilder( object ):
             'ItemPublisher': '',
             'CallNumber': '',
             'Location': '',
-            'SpecialRequest': 'Not needed in next 2 weeks, so not auto-requested through Millennium.'  # notes for staff
+            'SpecialRequest': 'Not needed in next 2 weeks, so not auto-requested through Millennium.'  # notes for staff; default
         }
+
+    def make_millennium_note( self, item_id ):
+        """ Sets the staff note when an item has been auto-requested through Millennium.
+            Called by views.processor() """
+        return
 
     def build_aeon_url( self, shortlink ):
         """ Saves data.

@@ -49,7 +49,7 @@ class ShibViewHelper( object ):
         item_request.save()
         redirect_url = '%s?shortlink=%s' % ( reverse('processor_url'), shortlink )
         log.debug( 'leaving ShibViewHelper; redirect_url `%s`' % redirect_url )
-        return = HttpResponseRedirect( redirect_url )
+        return HttpResponseRedirect( redirect_url )
 
     ## end class ShibViewHelper
 

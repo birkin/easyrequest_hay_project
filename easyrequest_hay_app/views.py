@@ -9,6 +9,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from easyrequest_hay_app.lib import info_view_helper
 from easyrequest_hay_app.lib.aeon import AeonUrlBuilder
+from easyrequest_hay_app.lib.millennium import Millennium
 from easyrequest_hay_app.lib.session import SessionHelper
 from easyrequest_hay_app.lib.shib_view_helper import ShibViewHelper
 from easyrequest_hay_app.lib.time_period_helper import TimePeriodHelper, TimePeriodHandlerHelper
@@ -19,6 +20,7 @@ from easyrequest_hay_app.models import ItemRequest
 log = logging.getLogger(__name__)
 
 aeon_url_bldr = AeonUrlBuilder()
+millennium = Millennium()
 sess = SessionHelper()
 shib_view_helper = ShibViewHelper()
 tm_prd_helper = TimePeriodHelper()
@@ -129,11 +131,11 @@ def processor( request ):
         Triggered after a successful shib_login (along with patron-api lookup) """
     log.debug( 'starting processor(); request.__dict__, ```%s```' % request.__dict__ )
     shortlink = request.GET['shortlink']
-    ( item_id, err ) = millennium.get_item_id( shortlink )
+    item_id = millennium.get_item_id( shortlink )
     err = millennium.place_hold( item_id )
-    err = emailer.send_email( shortlink )
-    aeon_helper.make_millennium_note( item_id )
-    ( aeon_url, err ) = aeon_helper.build_aeon_url( shortlink )
+    # err = emailer.send_email( shortlink )
+    aeon_url_bldr.make_millennium_note( item_id )
+    aeon_url = aeon_url_bldr.build_aeon_url( shortlink )
     return HttpResponseRedirect( aeon_url )
 
 
