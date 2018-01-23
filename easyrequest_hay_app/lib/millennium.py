@@ -95,17 +95,3 @@ class Millennium( object ):
 
     ## end class Millennium()
 
-
-
-
-
-    # log.debug( 'pickup_location_code, `%s`' % pickup_location_code )
-    # jos_sess = IIIAccount( name=josiah_api_name, barcode=itmrqst.patron_barcode )
-    # jos_sess.login()
-    # hold = jos_sess.place_hold( bib=itmrqst.item_bib, item=itmrqst.item_id, pickup_location=pickup_location_code )
-    # jos_sess.logout()
-    # log.debug( 'hold, `%s`' % hold )
-    # itmrqst.status = 'request_placed'
-    # itmrqst.save()
-    # return itmrqst
-

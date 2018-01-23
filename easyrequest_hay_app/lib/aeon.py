@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import json, urllib
+import datetime, json, urllib
 from easyrequest_hay_app.models import ItemRequest
 
 
@@ -21,6 +21,8 @@ class AeonUrlBuilder( object ):
     def make_millennium_note( self, item_id ):
         """ Sets the staff note when an item has been auto-requested through Millennium.
             Called by views.processor() """
+        now = datetime.datetime.now()
+        self.aeon_params['SpecialRequest'] = 'Auto-requested via easyRequest-Hay at `%s`; item_id, `%s`' % ( now, item_id )
         return
 
     def build_aeon_url( self, shortlink ):
