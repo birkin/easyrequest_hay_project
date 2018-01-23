@@ -50,7 +50,7 @@ class ShibViewHelper( object ):
         # self.update_session( request, shib_dict )
         # scheme = 'https' if request.is_secure() else 'http'
         # redirect_url = '%s://%s%s' % ( scheme, request.get_host(), reverse('processor_url') )
-        redirect_url = reverse('processor_url')
+        redirect_url = '%s?shortlink=%s' % ( reverse('processor_url'), shortlink )
         log.debug( 'leaving ShibViewHelper; redirect_url `%s`' % redirect_url )
         resp = HttpResponseRedirect( redirect_url )
         return resp
