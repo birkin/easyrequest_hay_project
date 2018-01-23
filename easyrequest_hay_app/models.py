@@ -14,20 +14,22 @@ class ItemRequest( models.Model ):
         Called by Processor(). """
     item_title = models.CharField( max_length=200, blank=True, null=True, help_text="used by Millennium & Aeon" )
     status = models.CharField( max_length=200, blank=True, null=True )
-    item_author = models.CharField( max_length=200, blank=True, null=True, help_text="used by Aeon" )
-    item_bib = models.CharField( max_length=50, blank=True, null=True, help_text="used by Millennium & Aeon" )
-    item_id = models.CharField( max_length=50, blank=True, null=True, help_text="used by Millennium" )
-    item_barcode = models.CharField( max_length=50, blank=True, null=True, help_text="used by Millennium" )
-    item_callnumber = models.CharField( max_length=200, blank=True, null=True, help_text="used by Millennium & Aeon" )
-    item_publish_info = models.CharField( max_length=200, blank=True, null=True, help_text="used by Aeon" )
-    item_digital_version_url = models.CharField( max_length=200, blank=True, null=True, help_text="used by Aeon" )
-    patron_name = models.CharField( max_length=100, blank=True, null=True, help_text="used by Millennium" )  # patron full name
-    patron_barcode = models.CharField( max_length=50, blank=True, null=True, help_text="used by Millennium" )
-    patron_email = models.CharField( max_length=100, blank=True, null=True, help_text="used by Millennium" )
+    # item_author = models.CharField( max_length=200, blank=True, null=True, help_text="used by Aeon" )
+    # item_bib = models.CharField( max_length=50, blank=True, null=True, help_text="used by Millennium & Aeon" )
+    # item_id = models.CharField( max_length=50, blank=True, null=True, help_text="used by Millennium" )
+    # item_barcode = models.CharField( max_length=50, blank=True, null=True, help_text="used by Millennium" )
+    # item_callnumber = models.CharField( max_length=200, blank=True, null=True, help_text="used by Millennium & Aeon" )
+    # item_publish_info = models.CharField( max_length=200, blank=True, null=True, help_text="used by Aeon" )
+    # item_digital_version_url = models.CharField( max_length=200, blank=True, null=True, help_text="used by Aeon" )
+    # patron_name = models.CharField( max_length=100, blank=True, null=True, help_text="used by Millennium" )  # patron full name
+    # patron_barcode = models.CharField( max_length=50, blank=True, null=True, help_text="used by Millennium" )
+    # patron_email = models.CharField( max_length=100, blank=True, null=True, help_text="used by Millennium" )
     source_url = models.TextField( blank=True, null=True )
     create_datetime = models.DateTimeField( auto_now_add=True, blank=True, null=True )  # blank=True for backward compatibility
+    modified_datetime = models.DateTimeField( auto_now=True, blank=True, null=True )  # blank=True for backward compatibility
     admin_notes = models.TextField( blank=True, null=True )
-    full_url_params = models.TextField( blank=True, null=True )
+    patron_info = models.TextField( blank=True, null=True )  # json stored here for now
+    full_url_params = models.TextField( blank=True, null=True )  # json stored here for now
     short_url_segment = models.CharField( max_length=20, blank=True, null=True )
 
     def __unicode__(self):

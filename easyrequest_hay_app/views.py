@@ -58,7 +58,7 @@ def time_period( request ):
         resp = validator.prepare_badrequest_response( request )
     else:
         sess.initialize_session( request )
-        shortlink = tm_prd_helper.save_data( json.dumps(request.GET) )
+        shortlink = tm_prd_helper.save_data( json.dumps(request.GET, sort_keys=True, indent=2) )
         context = tm_prd_helper.prepare_context( request.GET, shortlink )
         resp = render( request, 'easyrequest_hay_app_templates/time_period.html', context )
     return resp
@@ -102,12 +102,12 @@ def login( request ):
 def shib_login( request ):
     """ Examines shib headers.
         Redirects user to non-seen processor() view. """
-    log.debug( 'starting shib_login()' )
+    log.debug( 'starting shib_login(); request.__dict__, ```%s```' % request.__dict__ )
     ( validity, shib_dict ) = shib_view_helper.check_shib_headers( request )
     if validity is False:  # TODO: implement this
         resp = shib_view_helper.prep_login_redirect( request )
     else:
-        resp = shib_view_helper.build_processor_response( request, shib_dict )
+        resp = shib_view_helper.build_processor_response( request.GET['shortlink'], shib_dict )
     log.debug( 'about to return shib response' )
     return resp
 
@@ -115,7 +115,7 @@ def shib_login( request ):
 def barcode_login( request ):
     """ Examines submitted info.
         Happy path: redirects user to non-seen process() view. """
-    log.debug( 'starting barcode_login()' )
+    log.debug( 'starting barcode_login(); request.__dict__, ```%s```' % request.__dict__ )
     return HttpResponse( 'barcode_login response coming, params perceived, ```<pre>%s</pre>```' % json.dumps(request.POST, sort_keys=True, indent=2) )
 
 
@@ -127,7 +127,7 @@ def processor( request ):
         - Emails patron.
         - Triggers shib_logout() view.
         Triggered after a successful shib_login (along with patron-api lookup) """
-    log.debug( 'starting processor()' )
+    log.debug( 'starting processor(); request.__dict__, ```%s```' % request.__dict__ )
     return HttpResponse( 'processor coming' )
 
 
