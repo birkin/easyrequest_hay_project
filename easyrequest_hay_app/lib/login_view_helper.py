@@ -1,13 +1,27 @@
-# # -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 
-# import json, logging, os, urllib
+import json, logging, os, urllib
+from django.core.urlresolvers import reverse
 # from django.http import HttpResponseBadRequest
 # from django.template import loader
 # from easyrequest_hay_app.lib.pickup_location import PickupLocation
 
 
-# log = logging.getLogger(__name__)
+log = logging.getLogger(__name__)
 # pick_location = PickupLocation()
+
+
+def build_login_context( item_request, shortlink, item_callnumber ):
+    """ Preps veiw data.
+        Called by views.login() """
+    context = {
+        'item_title': item_request.item_title,
+        'item_callnumber': item_callnumber,
+        'shortlink': shortlink,
+        'shib_login_url': reverse('shib_login_url'),
+        'barcode_login_url': reverse('barcode_login_url'),
+    }
+    return context
 
 
 # class LoginViewHelper( object ):

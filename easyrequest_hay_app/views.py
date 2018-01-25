@@ -7,7 +7,7 @@ from django.contrib.auth import logout
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
-from easyrequest_hay_app.lib import info_view_helper
+from easyrequest_hay_app.lib import info_view_helper, login_view_helper
 from easyrequest_hay_app.lib.aeon import AeonUrlBuilder
 from easyrequest_hay_app.lib.millennium import Millennium
 from easyrequest_hay_app.lib.session import SessionHelper
@@ -19,7 +19,6 @@ from easyrequest_hay_app.models import ItemRequest
 
 log = logging.getLogger(__name__)
 
-aeon_url_bldr = AeonUrlBuilder()
 millennium = Millennium()
 sess = SessionHelper()
 shib_view_helper = ShibViewHelper()
@@ -71,13 +70,13 @@ def time_period_handler( request ):
         If `soon=no`, builds Aeon url and redirects.
         Otherwise submits request to millennium, builds Aeon url and redirects. """
     log.debug( 'request.__dict__, ```%s```' % request.__dict__ )
+    aeon_url_bldr = AeonUrlBuilder()
     item_request = get_object_or_404( ItemRequest, short_url_segment=request.GET.get('shortlink', 'foo') )
     soon_value = request.GET.get( 'soon', '' ).lower()
     if soon_value == 'yes':
         resp = tm_prd_hndler_helper.build_soon_response( request.GET['shortlink'] )
     elif soon_value == 'no':
-        aeon_url = aeon_url_bldr.build_aeon_url( item_request.short_url_segment )
-        resp = HttpResponseRedirect( aeon_url )
+        resp = HttpResponseRedirect( aeon_url_bldr.build_aeon_url(item_request.short_url_segment) )
     else:
         resp = HttpResponseRedirect( '%s?message=no time-period information found' % reverse('problem_url') )
     return resp
@@ -89,13 +88,7 @@ def login( request ):
     log.debug( 'request.__dict__, ```%s```' % request.__dict__ )
     item_request = get_object_or_404( ItemRequest, short_url_segment=request.GET.get('shortlink', 'foo') )
     item_callnumber = json.loads(item_request.full_url_params).get( 'item_callnumber', None )
-    context = {
-        'item_title': item_request.item_title,
-        'item_callnumber': item_callnumber,
-        'shortlink': request.GET['shortlink'],
-        'shib_login_url': reverse('shib_login_url'),
-        'barcode_login_url': reverse('barcode_login_url'),
-    }
+    context = login_view_helper.build_login_context( item_request, request.GET['shortlink'], item_callnumber )
     log.debug( 'context, ```%s```' % pprint.pformat(context) )
     resp = render( request, 'easyrequest_hay_app_templates/login.html', context )
     return resp
@@ -130,6 +123,7 @@ def processor( request ):
         - Triggers shib_logout() view.
         Triggered after a successful shib_login (along with patron-api lookup) """
     log.debug( 'starting processor(); request.__dict__, ```%s```' % request.__dict__ )
+    aeon_url_bldr = AeonUrlBuilder()
     shortlink = request.GET['shortlink']
     item_id = millennium.get_item_id( shortlink )
     err = millennium.place_hold( item_id )
