@@ -1,5 +1,5 @@
 beautifulsoup4==4.6.0
-Django==1.11.9
+Django==1.11.10
 git+https://github.com/birkin/shellvars-py.git
 #git+https://github.com/Brown-University-Library/django-bulstyle.git
 PyMySQL==0.7.11
