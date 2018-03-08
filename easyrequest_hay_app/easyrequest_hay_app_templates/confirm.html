@@ -1,0 +1,123 @@
+{% extends "easyrequest_hay_app_templates/base.html" %}
+
+
+{% block page_title %}
+easyrequest-hay time-period
+{% endblock page_title %}
+
+
+{% block extra_css %}
+<style type="text/css">
+    div#info_text {
+        margin-top: 2em;
+    }
+    form {
+        margin-top: 1.25em;
+    }
+    input#shib {
+        margin-right: 2em;
+    }
+    input#nonshib {
+        margin-right: 2em;
+    }
+    /* item info... */
+    div#item {
+      margin: 0;
+      padding: 0;
+      padding-bottom: 1.25em;
+    }
+    div#item label {
+      margin: 0;
+      padding: 0;
+      display: block;
+      font-size: 100%;
+      padding-right: .75em;
+      width: 10em;
+      text-align: right;
+      float: left;
+    }
+    div#item p#actual_title {
+      margin: 0;
+      padding: 0;
+      display: block;
+      font-size: 100%;
+      font-weight: bold;
+    }
+    /* END -- item info... */
+    div#reminder {
+        margin-top: 3em;
+        margin-bottom: 4em;
+        padding-right: 8em;
+    }
+    div#reminder h3#longline {
+        line-height: 150%;
+    }
+    h3 {
+        color: maroon;
+    }
+    div#shib {
+        float: left;
+    }
+    div#shib input {
+        width: 15em;
+    }
+    div#nonshib {
+        float: left;
+    }
+    div#nonshib input {
+        width: 15em;
+    }
+    div#cancel {
+        float: left;
+    }
+    div#cancel input {
+        width: 15em;
+    }
+    div#clear {
+        margin: 0;
+        padding: 0;
+        clear: both;
+    }
+</style>
+{% endblock extra_css %}
+
+
+{% block content %}
+
+<h1>easyrequest-hay &mdash; confirm &amp; login</h1>
+
+<div id="info_text">
+
+    <p>You&rsquo;ve requested the item:</p>
+    <div id="item">
+        <label for="name">Title:</label>
+        <p id="actual_title">{{ item_title }}</p>
+        {% if item_callnumber %}
+        <label for="name">Call Number:</label>
+        <p id="actual_title">{{ item_callnumber }}</p>
+        {% endif %}
+    </div>
+
+    <div id="reminder">
+        <h3>Reminder...</h3>
+        <h3 id="longline">This special collections item may _only_ be used within a specific room of the John Hay Library, in the John Hay Special Collections Reading Room.</h3>
+    </div>
+
+    <form action="{{ action_url }}" method="GET">
+        <input type="hidden" name="shortlink" value="{{ shortlink }}">
+        <div id="shib">
+            <input id="shib" type="submit" value="Brown Shibboleth Login" name="type">
+        </div>
+        <div id="nonshib">
+            <input id="nonshib" type="submit" value="Non-Brown Login" name="type">
+        </div>
+        <div id="cancel">
+            <input type="submit" value="Cancel; return to Josiah" name="type">
+        </div>
+    </form>
+
+    <div id="clear"></div>
+
+</div>  <!-- end <div id="info_text"> -->
+
+{% endblock content %}
