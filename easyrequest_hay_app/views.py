@@ -9,6 +9,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from easyrequest_hay_app.lib import info_view_helper, login_view_helper
 from easyrequest_hay_app.lib.aeon import AeonUrlBuilder
+from easyrequest_hay_app.lib.confirm_helper import ConfirmHelper, ConfirmHandlerHelper
 from easyrequest_hay_app.lib.millennium import Millennium
 from easyrequest_hay_app.lib.session import SessionHelper
 from easyrequest_hay_app.lib.shib_view_helper import ShibViewHelper
@@ -19,6 +20,8 @@ from easyrequest_hay_app.models import ItemRequest
 
 log = logging.getLogger(__name__)
 
+cnfrm_helper = ConfirmHelper()
+cnfrm_hndlr_helper = ConfirmHandlerHelper()
 millennium = Millennium()
 sess = SessionHelper()
 shib_view_helper = ShibViewHelper()
@@ -92,8 +95,8 @@ def confirm( request ):
         resp = validator.prepare_badrequest_response( request )
     else:
         sess.initialize_session( request )
-        shortlink = tm_prd_helper.save_data( json.dumps(request.GET, sort_keys=True, indent=2) )
-        context = tm_prd_helper.prepare_context( request.GET, shortlink )
+        shortlink = cnfrm_helper.save_data( json.dumps(request.GET, sort_keys=True, indent=2) )
+        context = cnfrm_helper.prepare_context( request.GET, shortlink )
         resp = render( request, 'easyrequest_hay_app_templates/confirm.html', context )
     return resp
 
@@ -102,6 +105,7 @@ def confirm_handler( request ):
     """ Handler for confirm `shib=yes/no` selection.
         If `shib=no`, builds Aeon url and redirects.
         Otherwise submits request to millennium, builds Aeon url and redirects. """
+    return HttpResponse( '<p>not-yet-implemented</p>' )
     log.debug( 'request.__dict__, ```%s```' % request.__dict__ )
     aeon_url_bldr = AeonUrlBuilder()
     item_request = get_object_or_404( ItemRequest, short_url_segment=request.GET.get('shortlink', 'foo') )
