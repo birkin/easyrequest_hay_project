@@ -52,6 +52,48 @@ def info( request ):
     return resp
 
 
+def confirm( request ):
+    """ Triggered by user clicking on an Annex-Hay Josiah `request-access` link.
+        Stores referring url, bib, and item-barcode in session.
+        Presents shib and non-shib proceed buttons. """
+    log.debug( 'starting confirm view' )
+    log.debug( 'request.__dict__, ```%s```' % request.__dict__ )
+    if not validator.validate_source(request) and validator.validate_params(request):
+        resp = validator.prepare_badrequest_response( request )
+    else:
+        sess.initialize_session( request )
+        shortlink = cnfrm_helper.save_data( json.dumps(request.GET, sort_keys=True, indent=2) )
+        context = cnfrm_helper.prepare_context( request.GET, shortlink )
+        resp = render( request, 'easyrequest_hay_app_templates/confirm.html', context )
+    return resp
+
+
+def confirm_handler( request ):
+    """ Handler for confirm `shib=yes/no` selection.
+        If `shib=no`, builds Aeon url and redirects.
+        Otherwise submits request to millennium, builds Aeon url and redirects. """
+    type_value = request.GET.get( 'type', '' ).lower()
+    log.debug( 'type_value, `%s`' % type_value )
+    if type_value == 'brown shibboleth login':
+        message = '<p>not-yet-implemented &mdash; this will display the shib login, then land at Aeon (and behind-the-scenes _will_ have placed the annex-request in millennium).</p>'
+    elif type_value == 'non-brown login':
+        message = '<p>not-yet-implemented &mdash; this will land the user at Aeon (_not_ having placed the annex-request in millennium).</p>'
+    else:
+        message = '<p>not-yet-implemented &mdash; this will the patron to the page from whence she came.</p>'
+    return HttpResponse( message )
+    # log.debug( 'request.__dict__, ```%s```' % request.__dict__ )
+    # aeon_url_bldr = AeonUrlBuilder()
+    # item_request = get_object_or_404( ItemRequest, short_url_segment=request.GET.get('shortlink', 'foo') )
+    # soon_value = request.GET.get( 'soon', '' ).lower()
+    # if soon_value == 'yes':
+    #     resp = tm_prd_hndler_helper.build_soon_response( request.GET['shortlink'] )
+    # elif soon_value == 'no':
+    #     resp = HttpResponseRedirect( aeon_url_bldr.build_aeon_url(item_request.short_url_segment) )
+    # else:
+    #     resp = HttpResponseRedirect( '%s?message=no time-period information found' % reverse('problem_url') )
+    # return resp
+
+
 def time_period( request ):
     """ Triggered by user clicking on an Annex-Hay Josiah `request-access` link.
         Stores referring url, bib, and item-barcode in session.
@@ -84,39 +126,6 @@ def time_period_handler( request ):
         resp = HttpResponseRedirect( '%s?message=no time-period information found' % reverse('problem_url') )
     return resp
 
-
-def confirm( request ):
-    """ Triggered by user clicking on an Annex-Hay Josiah `request-access` link.
-        Stores referring url, bib, and item-barcode in session.
-        Presents shib and non-shib proceed buttons. """
-    log.debug( 'starting confirm view' )
-    log.debug( 'request.__dict__, ```%s```' % request.__dict__ )
-    if not validator.validate_source(request) and validator.validate_params(request):
-        resp = validator.prepare_badrequest_response( request )
-    else:
-        sess.initialize_session( request )
-        shortlink = cnfrm_helper.save_data( json.dumps(request.GET, sort_keys=True, indent=2) )
-        context = cnfrm_helper.prepare_context( request.GET, shortlink )
-        resp = render( request, 'easyrequest_hay_app_templates/confirm.html', context )
-    return resp
-
-
-def confirm_handler( request ):
-    """ Handler for confirm `shib=yes/no` selection.
-        If `shib=no`, builds Aeon url and redirects.
-        Otherwise submits request to millennium, builds Aeon url and redirects. """
-    return HttpResponse( '<p>not-yet-implemented</p>' )
-    log.debug( 'request.__dict__, ```%s```' % request.__dict__ )
-    aeon_url_bldr = AeonUrlBuilder()
-    item_request = get_object_or_404( ItemRequest, short_url_segment=request.GET.get('shortlink', 'foo') )
-    soon_value = request.GET.get( 'soon', '' ).lower()
-    if soon_value == 'yes':
-        resp = tm_prd_hndler_helper.build_soon_response( request.GET['shortlink'] )
-    elif soon_value == 'no':
-        resp = HttpResponseRedirect( aeon_url_bldr.build_aeon_url(item_request.short_url_segment) )
-    else:
-        resp = HttpResponseRedirect( '%s?message=no time-period information found' % reverse('problem_url') )
-    return resp
 
 def login( request ):
     """ Displays millennium shib and non-shib logins.
