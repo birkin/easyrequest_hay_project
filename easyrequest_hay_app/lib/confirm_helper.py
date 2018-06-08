@@ -82,11 +82,19 @@ class ConfirmHandlerHelper( object ):
         """ Holds env-vars. """
         pass
 
-    def build_soon_response( self, shortlink ):
-        """ Builds redirect response to login for millennium submission. """
-        redirect_url = '%s?shortlink=%s' % ( reverse('login_url'), shortlink )
-        log.debug( 'redirect_url, ```%s```' % redirect_url )
-        resp = HttpResponseRedirect( redirect_url )
-        return resp
+    def prep_shib_login_url( self, request ):
+        """ Prepares shib-login response.
+            Called by views.confirm_handler() """
+        log.debug( 'here' )
+        shortlink = request.GET.get( 'shortlink', '' )
+        log.debug( 'shortlink, `%s`' % shortlink )
+        return 'foo'
+
+    # def build_soon_response( self, shortlink ):
+    #     """ Builds redirect response to login for millennium submission. """
+    #     redirect_url = '%s?shortlink=%s' % ( reverse('login_url'), shortlink )
+    #     log.debug( 'redirect_url, ```%s```' % redirect_url )
+    #     resp = HttpResponseRedirect( redirect_url )
+    #     return resp
 
     ## end class TimePeriodHandlerHelper
