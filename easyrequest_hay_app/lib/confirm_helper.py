@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
 import datetime, json, logging, os, pprint, urllib
-from django.http import HttpResponseBadRequest, HttpResponseRedirect
-from django.template import loader
 from django.core.urlresolvers import reverse
+from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseRedirect
+from django.shortcuts import render
+from django.template import loader
 from easyrequest_hay_app.models import ItemRequest
 
 
@@ -39,14 +40,14 @@ class ConfirmHelper( object ):
             'item_title': original_params['item_title'],
             'item_callnumber': item_callnumber,
             'action_url': reverse( 'confirm_handler_url' ),
-            'shortlink': shortlink
+            'shortlink': shortlink,
         }
         log.debug( 'context, ```%s```' % pprint.pformat(context) )
         return context
 
     def epoch_micro_to_str( self, n=None, base=None ):
         """ Returns string for shortlink based on the number of microseconds since the epoch.
-            Not currently called.
+            Called by save_data()
             Based on code from <http://interactivepython.org/runestone/static/pythonds/Recursion/pythondsConvertinganIntegertoaStringinAnyBase.html> """
         if n is None:
             epoch_datetime = datetime.datetime( 1970, 1, 1, tzinfo=datetime.timezone.utc )
@@ -58,6 +59,18 @@ class ConfirmHelper( object ):
             return convert_string[n]
         else:
             return self.epoch_micro_to_str( n//base, base ) + convert_string[n%base]  # the `//` is a math.floor() function
+
+    def prepare_response( self, request, context ):
+        """ Prepares json or html response.
+            Called by views.confirm() """
+        if request.GET.get('output', '') == 'json':
+            output = json.dumps( context, sort_keys=True, indent=2 )
+            resp = HttpResponse( output, content_type=u'application/javascript; charset=utf-8' )
+        else:
+            resp = render( request, 'easyrequest_hay_app_templates/confirm.html', context )
+        log.debug( 'type(resp), `%s`' % type(resp) )
+        return resp
+
 
     ## end class TimePeriodHelper
 
