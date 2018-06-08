@@ -21,9 +21,9 @@ urlpatterns = [
 
     url( r'^confirm_handler/$', views.confirm_handler, name='confirm_handler_url' ),
 
-    url( r'^time_period/$', views.time_period, name='time_period_url' ),
+    # url( r'^time_period/$', views.time_period, name='time_period_url' ),
 
-    url( r'^time_period_handler/$', views.time_period_handler, name='time_period_handler_url' ),
+    # url( r'^time_period_handler/$', views.time_period_handler, name='time_period_handler_url' ),
 
     url( r'^problem/$', views.problem, name='problem_url' ),
 
