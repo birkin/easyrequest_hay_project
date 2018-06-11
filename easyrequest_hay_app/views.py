@@ -12,7 +12,7 @@ from easyrequest_hay_app.lib.aeon import AeonUrlBuilder
 from easyrequest_hay_app.lib.confirm_helper import ConfirmHelper, ConfirmHandlerHelper
 from easyrequest_hay_app.lib.millennium import Millennium
 from easyrequest_hay_app.lib.session import SessionHelper
-from easyrequest_hay_app.lib.shib_view_helper import ShibViewHelper
+from easyrequest_hay_app.lib.shib_helper import ShibViewHelper
 from easyrequest_hay_app.lib.time_period_helper import TimePeriodHelper, TimePeriodHandlerHelper
 from easyrequest_hay_app.lib.validator import Validator
 from easyrequest_hay_app.models import ItemRequest
@@ -75,7 +75,7 @@ def confirm_handler( request ):
     log.debug( 'type_value, `%s`' % type_value )
     if type_value == 'brown shibboleth login':
         message = '<p>not-yet-implemented &mdash; this will display the shib login, then land at Aeon (and behind-the-scenes _will_ have placed the annex-request in millennium).</p>'
-        resp = cnfrm_hndlr_helper.prep_shib_login_url( request )
+        resp = cnfrm_hndlr_helper.prep_shib_login_stepA( request )
     elif type_value == 'non-brown login':
         message = '<p>not-yet-implemented &mdash; this will land the user at Aeon (_not_ having placed the annex-request in millennium).</p>'
     else:
