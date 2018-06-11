@@ -27,11 +27,11 @@ urlpatterns = [
 
     url( r'^problem/$', views.problem, name='problem_url' ),
 
-    url( r'^login/$', views.login, name='login_url' ),
+    # url( r'^login/$', views.login, name='login_url' ),
 
     url( r'^shib_login/$', views.shib_login, name='shib_login_url' ),
 
-    url( r'^barcode_login/$', views.barcode_login, name='barcode_login_url' ),
+    # url( r'^barcode_login/$', views.barcode_login, name='barcode_login_url' ),
 
     url( r'^processor/$', views.processor, name='processor_url' ),
 
