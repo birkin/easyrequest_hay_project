@@ -31,7 +31,7 @@ class ShibLoginHelper( object ):
             - b) hit sp login url w/redirect to processor-view """
         django_logout( request )
         log.debug( 'django-logout executed' )
-        shortlink = request.GET.get( 'shortlink', '' )
+        shortlink = request.GET['shortlink']
         log.debug( 'shortlink, `%s`' % shortlink )
         if '127.0.0.1' in request.get_host() and project_settings.DEBUG == True:
             login_a_url = '%s?shortlink=%s' % ( reverse('shib_login_url'), shortlink )

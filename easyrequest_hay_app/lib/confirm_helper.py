@@ -22,7 +22,7 @@ class ConfirmHelper( object ):
 
     def save_data( self, jsonified_querydct ):
         """ Saves data.
-            Called by views.time_period() """
+            Called by views.confirm() """
         log.debug( 'jsonified_querydct, ```%s```' % jsonified_querydct )
         dct = json.loads( jsonified_querydct )
         log.debug( 'dct, ```%s```' % pprint.pformat(dct) )
@@ -35,7 +35,7 @@ class ConfirmHelper( object ):
 
     def prepare_context( self, original_params, shortlink ):
         """ Prepares vars for template.
-            Called by views.time_period() """
+            Called by views.confirm() """
         item_request = ItemRequest.objects.get( short_url_segment=shortlink )
         item_callnumber = json.loads(item_request.full_url_params).get( 'item_callnumber', None )
         context = {
@@ -89,5 +89,15 @@ class ConfirmHandlerHelper( object ):
             Called by views.confirm_handler() """
         login_a_url = shib_login_helper.prep_login_url_stepA( request )
         return login_a_url
+
+    def get_referring_url( self, request ):
+        """ Returns referring url.
+            Called by views.confirm_handler() """
+        shortlink = request.GET['shortlink']
+        item_request = ItemRequest.objects.get( short_url_segment=shortlink )
+        item_dct = json.loads( item_request.full_url_params )
+        referring_url = item_dct['referring_url']
+        log.debug( 'referring_url ```%s```' % referring_url )
+        return referring_url
 
     ## end class TimePeriodHandlerHelper

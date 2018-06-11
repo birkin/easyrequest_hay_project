@@ -74,16 +74,58 @@ def confirm_handler( request ):
     type_value = request.GET.get( 'type', '' ).lower()
     log.debug( 'type_value, `%s`' % type_value )
     if type_value == 'brown shibboleth login':
-        message = '<p>not-yet-implemented &mdash; this will display the shib login, then land at Aeon (and behind-the-scenes _will_ have placed the annex-request in millennium).</p>'
         login_a_url = cnfrm_hndlr_helper.prep_shib_login_stepA( request )
         resp = HttpResponseRedirect( login_a_url )
     elif type_value == 'non-brown login':
         message = '<p>not-yet-implemented &mdash; this will land the user at Aeon (_not_ having placed the annex-request in millennium).</p>'
         resp = HttpResponse( message )
     else:
-        message = '<p>not-yet-implemented &mdash; this will the patron to the page from whence she came.</p>'
-        resp = HttpResponse( message )
+        referring_url = cnfrm_hndlr_helper.get_referring_url( request )
+        log.debug( 'referring_url, ```%s```' % referring_url )
+        resp = HttpResponseRedirect( referring_url )
+        # message = '<p>not-yet-implemented &mdash; this will the patron to the page from whence she came.</p>'
+        # resp = HttpResponse( message )
     return resp
+
+
+def shib_login( request ):
+    """ Examines shib headers.
+        Redirects user to non-seen processor() view. """
+    log.debug( 'starting shib_login(); request.__dict__, ```%s```' % request.__dict__ )
+    ( validity, shib_dict ) = shib_view_helper.check_shib_headers( request )
+    if validity is False:  # TODO: implement this
+        resp = shib_view_helper.prep_login_redirect( request )
+    else:
+        resp = shib_view_helper.build_processor_response( request.GET['shortlink'], shib_dict )
+    log.debug( 'about to return shib response' )
+    return resp
+
+
+def processor( request ):
+    """ Handles item request:,
+        - Ensures user is authenticated.
+        - Gets item-id.
+        - Places hold.
+        - Emails patron.
+        - Triggers shib_logout() view.
+        Triggered after a successful shib_login (along with patron-api lookup) """
+    log.debug( 'starting processor(); request.__dict__, ```%s```' % request.__dict__ )
+    aeon_url_bldr = AeonUrlBuilder()
+    shortlink = request.GET['shortlink']
+    log.debug( 'shortlink, `%s`' % shortlink )
+    item_id = millennium.get_item_id( shortlink )
+    1/0
+    # err = millennium.place_hold( item_id )
+    # err = emailer.send_email( shortlink )
+    aeon_url_bldr.make_millennium_note( item_id )
+    aeon_url = aeon_url_bldr.build_aeon_url( shortlink )
+    return HttpResponseRedirect( aeon_url )
+
+
+def problem( request ):
+    return HttpResponse( 'problem handler coming -- message, ```%s```' % request.GET.get('message', 'no_message') )
+
+
     # log.debug( 'request.__dict__, ```%s```' % request.__dict__ )
     # aeon_url_bldr = AeonUrlBuilder()
     # item_request = get_object_or_404( ItemRequest, short_url_segment=request.GET.get('shortlink', 'foo') )
@@ -168,46 +210,8 @@ def confirm_handler( request ):
 #     return resp
 
 
-def shib_login( request ):
-    """ Examines shib headers.
-        Redirects user to non-seen processor() view. """
-    log.debug( 'starting shib_login(); request.__dict__, ```%s```' % request.__dict__ )
-    ( validity, shib_dict ) = shib_view_helper.check_shib_headers( request )
-    if validity is False:  # TODO: implement this
-        resp = shib_view_helper.prep_login_redirect( request )
-    else:
-        resp = shib_view_helper.build_processor_response( request.GET['shortlink'], shib_dict )
-    log.debug( 'about to return shib response' )
-    return resp
-
-
 # def barcode_login( request ):
 #     """ Examines submitted info.
 #         Happy path: redirects user to non-seen process() view. """
 #     log.debug( 'starting barcode_login(); request.__dict__, ```%s```' % request.__dict__ )
 #     return HttpResponse( 'barcode_login response coming, params perceived, ```<pre>%s</pre>```' % json.dumps(request.POST, sort_keys=True, indent=2) )
-
-
-def processor( request ):
-    """ Handles item request:,
-        - Ensures user is authenticated.
-        - Gets item-id.
-        - Places hold.
-        - Emails patron.
-        - Triggers shib_logout() view.
-        Triggered after a successful shib_login (along with patron-api lookup) """
-    log.debug( 'starting processor(); request.__dict__, ```%s```' % request.__dict__ )
-    aeon_url_bldr = AeonUrlBuilder()
-    shortlink = request.GET['shortlink']
-    log.debug( 'shortlink, `%s`' % shortlink )
-    item_id = millennium.get_item_id( shortlink )
-    1/0
-    # err = millennium.place_hold( item_id )
-    # err = emailer.send_email( shortlink )
-    aeon_url_bldr.make_millennium_note( item_id )
-    aeon_url = aeon_url_bldr.build_aeon_url( shortlink )
-    return HttpResponseRedirect( aeon_url )
-
-
-def problem( request ):
-    return HttpResponse( 'problem handler coming -- message, ```%s```' % request.GET.get('message', 'no_message') )
