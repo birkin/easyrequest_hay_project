@@ -87,9 +87,7 @@ class ConfirmHandlerHelper( object ):
     def prep_shib_login_stepA( self, request ):
         """ Prepares shib-login response.
             Called by views.confirm_handler() """
-        log.debug( 'here' )
-
         login_a_url = shib_login_helper.prep_login_url_stepA( request )
-        return 'foo'
+        return login_a_url
 
     ## end class TimePeriodHandlerHelper
