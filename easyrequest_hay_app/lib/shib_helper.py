@@ -2,6 +2,7 @@
 
 import json, logging, os, pprint
 from django.conf import settings as project_settings
+from django.contrib.auth import logout as django_logout
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect
 from easyrequest_hay_app import settings_app
@@ -13,6 +14,32 @@ from easyrequest_hay_app.models import ItemRequest
 log = logging.getLogger(__name__)
 
 papi_helper = PatronApiHelper()
+
+
+class ShibLoginHelper( object ):
+    """ Contains shib helpers.
+        Called by lib.confirm_helper.ConfirmHandlerHelper() """
+
+    def __init__( self ):
+        self.foo = 'bar'
+
+    def prep_login_url_stepA( self, request ):
+        """ Preps logout url with appropriate redirect.
+            Steps for login:
+            - a) execute django-logout and hit idp logout url (this function)
+            - b) hit sp login url w/redirect to processor-view """
+        django_logout( request )
+        log.debug( 'django-logout executed' )
+        shortlink = request.GET.get( 'shortlink', '' )
+        log.debug( 'shortlink, `%s`' % shortlink )
+        if '127.0.0.1' in request.get_host() and project_settings.DEBUG == True:
+            login_a_url = '%s?shortlink=%s' % ( reverse('processor_url'), shortlink )
+        else:
+            login_a_url = '%s?shortlink=%s&target=%s' % ( self.IDP_LOGOUT_URL, shortlink, reverse('logout_handler_url') )
+        log.debug( 'login_a_url, ```%s```' % login_a_url )
+        return login_a_url
+
+    ## end class ShibLoginHelper()
 
 
 class ShibViewHelper( object ):
