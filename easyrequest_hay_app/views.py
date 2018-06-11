@@ -33,7 +33,7 @@ validator = Validator()
 def bul_search( request ):
     """ Triggered by user entering search term into banner-search-field.
         Redirects query to search.library.brown.edu """
-    log.debug( 'request.__dict__, ```%s```' % pprint.pformat(request.__dict__) )
+    log.debug( 'request.__dict__, ```%s```' % request.__dict__ )
     redirect_url = 'https://search.library.brown.edu?%s' % request.META['QUERY_STRING']
     return HttpResponseRedirect( redirect_url )
 
@@ -70,17 +70,20 @@ def confirm_handler( request ):
     """ Handler for confirm `shib=yes/no` selection.
         If `shib=no`, builds Aeon url and redirects.
         Otherwise submits request to millennium, builds Aeon url and redirects. """
-    log.debug( 'request.__dict__, ```%s```' % pprint.pformat(request.__dict__) )
+    log.debug( 'request.__dict__, ```%s```' % request.__dict__ )
     type_value = request.GET.get( 'type', '' ).lower()
     log.debug( 'type_value, `%s`' % type_value )
     if type_value == 'brown shibboleth login':
         message = '<p>not-yet-implemented &mdash; this will display the shib login, then land at Aeon (and behind-the-scenes _will_ have placed the annex-request in millennium).</p>'
-        resp = cnfrm_hndlr_helper.prep_shib_login_stepA( request )
+        login_a_url = cnfrm_hndlr_helper.prep_shib_login_stepA( request )
+        resp = HttpResponseRedirect( login_a_url )
     elif type_value == 'non-brown login':
         message = '<p>not-yet-implemented &mdash; this will land the user at Aeon (_not_ having placed the annex-request in millennium).</p>'
+        resp = HttpResponse( message )
     else:
         message = '<p>not-yet-implemented &mdash; this will the patron to the page from whence she came.</p>'
-    return HttpResponse( message )
+        resp = HttpResponse( message )
+    return resp
     # log.debug( 'request.__dict__, ```%s```' % request.__dict__ )
     # aeon_url_bldr = AeonUrlBuilder()
     # item_request = get_object_or_404( ItemRequest, short_url_segment=request.GET.get('shortlink', 'foo') )
@@ -120,49 +123,49 @@ def confirm_handler( request ):
 #     # return resp
 
 
-def time_period( request ):
-    """ Triggered by user clicking on an Annex-Hay Josiah `request-access` link.
-        Stores referring url, bib, and item-barcode in session.
-        Presents time-period option. """
-    log.debug( 'starting time_period view' )
-    log.debug( 'request.__dict__, ```%s```' % request.__dict__ )
-    if not validator.validate_source(request) and validator.validate_params(request):
-        resp = validator.prepare_badrequest_response( request )
-    else:
-        sess.initialize_session( request )
-        shortlink = tm_prd_helper.save_data( json.dumps(request.GET, sort_keys=True, indent=2) )
-        context = tm_prd_helper.prepare_context( request.GET, shortlink )
-        resp = render( request, 'easyrequest_hay_app_templates/time_period.html', context )
-    return resp
+# def time_period( request ):
+#     """ Triggered by user clicking on an Annex-Hay Josiah `request-access` link.
+#         Stores referring url, bib, and item-barcode in session.
+#         Presents time-period option. """
+#     log.debug( 'starting time_period view' )
+#     log.debug( 'request.__dict__, ```%s```' % request.__dict__ )
+#     if not validator.validate_source(request) and validator.validate_params(request):
+#         resp = validator.prepare_badrequest_response( request )
+#     else:
+#         sess.initialize_session( request )
+#         shortlink = tm_prd_helper.save_data( json.dumps(request.GET, sort_keys=True, indent=2) )
+#         context = tm_prd_helper.prepare_context( request.GET, shortlink )
+#         resp = render( request, 'easyrequest_hay_app_templates/time_period.html', context )
+#     return resp
 
 
-def time_period_handler( request ):
-    """ Handler for time_period `soon=yes/no` selection.
-        If `soon=no`, builds Aeon url and redirects.
-        Otherwise submits request to millennium, builds Aeon url and redirects. """
-    log.debug( 'request.__dict__, ```%s```' % request.__dict__ )
-    aeon_url_bldr = AeonUrlBuilder()
-    item_request = get_object_or_404( ItemRequest, short_url_segment=request.GET.get('shortlink', 'foo') )
-    soon_value = request.GET.get( 'soon', '' ).lower()
-    if soon_value == 'yes':
-        resp = tm_prd_hndler_helper.build_soon_response( request.GET['shortlink'] )
-    elif soon_value == 'no':
-        resp = HttpResponseRedirect( aeon_url_bldr.build_aeon_url(item_request.short_url_segment) )
-    else:
-        resp = HttpResponseRedirect( '%s?message=no time-period information found' % reverse('problem_url') )
-    return resp
+# def time_period_handler( request ):
+#     """ Handler for time_period `soon=yes/no` selection.
+#         If `soon=no`, builds Aeon url and redirects.
+#         Otherwise submits request to millennium, builds Aeon url and redirects. """
+#     log.debug( 'request.__dict__, ```%s```' % request.__dict__ )
+#     aeon_url_bldr = AeonUrlBuilder()
+#     item_request = get_object_or_404( ItemRequest, short_url_segment=request.GET.get('shortlink', 'foo') )
+#     soon_value = request.GET.get( 'soon', '' ).lower()
+#     if soon_value == 'yes':
+#         resp = tm_prd_hndler_helper.build_soon_response( request.GET['shortlink'] )
+#     elif soon_value == 'no':
+#         resp = HttpResponseRedirect( aeon_url_bldr.build_aeon_url(item_request.short_url_segment) )
+#     else:
+#         resp = HttpResponseRedirect( '%s?message=no time-period information found' % reverse('problem_url') )
+#     return resp
 
 
-def login( request ):
-    """ Displays millennium shib and non-shib logins.
-        Triggered by time_period_hander() """
-    log.debug( 'request.__dict__, ```%s```' % request.__dict__ )
-    item_request = get_object_or_404( ItemRequest, short_url_segment=request.GET.get('shortlink', 'foo') )
-    item_callnumber = json.loads(item_request.full_url_params).get( 'item_callnumber', None )
-    context = login_view_helper.build_login_context( item_request, request.GET['shortlink'], item_callnumber )
-    log.debug( 'context, ```%s```' % pprint.pformat(context) )
-    resp = render( request, 'easyrequest_hay_app_templates/login.html', context )
-    return resp
+# def login( request ):
+#     """ Displays millennium shib and non-shib logins.
+#         Triggered by time_period_hander() """
+#     log.debug( 'request.__dict__, ```%s```' % request.__dict__ )
+#     item_request = get_object_or_404( ItemRequest, short_url_segment=request.GET.get('shortlink', 'foo') )
+#     item_callnumber = json.loads(item_request.full_url_params).get( 'item_callnumber', None )
+#     context = login_view_helper.build_login_context( item_request, request.GET['shortlink'], item_callnumber )
+#     log.debug( 'context, ```%s```' % pprint.pformat(context) )
+#     resp = render( request, 'easyrequest_hay_app_templates/login.html', context )
+#     return resp
 
 
 def shib_login( request ):
@@ -178,11 +181,11 @@ def shib_login( request ):
     return resp
 
 
-def barcode_login( request ):
-    """ Examines submitted info.
-        Happy path: redirects user to non-seen process() view. """
-    log.debug( 'starting barcode_login(); request.__dict__, ```%s```' % request.__dict__ )
-    return HttpResponse( 'barcode_login response coming, params perceived, ```<pre>%s</pre>```' % json.dumps(request.POST, sort_keys=True, indent=2) )
+# def barcode_login( request ):
+#     """ Examines submitted info.
+#         Happy path: redirects user to non-seen process() view. """
+#     log.debug( 'starting barcode_login(); request.__dict__, ```%s```' % request.__dict__ )
+#     return HttpResponse( 'barcode_login response coming, params perceived, ```<pre>%s</pre>```' % json.dumps(request.POST, sort_keys=True, indent=2) )
 
 
 def processor( request ):
@@ -196,8 +199,10 @@ def processor( request ):
     log.debug( 'starting processor(); request.__dict__, ```%s```' % request.__dict__ )
     aeon_url_bldr = AeonUrlBuilder()
     shortlink = request.GET['shortlink']
+    log.debug( 'shortlink, `%s`' % shortlink )
     item_id = millennium.get_item_id( shortlink )
-    err = millennium.place_hold( item_id )
+    1/0
+    # err = millennium.place_hold( item_id )
     # err = emailer.send_email( shortlink )
     aeon_url_bldr.make_millennium_note( item_id )
     aeon_url = aeon_url_bldr.build_aeon_url( shortlink )
