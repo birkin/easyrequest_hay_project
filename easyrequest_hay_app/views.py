@@ -70,21 +70,16 @@ def confirm_handler( request ):
     """ Handler for confirm `shib=yes/no` selection.
         If `shib=no`, builds Aeon url and redirects.
         Otherwise submits request to millennium, builds Aeon url and redirects. """
-    log.debug( 'request.__dict__, ```%s```' % request.__dict__ )
     type_value = request.GET.get( 'type', '' ).lower()
     log.debug( 'type_value, `%s`' % type_value )
     if type_value == 'brown shibboleth login':
-        login_a_url = cnfrm_hndlr_helper.prep_shib_login_stepA( request )
-        resp = HttpResponseRedirect( login_a_url )
+        resp = HttpResponseRedirect( cnfrm_hndlr_helper.prep_shib_login_stepA(request) )
     elif type_value == 'non-brown login':
-        message = '<p>not-yet-implemented &mdash; this will land the user at Aeon (_not_ having placed the annex-request in millennium).</p>'
-        resp = HttpResponse( message )
-    else:
-        referring_url = cnfrm_hndlr_helper.get_referring_url( request )
-        log.debug( 'referring_url, ```%s```' % referring_url )
-        resp = HttpResponseRedirect( referring_url )
-        # message = '<p>not-yet-implemented &mdash; this will the patron to the page from whence she came.</p>'
+        # message = '<p>not-yet-implemented &mdash; this will land the user at Aeon (_not_ having placed the annex-request in millennium).</p>'
         # resp = HttpResponse( message )
+        resp = HttpResponseRedirect( cnfrm_hndlr_helper.make_aeon_url(request) )
+    else:
+        resp = HttpResponseRedirect( cnfrm_hndlr_helper.get_referring_url(request) )
     return resp
 
 
@@ -120,7 +115,6 @@ def processor( request ):
     aeon_url_bldr.make_millennium_note( item_id )
     aeon_url = aeon_url_bldr.build_aeon_url( shortlink )
     return HttpResponseRedirect( aeon_url )
-
 
 def problem( request ):
     return HttpResponse( 'problem handler coming -- message, ```%s```' % request.GET.get('message', 'no_message') )

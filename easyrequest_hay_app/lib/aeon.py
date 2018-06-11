@@ -18,7 +18,7 @@ class AeonUrlBuilder( object ):
             'ItemTitle': '',
             'Location': '',
             'ReferenceNumber': '',  # item_bib
-            'SpecialRequest': 'Not needed in next 2 weeks, so not auto-requested through Millennium.'  # notes for staff; default
+            'SpecialRequest': ''  # notes for staff; default
         }
 
     def make_millennium_note( self, item_id ):

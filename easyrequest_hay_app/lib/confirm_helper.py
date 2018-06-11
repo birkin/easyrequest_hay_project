@@ -5,6 +5,7 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseRedirect
 from django.shortcuts import render
 from django.template import loader
+from easyrequest_hay_app.lib.aeon import AeonUrlBuilder
 from easyrequest_hay_app.lib.shib_helper import ShibLoginHelper
 from easyrequest_hay_app.models import ItemRequest
 
@@ -85,10 +86,19 @@ class ConfirmHandlerHelper( object ):
         pass
 
     def prep_shib_login_stepA( self, request ):
-        """ Prepares shib-login response.
+        """ Prepares shib-login url.
             Called by views.confirm_handler() """
         login_a_url = shib_login_helper.prep_login_url_stepA( request )
         return login_a_url
+
+    def make_aeon_url( self, request ):
+        """ Prepares aeon url.
+            Called by views.confirm_handler() """
+        aeon_url_bldr = AeonUrlBuilder()
+        shortlink = request.GET['shortlink']
+        aeon_url = aeon_url_bldr.build_aeon_url( shortlink )
+        log.debug( 'aeon_url, ```%s```' % aeon_url )
+        return aeon_url
 
     def get_referring_url( self, request ):
         """ Returns referring url.
