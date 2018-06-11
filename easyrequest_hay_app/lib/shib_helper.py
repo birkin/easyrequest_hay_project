@@ -36,10 +36,18 @@ class ShibLoginHelper( object ):
         if '127.0.0.1' in request.get_host() and project_settings.DEBUG == True:
             login_a_url = '%s?shortlink=%s' % ( reverse('shib_login_url'), shortlink )
         else:
-            return_url = '%s://%s%s?%s' % ( request.scheme, request.get_host(), reverse('shib_login_url'), shortlink )
+            return_url = self.prep_return_url( request )
             login_a_url = '%s?&return=%s' % ( self.IDP_LOGOUT_URL, django_urlquote( return_url ) )
         log.debug( 'login_a_url, ```%s```' % login_a_url )
         return login_a_url
+
+    def prep_return_url( self, request ):
+        """ Preps the return url that the IDP logout url hits.
+            Called by prep_login_url_stepA() """
+        shortlink = request.GET['shortlink']
+        return_url = '%s://%s%s?%s' % ( request.scheme, request.get_host(), reverse('shib_login_url'), shortlink )
+        log.debug( 'shib-logout-return-url, ```%s```' % return_url )
+        return return_url
 
     ## end class ShibLoginHelper()
 

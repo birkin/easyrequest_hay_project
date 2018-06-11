@@ -31,6 +31,8 @@ urlpatterns = [
 
     url( r'^shib_login/$', views.shib_login, name='shib_login_url' ),
 
+    url( r'^shib_login_handler/$', views.shib_login, name='shib_login_handler_url' ),
+
     # url( r'^barcode_login/$', views.barcode_login, name='barcode_login_url' ),
 
     url( r'^processor/$', views.processor, name='processor_url' ),

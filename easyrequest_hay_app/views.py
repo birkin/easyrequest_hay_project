@@ -7,6 +7,7 @@ from django.contrib.auth import logout
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
+from django.utils.http import urlquote as django_urlquote
 from easyrequest_hay_app.lib import info_view_helper, login_view_helper
 from easyrequest_hay_app.lib.aeon import AeonUrlBuilder
 from easyrequest_hay_app.lib.confirm_helper import ConfirmHelper, ConfirmHandlerHelper
@@ -82,8 +83,28 @@ def confirm_handler( request ):
         resp = HttpResponseRedirect( cnfrm_hndlr_helper.get_referring_url(request) )
     return resp
 
-
 def shib_login( request ):
+    """ Redirects to shib-SP-login url. """
+    shortlink = request.GET['shortlink']
+    target_url = '%s://%s%s?%s' % ( request.scheme, request.get_host(), reverse('shib_login_handler_url'), shortlink )
+    log.debug( 'target_url, ```%s```' % target_url )
+    sp_login_url = '%s?target=%s' % ( settings_app.SHIB_SP_LOGIN_URL, django_urlquote(target_url) )
+    log.debug( 'sp_login_url, ```%s```' % sp_login_url )
+    return HttpResponseRedirect( sp_login_url )
+
+# def shib_login( request ):
+#     """ Examines shib headers.
+#         Redirects user to non-seen processor() view. """
+#     log.debug( 'starting shib_login(); request.__dict__, ```%s```' % request.__dict__ )
+#     ( validity, shib_dict ) = shib_view_helper.check_shib_headers( request )
+#     if validity is False:  # TODO: implement this
+#         resp = shib_view_helper.prep_login_redirect( request )
+#     else:
+#         resp = shib_view_helper.build_processor_response( request.GET['shortlink'], shib_dict )
+#     log.debug( 'about to return shib response' )
+#     return resp
+
+def shib_login_handler( request ):
     """ Examines shib headers.
         Redirects user to non-seen processor() view. """
     log.debug( 'starting shib_login(); request.__dict__, ```%s```' % request.__dict__ )
@@ -94,7 +115,6 @@ def shib_login( request ):
         resp = shib_view_helper.build_processor_response( request.GET['shortlink'], shib_dict )
     log.debug( 'about to return shib response' )
     return resp
-
 
 def processor( request ):
     """ Handles item request:,
