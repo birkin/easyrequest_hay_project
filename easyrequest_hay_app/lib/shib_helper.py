@@ -22,7 +22,7 @@ class ShibLoginHelper( object ):
         Called by lib.confirm_helper.ConfirmHandlerHelper() """
 
     def __init__( self ):
-        self.foo = 'bar'
+        self.IDP_LOGOUT_URL = settings_app.IDP_LOGOUT_URL
 
     def prep_login_url_stepA( self, request ):
         """ Preps logout url with appropriate redirect.
