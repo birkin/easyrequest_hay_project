@@ -5,6 +5,7 @@ from django.conf import settings as project_settings
 from django.contrib.auth import logout as django_logout
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect
+from django.utils.http import urlquote as django_urlquote
 from easyrequest_hay_app import settings_app
 from easyrequest_hay_app.lib.patron_api import PatronApiHelper
 from easyrequest_hay_app.models import ItemRequest
@@ -33,9 +34,10 @@ class ShibLoginHelper( object ):
         shortlink = request.GET.get( 'shortlink', '' )
         log.debug( 'shortlink, `%s`' % shortlink )
         if '127.0.0.1' in request.get_host() and project_settings.DEBUG == True:
-            login_a_url = '%s?shortlink=%s' % ( reverse('processor_url'), shortlink )
+            login_a_url = '%s?shortlink=%s' % ( reverse('shib_login_url'), shortlink )
         else:
-            login_a_url = '%s?shortlink=%s&target=%s' % ( self.IDP_LOGOUT_URL, shortlink, reverse('logout_handler_url') )
+            return_url = '%s://%s%s?%s' % ( request.scheme, request.get_host(), reverse('shib_login_url'), shortlink )
+            login_a_url = '%s?&return=%s' % ( self.IDP_LOGOUT_URL, django_urlquote( return_url ) )
         log.debug( 'login_a_url, ```%s```' % login_a_url )
         return login_a_url
 
