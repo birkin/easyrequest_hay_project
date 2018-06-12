@@ -88,7 +88,7 @@ def shib_login( request ):
     time.sleep( .5 )  # in case the IDP logout just-completed needs a breath
     log.debug( 'request.__dict__, ```%s```' % request.__dict__ )
     shortlink = request.GET['shortlink']
-    target_url = '%s://%s%s?shortlink=%s' % ( request.scheme, request.get_host(), reverse('shib_login_handler_url'), shortlink )
+    target_url = '%s?shortlink=%s' % ( reverse('shib_login_handler_url'), shortlink )
     log.debug( 'target_url, ```%s```' % target_url )
     sp_login_url = '%s?target=%s' % ( settings_app.SHIB_SP_LOGIN_URL, django_urlquote(target_url) )
     log.debug( 'sp_login_url, ```%s```' % sp_login_url )
