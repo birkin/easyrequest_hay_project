@@ -10,7 +10,7 @@ Here's a typical flow...
 
     - Because of its age, this book is managed by Brown's special-collections Library, the John Hay Library. Special-collections materials may only be used in this building.
 
-- You'll see that the 'Status' is 'Available', and to the right is the link 'request-access' _(again, under-construction, not-yet-available)_. Clicking that link gets you to this easyrequest-hay service.
+- You'll see that the 'Status' is 'Available', and to the right is the link 'request-access'. Clicking that link gets you to this easyrequest-hay service.
 
 - After logging in, you'll land at a web-page where you can provide the Special-Collections staff with additional information about what you need (you won't have to re-type information about the item you want).
 
