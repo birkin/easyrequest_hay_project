@@ -45,7 +45,7 @@ class ShibLoginHelper( object ):
         """ Preps the return url that the IDP logout url hits.
             Called by prep_login_url_stepA() """
         shortlink = request.GET['shortlink']
-        return_url = '%s://%s%s?%s' % ( request.scheme, request.get_host(), reverse('shib_login_url'), shortlink )
+        return_url = '%s://%s%s?shortlink=%s' % ( request.scheme, request.get_host(), reverse('shib_login_url'), shortlink )
         log.debug( 'shib-logout-return-url, ```%s```' % return_url )
         return return_url
 
