@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import datetime, json, logging, os, pprint
+import datetime, json, logging, os, pprint, time
 from . import settings_app
 from django.conf import settings as project_settings
 from django.contrib.auth import logout
@@ -85,6 +85,7 @@ def confirm_handler( request ):
 
 def shib_login( request ):
     """ Redirects to shib-SP-login url. """
+    time.sleep( .5 )
     log.debug( 'request.__dict__, ```%s```' % request.__dict__ )
     shortlink = request.GET['shortlink']
     target_url = '%s://%s%s?shortlink=%s' % ( request.scheme, request.get_host(), reverse('shib_login_handler_url'), shortlink )
