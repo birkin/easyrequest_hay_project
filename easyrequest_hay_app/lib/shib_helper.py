@@ -102,6 +102,7 @@ class ShibChecker( object ):
     def grab_shib_info( self, request ):
         """ Grabs shib values from http-header or dev-settings.
             Called by models.ShibViewHelper.check_shib_headers() """
+        log.debug( 'request.__dict__, ```%s```' % request.__dict__ )
         log.debug( 'self.TEST_SHIB_JSON, ```%s```' % self.TEST_SHIB_JSON )
         log.debug( 'request.get_host(), ```%s```' % request.get_host() )
         shib_dict = {}
