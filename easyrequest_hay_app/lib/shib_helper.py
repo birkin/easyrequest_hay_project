@@ -58,7 +58,7 @@ class ShibViewHelper( object ):
 
     def check_shib_headers( self, request ):
         """ Grabs and checks shib headers, returns boolean.
-            Called by views.shib_login() """
+            Called by views.shib_login_handler() """
         shib_checker = ShibChecker()
         shib_dict = shib_checker.grab_shib_info( request )
         validity = shib_checker.evaluate_shib_info( shib_dict )
@@ -66,18 +66,18 @@ class ShibViewHelper( object ):
         return ( validity, shib_dict )
 
     def prep_login_redirect( self, request ):
-        """ Prepares redirect response-object to views.login() on bad authZ (p-type problem).
-            Called by views.shib_login() """
+        """ Prepares redirect response-object to views.problem() on bad authZ (p-type problem).
+            Called by views.shib_login_handler() """
         request.session['shib_login_error'] = 'Problem on authorization.'
         request.session['shib_authorized'] = False
-        redirect_url = '%s?bibnum=%s&barcode=%s' % ( reverse('login_url'), request.session['item_bib'], request.session['item_barcode'] )
+        redirect_url = '%s?shortlink=%s' % ( reverse('problem_url'), request.GET['shortlink'] )
         log.debug( 'ShibViewHelper redirect_url, `%s`' % redirect_url )
         resp = HttpResponseRedirect( redirect_url )
         return resp
 
     def build_processor_response( self, shortlink, shib_dict ):
         """ Saves user info & redirects to behind-the-scenes processor page.
-            Called by views.shib_login() """
+            Called by views.shib_login_handler() """
         log.debug( 'starting build_response()' )
         log.debug( 'shortlink, `%s`' % shortlink )
         log.debug( 'shib_dict, ```%s```' % shib_dict )
