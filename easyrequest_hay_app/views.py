@@ -85,6 +85,7 @@ def confirm_handler( request ):
 
 def shib_login( request ):
     """ Redirects to shib-SP-login url. """
+    log.debug( 'request.__dict__, ```%s```' % request.__dict__ )
     shortlink = request.GET['shortlink']
     target_url = '%s://%s%s?%s' % ( request.scheme, request.get_host(), reverse('shib_login_handler_url'), shortlink )
     log.debug( 'target_url, ```%s```' % target_url )
