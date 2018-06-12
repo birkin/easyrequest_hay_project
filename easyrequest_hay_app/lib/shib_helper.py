@@ -22,7 +22,7 @@ class ShibLoginHelper( object ):
         Called by lib.confirm_helper.ConfirmHandlerHelper() """
 
     def __init__( self ):
-        self.IDP_LOGOUT_URL = settings_app.IDP_LOGOUT_URL
+        self.SHIB_IDP_LOGOUT_URL = settings_app.SHIB_IDP_LOGOUT_URL
 
     def prep_login_url_stepA( self, request ):
         """ Preps logout url with appropriate redirect.
@@ -37,7 +37,7 @@ class ShibLoginHelper( object ):
             login_a_url = '%s?shortlink=%s' % ( reverse('shib_login_url'), shortlink )
         else:
             return_url = self.prep_return_url( request )
-            login_a_url = '%s?&return=%s' % ( self.IDP_LOGOUT_URL, django_urlquote( return_url ) )
+            login_a_url = '%s?&return=%s' % ( self.SHIB_IDP_LOGOUT_URL, django_urlquote( return_url ) )
         log.debug( 'login_a_url, ```%s```' % login_a_url )
         return login_a_url
 
