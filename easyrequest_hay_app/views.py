@@ -141,7 +141,7 @@ def processor( request ):
 def problem( request ):
     # return HttpResponse( 'problem handler coming -- message, ```%s```' % request.GET.get('message', 'no_message') )
     resp = render( request, 'easyrequest_hay_app_templates/problem.html', {} )
-
+    return resp
 
     # log.debug( 'request.__dict__, ```%s```' % request.__dict__ )
     # aeon_url_bldr = AeonUrlBuilder()
