@@ -85,7 +85,7 @@ def confirm_handler( request ):
 
 def shib_login( request ):
     """ Redirects to shib-SP-login url. """
-    time.sleep( .5 )
+    time.sleep( .5 )  # in case the IDP logout just-completed needs a breath
     log.debug( 'request.__dict__, ```%s```' % request.__dict__ )
     shortlink = request.GET['shortlink']
     target_url = '%s://%s%s?shortlink=%s' % ( request.scheme, request.get_host(), reverse('shib_login_handler_url'), shortlink )
@@ -109,7 +109,7 @@ def shib_login( request ):
 def shib_login_handler( request ):
     """ Examines shib headers.
         Redirects user to non-seen processor() view. """
-    log.debug( 'starting shib_login(); request.__dict__, ```%s```' % request.__dict__ )
+    log.debug( 'starting shib_login_handler(); request.__dict__, ```%s```' % request.__dict__ )
     ( validity, shib_dict ) = shib_view_helper.check_shib_headers( request )
     if validity is False:  # TODO: implement this
         resp = shib_view_helper.prep_login_redirect( request )
