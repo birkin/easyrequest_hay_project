@@ -1,15 +1,11 @@
 # -*- coding: utf-8 -*-
 
-import logging
-import pprint
+import logging, os, pprint, time
 import requests
-import time
 from bs4 import BeautifulSoup
 
 
 log = logging.getLogger(__name__)
-
-OPAC_BASE_URL = 'https://josiah.brown.edu/'
 
 
 class IIIAccount():
@@ -20,8 +16,8 @@ class IIIAccount():
         self.patron_id = None
         self.session_id = None
         self.cookies = None
-        self.opac_url = OPAC_BASE_URL
-        self.request_base = self.opac_url + 'search~S7?/.{{bib}}/.{{bib}}/1%2C1%2C1%2CB/request~{{bib}}'
+        self.opac_url = os.environ['EZRQST_HAY__OPAC_BASE_URL']
+        self.request_base = self.opac_url + 'search~S7?/.{{bib}}/.{{bib}}/1%2C1%2C1%2CB/request~{{bib}}'  # updated via get_items()
         self.session = requests.Session()
         self.session.verify = False
 
