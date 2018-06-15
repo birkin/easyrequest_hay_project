@@ -124,16 +124,14 @@ def processor( request ):
         - Gets item-id.
         - Places hold.
         - Emails patron.
-        - Triggers shib_logout() view.
         Triggered after a successful shib_login (along with patron-api lookup) """
     log.debug( 'starting processor(); request.__dict__, ```%s```' % request.__dict__ )
     aeon_url_bldr = AeonUrlBuilder()
     shortlink = request.GET['shortlink']
     log.debug( 'shortlink, `%s`' % shortlink )
     item_id = millennium.get_item_id( shortlink )
-    1/0
-    # err = millennium.place_hold( item_id )
-    # err = emailer.send_email( shortlink )
+    err = millennium.place_hold( item_id )
+    err = emailer.send_email( shortlink )
     aeon_url_bldr.make_millennium_note( item_id )
     aeon_url = aeon_url_bldr.build_aeon_url( shortlink )
     return HttpResponseRedirect( aeon_url )
