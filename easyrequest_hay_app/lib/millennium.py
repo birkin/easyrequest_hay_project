@@ -108,5 +108,28 @@ class Millennium( object ):
                 log.error( 'exception, ```%s```' % str(f) )
         return status
 
+    # def place_hold( self ):
+    #     """ Calls lib to place hold.
+    #         Called by views.processor()
+    #         Elements needed for hold: user_name, user_barcode, item_bib, item_id, pickup_location """
+    #     status = 'init'
+    #     try:
+    #         jos_sess = IIIAccount( name=self.patron_login_name, barcode=self.patron_barcode )
+    #         jos_sess.login()
+    #         log.debug( 'jos_sess, ```%s```' % jos_sess )
+    #         hold = jos_sess.place_hold( bib=self.item_bib, item=self.item_id, pickup_location=self.LOCATION_CODE )
+    #         jos_sess.logout()
+    #         log.debug( 'hold, `%s`' % hold )
+    #         status = 'request_placed'
+    #         return status
+    #     except Exception as e:
+    #         log.error( 'exception, ```%s```' % str(e) )
+    #         try:
+    #             jos_sess.logout()
+    #             log.debug( 'jos_sess.logout() succeeded on exception catch' )
+    #         except Exception as f:
+    #             log.error( 'exception, ```%s```' % str(f) )
+    #     return status
+
     ## end class Millennium()
 

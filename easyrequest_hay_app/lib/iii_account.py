@@ -51,6 +51,7 @@ class IIIAccount():
             out['patron_id'] = url.split('/')[-2]
             self.patron_id = out['patron_id']
             log.info("Patron {} authenticated.".format({self.patron_id}))
+        log.debug( 'login-result, ```%s```' % pprint.pformat(out) )
         return out
 
     def logout(self):
@@ -142,7 +143,8 @@ class IIIAccount():
         out['bib'] = bib
         out['item'] = item
         url = self.request_base.replace('{{bib}}', bib)
-        payload = self.prep_hold_payload( bib, item, pickup_location, availability_location )
+        # payload = self.prep_hold_payload( bib, item, pickup_location, availability_location )
+        payload = self.prep_hold_payload( bib, item, pickup_location )
         #post it
         rsp = self.session.post(url, data=payload)
         # log.debug( 'rsp.content, ```%s```' % rsp.content.decode('utf-8') )
@@ -151,32 +153,45 @@ class IIIAccount():
         out.update(confirm_status)
         return out
 
-    def prep_hold_payload( self, bib, item, pickup_location, availability_location ):
+    def prep_hold_payload( self, bib, item, pickup_location ):
         """ Returns appropriate payload dct. """
-        log.debug( 'availability_location, `%s`' % availability_location )
-        if availability_location and availability_location.lower() == 'annex':
-            payload = {
-                'code': self.barcode,
-                'locx00': pickup_location,  # was 'r0001'
-                'name': self.name,
-                'pat_submit': 'Request item',
-                'radio': item,
-                'submit': 'Submit',
-                }
-        else:
-            payload = {
-                'code' : self.barcode,
-                'loc': pickup_location,
-                'name' : self.name,
-                'neededby_Day': 30,
-                'neededby_Month': 12,
-                'neededby_Year': 2015,
-                'pat_submit':'xxx',
-                'radio': item,
-                'submit': 'SUBMIT',
-                }
+        payload = {
+            'code': self.barcode,
+            'locx00': pickup_location,  # was 'r0001'
+            'name': self.name,
+            'pat_submit': 'Request item',
+            'radio': item,
+            'submit': 'Submit',
+            }
         log.debug( 'hold payload, `%s`' % pprint.pformat(payload) )
         return payload
+
+    # def prep_hold_payload( self, bib, item, pickup_location, availability_location ):
+    #     """ Returns appropriate payload dct. """
+    #     log.debug( 'availability_location, `%s`' % availability_location )
+    #     if availability_location and availability_location.lower() == 'annex':
+    #         payload = {
+    #             'code': self.barcode,
+    #             'locx00': pickup_location,  # was 'r0001'
+    #             'name': self.name,
+    #             'pat_submit': 'Request item',
+    #             'radio': item,
+    #             'submit': 'Submit',
+    #             }
+    #     else:
+    #         payload = {
+    #             'code' : self.barcode,
+    #             'loc': pickup_location,
+    #             'name' : self.name,
+    #             'neededby_Day': 30,
+    #             'neededby_Month': 12,
+    #             'neededby_Year': 2015,
+    #             'pat_submit':'xxx',
+    #             'radio': item,
+    #             'submit': 'SUBMIT',
+    #             }
+    #     log.debug( 'hold payload, `%s`' % pprint.pformat(payload) )
+    #     return payload
 
     def _parse_hold_confirmation(self, content):
         """
