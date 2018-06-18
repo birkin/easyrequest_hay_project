@@ -61,7 +61,7 @@ class Millennium( object ):
         """ Returns availability-api dct.
             Called by get_item_id() """
         avail_dct = {}
-        availability_api_url = '%s/bib/%s' % ( self.AVAILABILITY_API_URL_ROOT, bibnum )
+        availability_api_url = '%sbib/%s' % ( self.AVAILABILITY_API_URL_ROOT, bibnum )
         log.debug( 'availability_api_url, ```%s```' % availability_api_url )
         try:
             r = requests.get( availability_api_url )
@@ -94,7 +94,7 @@ class Millennium( object ):
             jos_sess = IIIAccount( name=self.patron_login_name, barcode=self.patron_barcode )
             jos_sess.login()
             log.debug( 'jos_sess, ```%s```' % jos_sess )
-            hold = jos_sess.place_hold( bib=self.item_bib, item=item_id, pickup_location=self.LOCATION_CODE )
+            hold = jos_sess.place_hold( bib=self.item_bib, item=self.item_id, pickup_location=self.LOCATION_CODE )
             jos_sess.logout()
             log.debug( 'hold, `%s`' % hold )
             status = 'request_placed'
