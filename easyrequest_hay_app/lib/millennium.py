@@ -28,13 +28,16 @@ class Millennium( object ):
             Called by views.processor() """
         item_request = ItemRequest.objects.get( short_url_segment=shortlink )
         item_dct = json.loads( item_request.full_url_params )
+        log.debug( 'item_dct, ```%s```' % pprint.pformat(item_dct) )
         patron_dct = json.loads( item_request.patron_info )
+        log.debug( 'patron_dct, ```%s```' % pprint.pformat(patron_dct) )
         self.item_bib = item_dct['item_bib']
         self.item_barcode = item_dct['item_barcode']
         self.patron_barcode = patron_dct['patron_barcode']
         self.patron_login_name = patron_dct['firstname']
         self.get_item_id()
         log.debug( 'bib, `%s`; item_barcode, `%s`; patron_barcode, `%s`' % (self.item_bib, self.item_barcode, self.patron_barcode) )
+        log.debug( 'instance-info, ```%s```' % pprint.pformat(self.__dict__) )
         return
 
     def get_item_id( self ):
