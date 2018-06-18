@@ -134,7 +134,7 @@ def processor( request ):
     millennium.prep_item_data( shortlink )
     millennium.place_hold()
     # err = emailer.send_email( shortlink )
-    aeon_url_bldr.make_millennium_note( item_id )
+    aeon_url_bldr.make_millennium_note( millennium.item_id )
     aeon_url = aeon_url_bldr.build_aeon_url( shortlink )
     return HttpResponseRedirect( aeon_url )
 

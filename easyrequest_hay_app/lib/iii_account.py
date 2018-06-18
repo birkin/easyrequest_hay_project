@@ -154,7 +154,7 @@ class IIIAccount():
         return out
 
     def prep_hold_payload( self, bib, item, pickup_location ):
-        """ Returns appropriate payload dct. """
+        """ Returns payload dct appropriate for _annex_. """
         payload = {
             'code': self.barcode,
             'locx00': pickup_location,  # was 'r0001'
@@ -165,33 +165,6 @@ class IIIAccount():
             }
         log.debug( 'hold payload, `%s`' % pprint.pformat(payload) )
         return payload
-
-    # def prep_hold_payload( self, bib, item, pickup_location, availability_location ):
-    #     """ Returns appropriate payload dct. """
-    #     log.debug( 'availability_location, `%s`' % availability_location )
-    #     if availability_location and availability_location.lower() == 'annex':
-    #         payload = {
-    #             'code': self.barcode,
-    #             'locx00': pickup_location,  # was 'r0001'
-    #             'name': self.name,
-    #             'pat_submit': 'Request item',
-    #             'radio': item,
-    #             'submit': 'Submit',
-    #             }
-    #     else:
-    #         payload = {
-    #             'code' : self.barcode,
-    #             'loc': pickup_location,
-    #             'name' : self.name,
-    #             'neededby_Day': 30,
-    #             'neededby_Month': 12,
-    #             'neededby_Year': 2015,
-    #             'pat_submit':'xxx',
-    #             'radio': item,
-    #             'submit': 'SUBMIT',
-    #             }
-    #     log.debug( 'hold payload, `%s`' % pprint.pformat(payload) )
-    #     return payload
 
     def _parse_hold_confirmation(self, content):
         """
