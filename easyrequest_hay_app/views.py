@@ -129,8 +129,10 @@ def processor( request ):
     aeon_url_bldr = AeonUrlBuilder()
     shortlink = request.GET['shortlink']
     log.debug( 'shortlink, `%s`' % shortlink )
-    item_id = millennium.get_item_id( shortlink )
-    err = millennium.place_hold( item_id )
+    # item_id = millennium.get_item_id( shortlink )
+    # err = millennium.place_hold( item_id )
+    millennium.prep_item_data( shortlink )
+    millennium.place_hold( user_name, user_barcode, item_bib, item_id, pickup_location )
     err = emailer.send_email( shortlink )
     aeon_url_bldr.make_millennium_note( item_id )
     aeon_url = aeon_url_bldr.build_aeon_url( shortlink )
