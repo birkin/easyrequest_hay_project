@@ -67,6 +67,7 @@ def confirm( request ):
         resp = cnfrm_helper.prepare_response( request, context )
     return resp
 
+
 def confirm_handler( request ):
     """ Handler for confirm `shib=yes/no` selection.
         If `shib=no`, builds Aeon url and redirects.
@@ -76,12 +77,11 @@ def confirm_handler( request ):
     if type_value == 'brown shibboleth login':
         resp = HttpResponseRedirect( cnfrm_hndlr_helper.prep_shib_login_stepA(request) )
     elif type_value == 'non-brown login':
-        # message = '<p>not-yet-implemented &mdash; this will land the user at Aeon (_not_ having placed the annex-request in millennium).</p>'
-        # resp = HttpResponse( message )
         resp = HttpResponseRedirect( cnfrm_hndlr_helper.make_aeon_url(request) )
     else:
         resp = HttpResponseRedirect( cnfrm_hndlr_helper.get_referring_url(request) )
     return resp
+
 
 def shib_login( request ):
     """ Redirects to shib-SP-login url. """
@@ -94,17 +94,6 @@ def shib_login( request ):
     log.debug( 'sp_login_url, ```%s```' % sp_login_url )
     return HttpResponseRedirect( sp_login_url )
 
-# def shib_login( request ):
-#     """ Examines shib headers.
-#         Redirects user to non-seen processor() view. """
-#     log.debug( 'starting shib_login(); request.__dict__, ```%s```' % request.__dict__ )
-#     ( validity, shib_dict ) = shib_view_helper.check_shib_headers( request )
-#     if validity is False:  # TODO: implement this
-#         resp = shib_view_helper.prep_login_redirect( request )
-#     else:
-#         resp = shib_view_helper.build_processor_response( request.GET['shortlink'], shib_dict )
-#     log.debug( 'about to return shib response' )
-#     return resp
 
 def shib_login_handler( request ):
     """ Examines shib headers.
@@ -117,6 +106,7 @@ def shib_login_handler( request ):
         resp = shib_view_helper.build_processor_response( request.GET['shortlink'], shib_dict )
     log.debug( 'about to return shib response' )
     return resp
+
 
 def processor( request ):
     """ Handles item request:,
@@ -138,10 +128,12 @@ def processor( request ):
     aeon_url = aeon_url_bldr.build_aeon_url( shortlink )
     return HttpResponseRedirect( aeon_url )
 
+
 def problem( request ):
     # return HttpResponse( 'problem handler coming -- message, ```%s```' % request.GET.get('message', 'no_message') )
     resp = render( request, 'easyrequest_hay_app_templates/problem.html', {} )
     return resp
+
 
 def stats( request ):
     """ Handles stats requests. """
