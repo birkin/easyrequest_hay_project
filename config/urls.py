@@ -21,21 +21,15 @@ urlpatterns = [
 
     url( r'^confirm_handler/$', views.confirm_handler, name='confirm_handler_url' ),
 
-    # url( r'^time_period/$', views.time_period, name='time_period_url' ),
-
-    # url( r'^time_period_handler/$', views.time_period_handler, name='time_period_handler_url' ),
-
     url( r'^problem/$', views.problem, name='problem_url' ),
-
-    # url( r'^login/$', views.login, name='login_url' ),
 
     url( r'^shib_login/$', views.shib_login, name='shib_login_url' ),
 
     url( r'^shib_login_handler/$', views.shib_login_handler, name='shib_login_handler_url' ),
 
-    # url( r'^barcode_login/$', views.barcode_login, name='barcode_login_url' ),
-
     url( r'^processor/$', views.processor, name='processor_url' ),
+
+    url( r'^stats_api/$', views.stats, name='stats_url' ),
 
     url( r'^$', RedirectView.as_view(pattern_name='info_url') ),
 
