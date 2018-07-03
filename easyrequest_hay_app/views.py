@@ -5,7 +5,7 @@ from . import settings_app
 from django.conf import settings as project_settings
 from django.contrib.auth import logout
 from django.core.urlresolvers import reverse
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.utils.http import urlquote as django_urlquote
 from easyrequest_hay_app.lib import info_view_helper, login_view_helper
@@ -14,6 +14,7 @@ from easyrequest_hay_app.lib.confirm_helper import ConfirmHelper, ConfirmHandler
 from easyrequest_hay_app.lib.millennium import Millennium
 from easyrequest_hay_app.lib.session import SessionHelper
 from easyrequest_hay_app.lib.shib_helper import ShibViewHelper
+from easyrequest_hay_app.lib.stats import StatsBuilder
 from easyrequest_hay_app.lib.time_period_helper import TimePeriodHelper, TimePeriodHandlerHelper
 from easyrequest_hay_app.lib.validator import Validator
 from easyrequest_hay_app.models import ItemRequest
@@ -26,6 +27,7 @@ cnfrm_hndlr_helper = ConfirmHandlerHelper()
 millennium = Millennium()
 sess = SessionHelper()
 shib_view_helper = ShibViewHelper()
+stats_builder = StatsBuilder()
 tm_prd_helper = TimePeriodHelper()
 tm_prd_hndler_helper = TimePeriodHandlerHelper()
 validator = Validator()
@@ -136,5 +138,16 @@ def problem( request ):
 
 
 def stats( request ):
-    """ Handles stats requests. """
+    """ Prepares stats for given dates; returns json. """
+    ## grab & validate params
+    if stats_builder.check_params( request.GET, request.META[u'SERVER_NAME'] ) == False:
+        return HttpResponseBadRequest( stats_builder.output, content_type=u'application/javascript; charset=utf-8' )
+    ## query records for period (parse them via source)
+    requests = stats_builder.run_query()
+    ## process results
+    data = stats_builder.process_results( requests )
+    ## build response
+    stats_builder.build_response( data )
+    return HttpResponse( stats_builder.output, content_type=u'application/javascript; charset=utf-8' )
+
     return HttpResponse( 'stats coming' )
