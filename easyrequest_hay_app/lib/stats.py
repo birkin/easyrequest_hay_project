@@ -36,10 +36,22 @@ class StatsBuilder( object ):
     def process_results( self, requests ):
         """ Extracts desired data from resultset.
             Called by views.stats_v1() """
-        data = { 'count_request_for_period': len(requests) }
+        data = {
+            'count_request_for_period': len(requests),
+            'disposition': {
+                'initial_landing': 0, 'to_aeon_via_shib': 0, 'to_aeon_directly': 0, 'back_to_josiah': 0 }
+        }
         for request in requests:
-            # TODO: add in 'source'
-            pass
+            if request.status == 'initial_landing':
+                data['disposition']['initial_landing'] += 1
+            elif request.status == 'to_aeon_via_shib':
+                data['disposition']['to_aeon_via_shib'] += 1
+            elif request.status == 'to_aeon_directly':
+                data['disposition']['to_aeon_directly'] += 1
+            elif request.status == 'back_to_josiah':
+                data['disposition']['back_to_josiah'] += 1
+            else:
+                log.error( 'unhandled request.status for shortlink, `%s`; value, `%s`' % (request.short_url_segment, request.status) )
         return data
 
     def build_response( self, data, scheme, host, get_params ):
@@ -52,6 +64,7 @@ class StatsBuilder( object ):
                 },
             'response': {
                 'count_total': data['count_request_for_period'],
+                'disposition': data['disposition'],
                 'date_begin': self.date_start,
                 'date_end': self.date_end,
                 }
