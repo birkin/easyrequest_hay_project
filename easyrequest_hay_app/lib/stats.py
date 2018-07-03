@@ -1,4 +1,4 @@
-import json, logging, pprint
+import datetime, json, logging, pprint
 from django.core.urlresolvers import reverse
 
 
@@ -18,7 +18,7 @@ class StatsBuilder( object ):
             Called by views.stats_v1() """
         log.debug( 'get_params, `%s`' % get_params )
         if 'start_date' not in get_params or 'end_date' not in get_params:  # not valid
-            self._handle_bad_params( scheme, host )
+            self._handle_bad_params( scheme, host, get_params )
             return False
         else:  # valid
             self.date_start = '%s 00:00:00' % get_params['start_date']
@@ -53,17 +53,27 @@ class StatsBuilder( object ):
         self.output = json.dumps( jdict, sort_keys=True, indent=2 )
         return
 
-    def _handle_bad_params( self, scheme, host ):
+    def _handle_bad_params( self, scheme, host, get_params ):
         """ Prepares bad-parameters data.
             Called by check_params() """
         data = {
-          'request': { 'url': reverse( 'stats_url' ) },
-          'response': {
-            'status': '400 / Bad Request',
-            'message': 'example url: %s://%s%s?start_date=2018-07-01&end_date=2018-07-31' % ( scheme, host, reverse('stats_url') ),
+            'request': {
+                'date_time': str( datetime.datetime.now() ),
+                'url': '%s://%s%s%s' % ( scheme, host, reverse('stats_url'), self._prep_querystring(get_params) ) },
+            'response': {
+                'status': '400 / Bad Request',
+                'message': 'example url: %s://%s%s?start_date=2018-07-01&end_date=2018-07-31' % ( scheme, host, reverse('stats_url') ) }
             }
-          }
         self.output = json.dumps( data, sort_keys=True, indent=2 )
         return
+
+    def _prep_querystring( self, get_params ):
+        """ Makes querystring from params.
+            Called by _handle_bad_params() """
+        if get_params:
+            querystring = '?%s' % get_params.urlencode()  # get_params is a django QueryDict object, which has a urlencode() method! yay!
+        else:
+            querystring = ''
+        return querystring
 
     # end class StatsBuilder
