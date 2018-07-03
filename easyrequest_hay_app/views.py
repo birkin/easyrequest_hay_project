@@ -15,7 +15,7 @@ from easyrequest_hay_app.lib.millennium import Millennium
 from easyrequest_hay_app.lib.session import SessionHelper
 from easyrequest_hay_app.lib.shib_helper import ShibViewHelper
 from easyrequest_hay_app.lib.stats import StatsBuilder
-from easyrequest_hay_app.lib.time_period_helper import TimePeriodHelper, TimePeriodHandlerHelper
+# from easyrequest_hay_app.lib.time_period_helper import TimePeriodHelper, TimePeriodHandlerHelper
 from easyrequest_hay_app.lib.validator import Validator
 from easyrequest_hay_app.models import ItemRequest
 
@@ -28,8 +28,8 @@ millennium = Millennium()
 sess = SessionHelper()
 shib_view_helper = ShibViewHelper()
 stats_builder = StatsBuilder()
-tm_prd_helper = TimePeriodHelper()
-tm_prd_hndler_helper = TimePeriodHandlerHelper()
+# tm_prd_helper = TimePeriodHelper()
+# tm_prd_hndler_helper = TimePeriodHandlerHelper()
 validator = Validator()
 
 
@@ -76,6 +76,7 @@ def confirm_handler( request ):
         Otherwise submits request to millennium, builds Aeon url and redirects. """
     type_value = request.GET.get( 'type', '' ).lower()
     log.debug( 'type_value, `%s`' % type_value )
+    cnfrm_hndlr_helper.update_status( type_value, request.GET['shortlink'] )
     if type_value == 'brown shibboleth login':
         resp = HttpResponseRedirect( cnfrm_hndlr_helper.prep_shib_login_stepA(request) )
     elif type_value == 'non-brown login':

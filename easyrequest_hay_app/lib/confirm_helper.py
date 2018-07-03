@@ -31,6 +31,7 @@ class ConfirmHelper( object ):
         itmrqst.item_title = dct['item_title']
         itmrqst.full_url_params = jsonified_querydct
         itmrqst.short_url_segment = self.epoch_micro_to_str()
+        itmrqst.status = 'initial_landing'
         itmrqst.save()
         return itmrqst.short_url_segment
 
@@ -84,6 +85,21 @@ class ConfirmHandlerHelper( object ):
     def __init__( self ):
         """ Holds env-vars. """
         pass
+
+    def update_status( self, handle_type, shortlink ):
+        """ Updates status, primarily for stats-tracking.
+            Called by views.confirm_handler() """
+        itmrqst = ItemRequest.objects.get( short_url_segment=shortlink )
+        if handle_type == 'brown shibboleth login':
+            status = 'to_aeon_via_shib'
+        elif handle_type == 'non-brown login':
+            status = 'to_aeon_directly'
+        else:
+            status = 'back_to_josiah'
+        itmrqst.status = status
+        itmrqst.save()
+        log.debug( 'status updated to, `%s`' % itmrqst.status )
+        return
 
     def prep_shib_login_stepA( self, request ):
         """ Prepares shib-login url.
