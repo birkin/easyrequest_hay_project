@@ -1,5 +1,6 @@
 import datetime, json, logging, pprint
 from django.core.urlresolvers import reverse
+from easyrequest_hay_app.models import ItemRequest
 
 
 log = logging.getLogger(__name__)
@@ -27,8 +28,8 @@ class StatsBuilder( object ):
 
     def run_query( self ):
         """ Queries db.
-            Called by views.stats_v1() """
-        requests = ScanRequest.objects.filter(
+            Called by views.stats_api() """
+        requests = ItemRequest.objects.filter(
             create_datetime__gte=self.date_start).filter(create_datetime__lte=self.date_end)
         return requests
 
@@ -41,14 +42,19 @@ class StatsBuilder( object ):
             pass
         return data
 
-    def build_response( self, data ):
+    def build_response( self, data, scheme, host, get_params ):
         """ Builds json response.
-            Called by views.stats_v1() """
+            Called by views.stats_api() """
         jdict = {
             'request': {
-                'date_begin': self.date_start, 'date_end': self.date_end },
+                'date_time': str( datetime.datetime.now() ),
+                'url': '%s://%s%s%s' % ( scheme, host, reverse('stats_url'), self._prep_querystring(get_params) ),
+                },
             'response': {
-                'count_total': data['count_request_for_period'] }
+                'count_total': data['count_request_for_period'],
+                'date_begin': self.date_start,
+                'date_end': self.date_end,
+                }
             }
         self.output = json.dumps( jdict, sort_keys=True, indent=2 )
         return

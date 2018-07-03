@@ -148,7 +148,7 @@ def stats( request ):
     ## process results
     data = stats_builder.process_results( requests )
     ## build response
-    stats_builder.build_response( data )
+    stats_builder.build_response( data, request.scheme, request.META['HTTP_HOST'], request.GET )
     return HttpResponse( stats_builder.output, content_type=u'application/javascript; charset=utf-8' )
 
     return HttpResponse( 'stats coming' )
