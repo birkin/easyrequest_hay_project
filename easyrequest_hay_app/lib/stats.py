@@ -13,12 +13,12 @@ class StatsBuilder( object ):
         self.date_end = None  # set by check_params()
         self.output = None  # set by check_params() or...
 
-    def check_params( self, get_params, server_name ):
+    def check_params( self, get_params, scheme, host ):
         """ Checks parameters; returns boolean.
             Called by views.stats_v1() """
-        log.debug( 'StatsBuilder(); get_params, `%s`' % get_params )
+        log.debug( 'get_params, `%s`' % get_params )
         if 'start_date' not in get_params or 'end_date' not in get_params:  # not valid
-            self._handle_bad_params( server_name )
+            self._handle_bad_params( scheme, host )
             return False
         else:  # valid
             self.date_start = '%s 00:00:00' % get_params['start_date']
@@ -53,14 +53,14 @@ class StatsBuilder( object ):
         self.output = json.dumps( jdict, sort_keys=True, indent=2 )
         return
 
-    def _handle_bad_params( self, server_name ):
+    def _handle_bad_params( self, scheme, host ):
         """ Prepares bad-parameters data.
             Called by check_params() """
         data = {
           'request': { 'url': reverse( 'stats_url' ) },
           'response': {
             'status': '400 / Bad Request',
-            'message': 'example url: https://%s/easyrequest_hay/stats_api/?start_date=2015-04-01&end_date=2015-04-30' % server_name,
+            'message': 'example url: %s://%s%s?start_date=2018-07-01&end_date=2018-07-31' % ( scheme, host, reverse('stats_url') ),
             }
           }
         self.output = json.dumps( data, sort_keys=True, indent=2 )

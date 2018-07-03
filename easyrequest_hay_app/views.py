@@ -140,7 +140,7 @@ def problem( request ):
 def stats( request ):
     """ Prepares stats for given dates; returns json. """
     ## grab & validate params
-    if stats_builder.check_params( request.GET, request.META[u'SERVER_NAME'] ) == False:
+    if stats_builder.check_params( request.GET, request.scheme, request.META['HTTP_HOST'] ) == False:
         return HttpResponseBadRequest( stats_builder.output, content_type=u'application/javascript; charset=utf-8' )
     ## query records for period (parse them via source)
     requests = stats_builder.run_query()
