@@ -16,7 +16,7 @@ class ItemRequestAdmin( admin.ModelAdmin ):
         'id', 'create_datetime', 'modified_datetime', 'status', 'item_title', 'source_url','full_url_params', 'patron_info', 'short_url_segment', ]
 
     fieldsets = (
-        ('For Milliennium and Aeon', {
+        ('For Sierra and Aeon', {
             'classes': ('wide',),
             'fields': (
                 'item_title', 'full_url_params', 'patron_info',
@@ -31,7 +31,7 @@ class ItemRequestAdmin( admin.ModelAdmin ):
         ('Other', {
             'classes': ('wide',),
             'fields': (
-                'source_url', 'create_datetime', 'modified_datetime', 'admin_notes', 'short_url_segment',
+                'source_url', 'create_datetime', 'modified_datetime', 'status', 'admin_notes', 'short_url_segment',
             ),
         }),
     )
