@@ -35,7 +35,7 @@ class ExpirationManager( object ):
             Called by cron-script. """
         log.debug( 'starting clean' )
         filter_datetime = self.calculate_filter_datetime()
-        requests = ItemRequest.objects.filter( create_datetime__lte=filter_datetime )
+        requests = ItemRequest.objects.filter( create_datetime__lte=filter_datetime, patron_info__isnull=False )
         for request in requests:
             self.clean_request( request )
         log.debug( '`%s` requests cleaned' % len(requests) )
@@ -70,7 +70,7 @@ class ExpirationManager( object ):
             Called by clean_request() """
         try:
             existing_patron_dct = json.loads( request.patron_info )
-        except TypeError as e:  # occurs when field is empty (TODO: filter for non-empty fields)
+        except TypeError as e:  # occurs when field is empty
             existing_patron_dct = {}
         return existing_patron_dct
 
