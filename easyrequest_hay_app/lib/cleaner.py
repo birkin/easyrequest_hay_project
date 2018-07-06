@@ -1,15 +1,31 @@
 # -*- coding: utf-8 -*-
 
-import datetime, logging
+import datetime, json, logging, os, sys
+import django
+
+## configure django paths
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
+cwd = os.getcwd()  # this assumes the cron call has cd-ed into the project directory
+if cwd not in sys.path:
+    sys.path.append( cwd )
+django.setup()
+
+## ok, now django-related imports will work
 from easyrequest_hay_app import settings_app
 from easyrequest_hay_app.models import ItemRequest
 
 
+logging.basicConfig(
+    filename=os.environ['EZRQST_HAY__LOG_PATH'],
+    level=logging.DEBUG,
+    format='[%(asctime)s] %(levelname)s [%(module)s-%(funcName)s()::%(lineno)d] %(message)s',
+    datefmt='%d/%b/%Y %H:%M:%S',
+    )
 log = logging.getLogger(__name__)
 
 
 class ExpirationManager( object ):
-    """ Validates source and params for incoming `time_period` request. """
+    """ Manages removal of personally-identifying-information. """
 
     def __init__( self, days=None ):
         pass
@@ -37,21 +53,31 @@ class ExpirationManager( object ):
         """ Removes identifying data.
             Called by clean_patron_data() """
         cleaned_dct = {}
-        existing_patron_dct = json.loads( request.patron_info )
+        existing_patron_dct = self.load_existing_patron_data( request )
         for (key, value) in existing_patron_dct.items():
             if key in settings_app.DEMOGRAPHIC_CATEGORIES:
                 cleaned_dct[key] = value
         if cleaned_dct != existing_patron_dct:
-            log.debug( 'saving cleaned data' )
+            log.debug( 'id, `%s`; saving cleaned data' % request.id )
+            request.patron_info = json.dumps( cleaned_dct, sort_keys=True, indent=2 )
             request.save()
         else:
-            log.debug( 'data already cleaned' )
+            log.debug( 'id, `%s`; data already cleaned' % request.id )
         return
+
+    def load_existing_patron_data( self, request ):
+        """ Returns data-dct or empty-dct.
+            Called by clean_request() """
+        try:
+            existing_patron_dct = json.loads( request.patron_info )
+        except TypeError as e:  # occurs when field is empty (TODO: filter for non-empty fields)
+            existing_patron_dct = {}
+        return existing_patron_dct
 
     ## end class ExpirationManager()
 
 
 if __name__ == '__main__':
     exp_mngr = ExpirationManager()
-    ExpirationManager.clean_patron_data()
+    exp_mngr.clean_patron_data()
     log.debug( 'complete' )
