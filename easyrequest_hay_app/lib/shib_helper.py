@@ -60,10 +60,10 @@ class ShibViewHelper( object ):
         """ Grabs and checks shib headers, returns boolean.
             Called by views.shib_login_handler() """
         shib_checker = ShibChecker()
-        shib_dict = shib_checker.grab_shib_info( request )
-        validity = shib_checker.evaluate_shib_info( shib_dict )
+        shib_dct = shib_checker.grab_shib_info( request )
+        validity = shib_checker.evaluate_shib_info( shib_dct )
         log.debug( 'returning shib validity `%s`' % validity )
-        return ( validity, shib_dict )
+        return ( validity, shib_dct )
 
     def prep_login_redirect( self, request ):
         """ Prepares redirect response-object to views.problem() on bad authZ (p-type problem).
@@ -75,14 +75,14 @@ class ShibViewHelper( object ):
         resp = HttpResponseRedirect( redirect_url )
         return resp
 
-    def build_processor_response( self, shortlink, shib_dict ):
+    def build_processor_response( self, shortlink, shib_dct ):
         """ Saves user info & redirects to behind-the-scenes processor page.
             Called by views.shib_login_handler() """
         log.debug( 'starting build_response()' )
         log.debug( 'shortlink, `%s`' % shortlink )
-        log.debug( 'shib_dict, ```%s```' % shib_dict )
+        log.debug( 'shib_dct, ```%s```' % shib_dct )
         item_request = ItemRequest.objects.get( short_url_segment=shortlink )
-        item_request.patron_info = json.dumps( shib_dict, sort_keys=True, indent=2 )
+        item_request.patron_info = json.dumps( shib_dct, sort_keys=True, indent=2 )
         item_request.save()
         redirect_url = '%s?shortlink=%s' % ( reverse('processor_url'), shortlink )
         log.debug( 'leaving ShibViewHelper; redirect_url `%s`' % redirect_url )
@@ -105,46 +105,52 @@ class ShibChecker( object ):
         log.debug( 'request.__dict__, ```%s```' % request.__dict__ )
         log.debug( 'self.TEST_SHIB_JSON, ```%s```' % self.TEST_SHIB_JSON )
         log.debug( 'request.get_host(), ```%s```' % request.get_host() )
-        shib_dict = {}
+        shib_dct = {}
         # if 'Shibboleth-eppn' in request.META:
         if 'HTTP_SHIBBOLETH_EPPN' in request.META:
-            shib_dict = self.grab_shib_from_meta( request )
+            shib_dct = self.grab_shib_from_meta( request )
         else:
             if '127.0.0.1' in request.get_host() and project_settings.DEBUG == True:
-                shib_dict = json.loads( self.TEST_SHIB_JSON )
-        log.debug( 'shib_dict is: %s' % pprint.pformat(shib_dict) )
-        return shib_dict
+                shib_dct = json.loads( self.TEST_SHIB_JSON )
+        log.debug( 'shib_dct is: %s' % pprint.pformat(shib_dct) )
+        return shib_dct
 
     def grab_shib_from_meta( self, request ):
         """ Extracts shib values from http-header.
             Called by grab_shib_info() """
-        shib_dict = {
+        shib_dct = {
             'eppn': request.META.get( 'HTTP_SHIBBOLETH_EPPN', '' ),
             'firstname': request.META.get( 'HTTP_SHIBBOLETH_GIVENNAME', '' ),
             'lastname': request.META.get( 'HTTP_SHIBBOLETH_SN', '' ),
             'email': request.META.get( 'HTTP_SHIBBOLETH_MAIL', '' ).lower(),
             'patron_barcode': request.META.get( 'HTTP_SHIBBOLETH_BROWNBARCODE', '' ),
             'member_of': request.META.get( 'HTTP_SHIBBOLETH_ISMEMBEROF', '' ) }
-        return shib_dict
+        meta_keys = request.META.keys()
+        log.debug( 'meta_keys, ```%s```' % pprint.pformat(meta_keys) )
+        for demographic_category in settings_app.DEMOGRAPHIC_CATEGORIES:
+            if demographic_category in meta_keys:
+                shib_dct[demographic_category] = request.META[demographic_category]
+        log.debug( 'shib_dct, ```%s```' % pprint.pformat(shib_dct) )
+        return shib_dct
 
-    def evaluate_shib_info( self, shib_dict ):
+    def evaluate_shib_info( self, shib_dct ):
         """ Returns boolean.
             Called by ShibViewHelper.check_shib_headers() """
         validity = False
-        if self.all_values_present(shib_dict):
-            if self.brown_user_confirmed(shib_dict):
-                if self.authorized( shib_dict['patron_barcode'] ):
+        if self.all_values_present(shib_dct):
+            if self.brown_user_confirmed(shib_dct):
+                if self.authorized( shib_dct['patron_barcode'] ):
                     validity = True
         log.debug( 'validity, `%s`' % validity )
         return validity
 
-    def all_values_present( self, shib_dict ):
+    def all_values_present( self, shib_dct ):
         """ Returns boolean.
             Called by evaluate_shib_info() """
         present_check = False
-        if sorted( shib_dict.keys() ) == ['email', 'eppn', 'firstname', 'lastname', 'member_of', 'patron_barcode']:
+        if sorted( shib_dct.keys() ) == ['email', 'eppn', 'firstname', 'lastname', 'member_of', 'patron_barcode']:
             value_test = 'init'
-            for (key, value) in shib_dict.items():
+            for (key, value) in shib_dct.items():
                 if len( value.strip() ) == 0:
                     value_test = 'fail'
             if value_test == 'init':
@@ -152,11 +158,11 @@ class ShibChecker( object ):
         log.debug( 'present_check, `%s`' % present_check )
         return present_check
 
-    def brown_user_confirmed( self, shib_dict ):
+    def brown_user_confirmed( self, shib_dct ):
         """ Returns boolean.
             Called by evaluate_shib_info() """
         brown_check = False
-        if '@brown.edu' in shib_dict['eppn']:
+        if '@brown.edu' in shib_dct['eppn']:
             brown_check = True
         log.debug( 'brown_check, `%s`' % brown_check )
         return brown_check
