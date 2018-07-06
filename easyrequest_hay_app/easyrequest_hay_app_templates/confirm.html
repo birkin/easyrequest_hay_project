@@ -49,13 +49,22 @@ easyrequest-hay confirm
         margin-bottom: 4em;
         padding-right: 8em;
     }
-    div#reminder h3#longline {
+
+    div#reminder h2#longline {
+        line-height: 150%;
+    }
+    h2 {
+        color: maroon;
+        font-size: 160%;
+    }
+
+/*    div#reminder h3#longline {
         line-height: 150%;
     }
     h3 {
         color: maroon;
     }
-    div#shib {
+*/    div#shib {
         float: left;
     }
     div#shib input {
@@ -89,6 +98,7 @@ easyrequest-hay confirm
 <div id="info_text">
 
     <p>You&rsquo;re requesting retrieval, from off-site storage, of the item:</p>
+    <!-- no label; consider table; it's tabular! -->
     <div id="item">
         <label for="name">Title:</label>
         <p id="actual_title">{{ item_title }}</p>
@@ -99,10 +109,15 @@ easyrequest-hay confirm
     </div>
 
     <div id="reminder">
+        <h2>Reminder...</h2>
+        <h2 id="longline">This special-collections item may _only_ be used within the Special Collections Reading Room of the John Hay Library.</h2>
+    </div>
+
+<!--     <div id="reminder">
         <h3>Reminder...</h3>
         <h3 id="longline">This special-collections item may _only_ be used within the Special Collections Reading Room of the John Hay Library.</h3>
     </div>
-
+ -->
     <form action="{{ action_url }}" method="GET">
         <input type="hidden" name="shortlink" value="{{ shortlink }}">
         <div id="shib">
