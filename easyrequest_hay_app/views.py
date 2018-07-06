@@ -86,6 +86,18 @@ def confirm_handler( request ):
     return resp
 
 
+# def shib_login( request ):
+#     """ Redirects to shib-SP-login url. """
+#     time.sleep( .5 )  # in case the IDP logout just-completed needs a breath
+#     log.debug( 'request.__dict__, ```%s```' % request.__dict__ )
+#     shortlink = request.GET['shortlink']
+#     target_url = '%s?shortlink=%s' % ( reverse('shib_login_handler_url'), shortlink )
+#     log.debug( 'target_url, ```%s```' % target_url )
+#     sp_login_url = '%s?target=%s' % ( settings_app.SHIB_SP_LOGIN_URL, django_urlquote(target_url) )
+#     log.debug( 'sp_login_url, ```%s```' % sp_login_url )
+#     return HttpResponseRedirect( sp_login_url )
+
+
 def shib_login( request ):
     """ Redirects to shib-SP-login url. """
     time.sleep( .5 )  # in case the IDP logout just-completed needs a breath
@@ -93,9 +105,12 @@ def shib_login( request ):
     shortlink = request.GET['shortlink']
     target_url = '%s?shortlink=%s' % ( reverse('shib_login_handler_url'), shortlink )
     log.debug( 'target_url, ```%s```' % target_url )
-    sp_login_url = '%s?target=%s' % ( settings_app.SHIB_SP_LOGIN_URL, django_urlquote(target_url) )
-    log.debug( 'sp_login_url, ```%s```' % sp_login_url )
-    return HttpResponseRedirect( sp_login_url )
+    if ( request.get_host() == '127.0.0.1' or request.get_host() == '127.0.0.1:8000' ) and project_settings.DEBUG == True:
+        redirect_url = target_url
+    else:
+        redirect_url = '%s?target=%s' % ( settings_app.SHIB_SP_LOGIN_URL, django_urlquote(target_url) )
+    log.debug( 'redirect_url, ```%s```' % redirect_url )
+    return HttpResponseRedirect( redirect_url )
 
 
 def shib_login_handler( request ):
