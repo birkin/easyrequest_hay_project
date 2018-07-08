@@ -26,7 +26,6 @@ easyrequest-hay confirm
       padding: 0;
       padding-bottom: 1.25em;
     }
-
     p.item_label {
       margin: 0;
       padding: 0;
@@ -38,28 +37,7 @@ easyrequest-hay confirm
       float: left;
       font-weight: bold;
     }
-
-    /*div#item label {
-      margin: 0;
-      padding: 0;
-      display: block;
-      font-size: 125%;
-      padding-right: .75em;
-      width: 10em;
-      text-align: right;
-      float: left;
-    }*/
-
     p.item_value {
-      margin: 0;
-      padding: 0;
-      display: block;
-      font-size: 125%;
-      font-weight: bold;
-    }
-
-
-    div#item p#item_title {
       margin: 0;
       padding: 0;
       display: block;
@@ -116,7 +94,6 @@ easyrequest-hay confirm
     <p>You&rsquo;re requesting retrieval, from off-site storage, of the item:</p>
     <!-- no label; consider table; it's tabular! -->
     <div id="item">
-        <!-- <label for="name">Title:</label> -->
         <p class="item_label">Title:</p>
         <p class="item_value">{{ item_title }}</p>
         {% if item_callnumber %}
