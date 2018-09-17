@@ -118,12 +118,12 @@ USE_TZ = False
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
-
 STATIC_URL = os.environ['EZRQST_HAY__STATIC_URL']
 STATIC_ROOT = os.environ['EZRQST_HAY__STATIC_ROOT']  # needed for collectstatic command
 
 
 # Email
+SERVER_EMAIL = os.environ['EZRQST_HAY__SERVER_EMAIL']
 EMAIL_HOST = os.environ['EZRQST_HAY__EMAIL_HOST']
 EMAIL_PORT = int( os.environ['EZRQST_HAY__EMAIL_PORT'] )
 
@@ -153,6 +153,11 @@ LOGGING = {
         },
     },
     'handlers': {
+        'mail_admins': {
+            'level': 'ERROR',
+            'class': 'django.utils.log.AdminEmailHandler',
+            'include_html': True,
+        },
         'logfile': {
             'level':'DEBUG',
             'class':'logging.FileHandler',  # note: configure server to use system's log-rotate to avoid permissions issues
@@ -166,6 +171,11 @@ LOGGING = {
         },
     },
     'loggers': {
+        'django.request': {
+            'handlers': ['mail_admins'],
+            'level': 'ERROR',
+            'propagate': False,
+            },
         'easyrequest_hay_app': {
             'handlers': ['logfile', 'console'],
             'level': os.environ.get(u'EZRQST_HAY__LOG_LEVEL'),
