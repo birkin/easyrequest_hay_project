@@ -126,4 +126,4 @@ class ConfirmHandlerHelper( object ):
         log.debug( 'referring_url ```%s```' % referring_url )
         return referring_url
 
-    ## end class TimePeriodHandlerHelper
+    ## end class ConfirmHandlerHelper
