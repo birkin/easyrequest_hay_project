@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import logging
+import logging, pprint
 from django.test import TestCase
 # from django.test import SimpleTestCase as TestCase    ## TestCase requires db, so if you're not using a db, and want tests, try this
 
@@ -9,8 +9,16 @@ log = logging.getLogger(__name__)
 TestCase.maxDiff = None
 
 
-class RootUrlTest( TestCase ):
-    """ Checks root urls. """
+class ClientTest( TestCase ):
+    """ Checks urls. """
+
+    def test_landing_page_response_A(self):
+        """ Checks incomplete landing-page request. """
+        response = self.client.get( '/confirm/', {} )
+        # log.debug( 'client session, ```%s```' % pprint.pformat(dict(self.client.session)) )
+        self.assertEqual( 400, response.status_code )  # permanent redirect
+        self.assertTrue( b'easyrequest-hay problem' in response.content )
+        self.assertTrue( b'If you think you should be able to use this service, but cannot, please contact' in response.content )
 
     def test_root_url_no_slash(self):
         """ Checks '/root_url'. """
