@@ -44,11 +44,24 @@ class Validator( object ):
             Called by views.login()
             Note: `barcode` here is the item-barcode. """
         return_val = False
-        if sorted( request.GET.keys() ) == ['barcode', 'bibnum']:
-            if len(request.GET['bibnum']) == 8 and len(request.GET['barcode']) == 14:
-                return_val = True
+        if 'item_barcode' in request.GET.keys():
+            if 'item_bib' in request.GET.keys():
+                if len(request.GET['bibnum']) == 8:
+                    if len(request.GET['barcode']) == 14:
+                        return_val = True
         log.debug( 'return_val, `%s`' % return_val )
         return return_val
+
+    # def validate_params( self, request ):
+    #     """ Checks params.
+    #         Called by views.login()
+    #         Note: `barcode` here is the item-barcode. """
+    #     return_val = False
+    #     if sorted( request.GET.keys() ) == ['barcode', 'bibnum']:
+    #         if len(request.GET['bibnum']) == 8 and len(request.GET['barcode']) == 14:
+    #             return_val = True
+    #     log.debug( 'return_val, `%s`' % return_val )
+    #     return return_val
 
     def prepare_badrequest_response( self, request ):
         """ Prepares bad-request response when validation fails.
