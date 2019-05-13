@@ -46,8 +46,8 @@ class Validator( object ):
         return_val = False
         if 'item_barcode' in request.GET.keys():
             if 'item_bib' in request.GET.keys():
-                if len(request.GET['bibnum']) == 8:
-                    if len(request.GET['barcode']) == 14:
+                if len(request.GET['item_bib']) == 8:
+                    if len(request.GET['item_barcode']) == 14:
                         return_val = True
         log.debug( 'return_val, `%s`' % return_val )
         return return_val
