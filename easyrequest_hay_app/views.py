@@ -15,7 +15,6 @@ from easyrequest_hay_app.lib.millennium import Millennium
 from easyrequest_hay_app.lib.session import SessionHelper
 from easyrequest_hay_app.lib.shib_helper import ShibViewHelper
 from easyrequest_hay_app.lib.stats import StatsBuilder
-# from easyrequest_hay_app.lib.time_period_helper import TimePeriodHelper, TimePeriodHandlerHelper
 from easyrequest_hay_app.lib.validator import Validator
 from easyrequest_hay_app.models import ItemRequest
 
@@ -28,8 +27,6 @@ millennium = Millennium()
 sess = SessionHelper()
 shib_view_helper = ShibViewHelper()
 stats_builder = StatsBuilder()
-# tm_prd_helper = TimePeriodHelper()
-# tm_prd_hndler_helper = TimePeriodHandlerHelper()
 validator = Validator()
 
 
@@ -60,7 +57,7 @@ def confirm( request ):
         Stores referring url, bib, and item-barcode in session.
         Presents shib and non-shib proceed buttons. """
     log.debug( 'request.__dict__, ```%s```' % request.__dict__ )
-    if not validator.validate_source(request) and validator.validate_params(request):
+    if validator.validate_source(request) is False or validator.validate_params(request) is False:
         resp = validator.prepare_badrequest_response( request )
     else:
         sess.initialize_session( request )
@@ -84,18 +81,6 @@ def confirm_handler( request ):
     else:
         resp = HttpResponseRedirect( cnfrm_hndlr_helper.get_referring_url(request) )
     return resp
-
-
-# def shib_login( request ):
-#     """ Redirects to shib-SP-login url. """
-#     time.sleep( .5 )  # in case the IDP logout just-completed needs a breath
-#     log.debug( 'request.__dict__, ```%s```' % request.__dict__ )
-#     shortlink = request.GET['shortlink']
-#     target_url = '%s?shortlink=%s' % ( reverse('shib_login_handler_url'), shortlink )
-#     log.debug( 'target_url, ```%s```' % target_url )
-#     sp_login_url = '%s?target=%s' % ( settings_app.SHIB_SP_LOGIN_URL, django_urlquote(target_url) )
-#     log.debug( 'sp_login_url, ```%s```' % sp_login_url )
-#     return HttpResponseRedirect( sp_login_url )
 
 
 def shib_login( request ):
@@ -166,5 +151,3 @@ def stats( request ):
     ## build response
     stats_builder.build_response( data, request.scheme, request.META['HTTP_HOST'], request.GET )
     return HttpResponse( stats_builder.output, content_type=u'application/javascript; charset=utf-8' )
-
-    return HttpResponse( 'stats coming' )
