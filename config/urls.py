@@ -31,6 +31,10 @@ urlpatterns = [
 
     url( r'^stats_api/$', views.stats, name='stats_url' ),
 
+    ## helpers
+    url( r'^version/$', views.version, name='version_url' ),
+    url( r'^error_check/$', views.error_check, name='error_check_url' ),
+
     url( r'^$', RedirectView.as_view(pattern_name='info_url') ),
 
     ]
