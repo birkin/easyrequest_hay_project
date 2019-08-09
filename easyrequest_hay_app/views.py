@@ -8,7 +8,7 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseRedirect, HttpResponseNotFound
 from django.shortcuts import get_object_or_404, render
 from django.utils.http import urlquote as django_urlquote
-from easyrequest_hay_app.lib import info_view_helper, login_view_helper, version_helper
+from easyrequest_hay_app.lib import info_view_helper, version_helper
 from easyrequest_hay_app.lib.aeon import AeonUrlBuilder
 from easyrequest_hay_app.lib.confirm_helper import ConfirmHelper, ConfirmHandlerHelper
 from easyrequest_hay_app.lib.millennium import Millennium
