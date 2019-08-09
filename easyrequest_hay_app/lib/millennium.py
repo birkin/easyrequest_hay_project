@@ -48,15 +48,6 @@ class Millennium( object ):
         log.debug( 'item_id, `%s`' % self.item_id )
         return
 
-    # def get_item_id( self, shortlink ):
-    #     """ Calls availability-api to get the item-id.
-    #         Called by views.processor() """
-    #     self.prep_item_data( shortlink )
-    #     avail_dct = self.hit_availability_api( self.item_bib )
-    #     item_id = self.extract_item_id( avail_dct, self.item_barcode )
-    #     log.debug( 'item_id, `%s`' % item_id )
-    #     return item_id
-
     def hit_availability_api( self, bibnum ):
         """ Returns availability-api dct.
             Called by get_item_id() """
@@ -107,29 +98,6 @@ class Millennium( object ):
             except Exception as f:
                 log.error( 'exception, ```%s```' % str(f) )
         return status
-
-    # def place_hold( self ):
-    #     """ Calls lib to place hold.
-    #         Called by views.processor()
-    #         Elements needed for hold: user_name, user_barcode, item_bib, item_id, pickup_location """
-    #     status = 'init'
-    #     try:
-    #         jos_sess = IIIAccount( name=self.patron_login_name, barcode=self.patron_barcode )
-    #         jos_sess.login()
-    #         log.debug( 'jos_sess, ```%s```' % jos_sess )
-    #         hold = jos_sess.place_hold( bib=self.item_bib, item=self.item_id, pickup_location=self.LOCATION_CODE )
-    #         jos_sess.logout()
-    #         log.debug( 'hold, `%s`' % hold )
-    #         status = 'request_placed'
-    #         return status
-    #     except Exception as e:
-    #         log.error( 'exception, ```%s```' % str(e) )
-    #         try:
-    #             jos_sess.logout()
-    #             log.debug( 'jos_sess.logout() succeeded on exception catch' )
-    #         except Exception as f:
-    #             log.error( 'exception, ```%s```' % str(f) )
-    #     return status
 
     ## end class Millennium()
 
