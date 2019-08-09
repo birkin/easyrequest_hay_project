@@ -34,7 +34,7 @@ class AeonUrlBuilder( object ):
         else:
             note = f'UNABLE to auto-request Annex item in Sierra at `{now_str}`. Additional info: item_barcode, `{item_barcode}`; patron_barcode, `{patron_barcode}`'
         self.aeon_params['SpecialRequest'] = note
-        log.debug( f'staff-note, ```{self.aeon_params['SpecialRequest']}```' )
+        log.debug( f'staff-note, ```{self.aeon_params["SpecialRequest"]}```' )
         return
 
     # def make_millennium_note( self, item_id ):
