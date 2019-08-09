@@ -25,11 +25,11 @@ class AeonUrlBuilder( object ):
             'SpecialRequest': ''  # notes for staff; default
         }
 
-    def make_millennium_note( self, item_id, item_barcode, patron_barcode ):
+    def make_millennium_note( self, item_id, item_barcode, patron_barcode, hold_status ):
         """ Sets the staff note when an item has been auto-requested through Millennium, or on failure.
             Called by views.processor() """
         now_str = datetime.datetime.now().strftime( '%Y-%b-%d-%a-%I:%M:%S%p' )  # '2018-Jan-23-Tue-03:41:35PM'
-        if item_id:
+        if item_id and hold_status:  ## happy path
             note = 'Auto-requested via easyRequest-Hay at `%s`; item_id, `%s`' % ( now_str, item_id )
         else:
             note = f'UNABLE to auto-request Annex item in Sierra at `{now_str}`. Additional info: item_barcode, `{item_barcode}`; patron_barcode, `{patron_barcode}`'
