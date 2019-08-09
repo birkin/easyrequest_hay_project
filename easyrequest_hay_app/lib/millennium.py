@@ -21,6 +21,7 @@ class Millennium( object ):
         self.item_id = None
         self.patron_barcode = ''
         self.patron_login_name = ''
+        self.hold_status = None  # updated in call_place_hold()
 
     def prep_item_data( self, shortlink ):
         """ Preps item-data from item_request.
@@ -107,7 +108,7 @@ class Millennium( object ):
     #     log.debug( 'item_id, `%s`' % item_id )
     #     return item_id
 
-    def place_hold( self ):
+    def call_place_hold( self ):
         """ Calls lib to place hold.
             Called by views.processor()
             Elements needed for hold: user_name, user_barcode, item_bib, item_id, pickup_location """
@@ -115,20 +116,43 @@ class Millennium( object ):
         try:
             jos_sess = IIIAccount( name=self.patron_login_name, barcode=self.patron_barcode )
             jos_sess.login()
-            log.debug( 'jos_sess, ```%s```' % jos_sess )
-            hold = jos_sess.place_hold( bib=self.item_bib, item=self.item_id, pickup_location=self.LOCATION_CODE )
+            log.debug( f'jos_sess, ```{jos_sess}```' )
+            hold_result_dct = jos_sess.place_hold( bib=self.item_bib, item=self.item_id, pickup_location=self.LOCATION_CODE )
+            log.debug( f'hold_result_dct, ```{hold_result_dct}```' )
             jos_sess.logout()
-            log.debug( 'hold, `%s`' % hold )
-            status = 'request_placed'
-            return status
-        except Exception as e:
-            log.error( 'exception, ```%s```' % str(e) )
+            self.hold_status = 'request_placed'
+        except:
+            log.exception( 'problem placing hold; traceback follows, but processing will continue to try another iii-logout...' )
             try:
                 jos_sess.logout()
-                log.debug( 'jos_sess.logout() succeeded on exception catch' )
-            except Exception as f:
-                log.error( 'exception, ```%s```' % str(f) )
-        return status
+                log.warning( 'jos_sess.logout() succeeded on exception catch' )
+            except:
+                log.exception( 'problem with 2nd iii-logout attempt; traceback follows, but processing will continue...' )
+        log.debug( f'self.hold_status, `{self.hold_status}`' )
+        return
+
+    # def place_hold( self ):
+    #     """ Calls lib to place hold.
+    #         Called by views.processor()
+    #         Elements needed for hold: user_name, user_barcode, item_bib, item_id, pickup_location """
+    #     status = 'init'
+    #     try:
+    #         jos_sess = IIIAccount( name=self.patron_login_name, barcode=self.patron_barcode )
+    #         jos_sess.login()
+    #         log.debug( 'jos_sess, ```%s```' % jos_sess )
+    #         hold = jos_sess.place_hold( bib=self.item_bib, item=self.item_id, pickup_location=self.LOCATION_CODE )
+    #         jos_sess.logout()
+    #         log.debug( 'hold, `%s`' % hold )
+    #         status = 'request_placed'
+    #         return status
+    #     except Exception as e:
+    #         log.error( 'exception, ```%s```' % str(e) )
+    #         try:
+    #             jos_sess.logout()
+    #             log.debug( 'jos_sess.logout() succeeded on exception catch' )
+    #         except Exception as f:
+    #             log.error( 'exception, ```%s```' % str(f) )
+    #     return status
 
     ## end class Millennium()
 
