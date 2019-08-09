@@ -69,7 +69,7 @@ def confirm( request ):
 
 
 def confirm_handler( request ):
-    """ Triggered by confirmatrion screen's `shib=yes/no` selection.
+    """ Triggered by confirmation screen's `shib=yes/no` selection.
         If `shib=no`, builds Aeon url and redirects.
         Otherwise redirects to behind-the-scenes `shib_login` url, which will ultimately redirect, behind-the-scenes, to the `processor` url. """
     type_value = request.GET.get( 'type', '' ).lower()
@@ -124,7 +124,8 @@ def processor( request ):
     shortlink = request.GET['shortlink']
     log.debug( 'shortlink, `%s`' % shortlink )
     millennium.prep_item_data( shortlink )
-    millennium.place_hold()
+    if millennium.item_id:  # if we couldn't get an item-id, we can't place a hold
+        millennium.place_hold()
     aeon_url_bldr.make_millennium_note( millennium.item_id )
     aeon_url = aeon_url_bldr.build_aeon_url( shortlink )
     return HttpResponseRedirect( aeon_url )

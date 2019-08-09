@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
 
+""""
+Builds the Aeon url the user will be redirected to.
+"""
+
 import datetime, json, logging, urllib
 from easyrequest_hay_app.models import ItemRequest
 
