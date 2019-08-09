@@ -126,7 +126,8 @@ def processor( request ):
     millennium.prep_item_data( shortlink )
     if millennium.item_id:  # if we couldn't get an item-id, we can't place a hold
         millennium.place_hold()
-    aeon_url_bldr.make_millennium_note( millennium.item_id )
+    # aeon_url_bldr.make_millennium_note( millennium.item_id )
+    aeon_url_bldr.make_millennium_note( millennium.item_id, millennium.item_barcode, millennium.patron_barcode )
     aeon_url = aeon_url_bldr.build_aeon_url( shortlink )
     return HttpResponseRedirect( aeon_url )
 
