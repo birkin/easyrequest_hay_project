@@ -22,7 +22,6 @@ class Millennium( object ):
         self.patron_barcode = ''
         self.patron_login_name = ''
 
-
     def prep_item_data( self, shortlink ):
         """ Preps item-data from item_request.
             Called by views.processor() """
@@ -48,14 +47,6 @@ class Millennium( object ):
             self.item_id = self.extract_item_id( avail_dct, self.item_barcode )
         log.debug( 'item_id, `%s`' % self.item_id )
         return
-
-    # def get_item_id( self ):
-    #     """ Calls availability-api to get the item-id.
-    #         Called by views.processor() """
-    #     avail_dct = self.hit_availability_api( self.item_bib )
-    #     self.item_id = self.extract_item_id( avail_dct, self.item_barcode )
-    #     log.debug( 'item_id, `%s`' % self.item_id )
-    #     return
 
     def hit_availability_api( self, bibnum ):
         """ Returns availability-api dct.
