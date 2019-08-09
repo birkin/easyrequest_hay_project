@@ -39,7 +39,8 @@ def bul_search( request ):
 
 
 def info( request ):
-    """ Returns basic info. """
+    """ Returns basic info about the easyrequest_hay webapp.
+        Triggered by root easyrequest_hay url. """
     log.debug( 'request.__dict__, ```%s```' % request.__dict__ )
     start = datetime.datetime.now()
     if request.GET.get('format', '') == 'json':
@@ -54,8 +55,8 @@ def info( request ):
 
 def confirm( request ):
     """ Triggered by user clicking on an Annex-Hay Josiah `request-access` link.
-        Stores referring url, bib, and item-barcode in session.
-        Presents shib and non-shib proceed buttons. """
+        Stores referring url, bib, and item-barcode to db.
+        Presents shib and non-shib proceed buttons on confirmation screen. """
     log.debug( 'request.__dict__, ```%s```' % request.__dict__ )
     if validator.validate_source(request) is False or validator.validate_params(request) is False:
         resp = validator.prepare_badrequest_response( request )
@@ -68,9 +69,9 @@ def confirm( request ):
 
 
 def confirm_handler( request ):
-    """ Handler for confirm `shib=yes/no` selection.
+    """ Triggered by confirmatrion screen's `shib=yes/no` selection.
         If `shib=no`, builds Aeon url and redirects.
-        Otherwise submits request to millennium, builds Aeon url and redirects. """
+        Otherwise redirects to behind-the-scenes `shib_login` url, which will ultimately redirect, behind-the-scenes, to the `processor` url. """
     type_value = request.GET.get( 'type', '' ).lower()
     log.debug( 'type_value, `%s`' % type_value )
     cnfrm_hndlr_helper.update_status( type_value, request.GET['shortlink'] )
@@ -84,7 +85,8 @@ def confirm_handler( request ):
 
 
 def shib_login( request ):
-    """ Redirects to shib-SP-login url. """
+    """ Redirects to shib-SP-login url.
+        Specifies the post-login url as the `shib_login_handler` url. """
     time.sleep( .5 )  # in case the IDP logout just-completed needs a breath
     log.debug( 'request.__dict__, ```%s```' % request.__dict__ )
     shortlink = request.GET['shortlink']
@@ -99,8 +101,8 @@ def shib_login( request ):
 
 
 def shib_login_handler( request ):
-    """ Examines shib headers.
-        Redirects user to non-seen processor() view. """
+    """ Behind-the-scenes, examines shib headers.
+        Redirects user to behind-the-scenes processor() view. """
     log.debug( 'starting shib_login_handler(); request.__dict__, ```%s```' % request.__dict__ )
     ( validity, shib_dict ) = shib_view_helper.check_shib_headers( request )
     if validity is False:  # TODO: implement this
@@ -112,10 +114,10 @@ def shib_login_handler( request ):
 
 
 def processor( request ):
-    """ Handles item request:,
+    """ Behind-the-scenes url which handles item request...
         - Gets item-id.
-        - Places hold.
-        - Emails patron.
+        - Attempts to place hold in Sierra.
+        - Redirects user to Aeon.
         Triggered after a successful shib_login (along with patron-api lookup) """
     log.debug( 'starting processor(); request.__dict__, ```%s```' % request.__dict__ )
     aeon_url_bldr = AeonUrlBuilder()
@@ -129,7 +131,9 @@ def processor( request ):
 
 
 def problem( request ):
-    # return HttpResponse( 'problem handler coming -- message, ```%s```' % request.GET.get('message', 'no_message') )
+    """ Displays to user a problem message.
+        Could be used by a variety of failure situations.
+        Currently used by failure of shib-authentication. """
     resp = render( request, 'easyrequest_hay_app_templates/problem.html', {} )
     return resp
 
