@@ -18,7 +18,7 @@ class Millennium( object ):
         self.LOCATION_CODE = settings_app.HAY_LOCATION_CODE
         self.item_bib = ''
         self.item_barcode = ''
-        self.item_id = ''
+        self.item_id = None
         self.patron_barcode = ''
         self.patron_login_name = ''
 
@@ -42,11 +42,20 @@ class Millennium( object ):
 
     def get_item_id( self ):
         """ Calls availability-api to get the item-id.
-            Called by views.processor() """
+            Called by prep_item_data() """
         avail_dct = self.hit_availability_api( self.item_bib )
-        self.item_id = self.extract_item_id( avail_dct, self.item_barcode )
+        if avail_dct:
+            self.item_id = self.extract_item_id( avail_dct, self.item_barcode )
         log.debug( 'item_id, `%s`' % self.item_id )
         return
+
+    # def get_item_id( self ):
+    #     """ Calls availability-api to get the item-id.
+    #         Called by views.processor() """
+    #     avail_dct = self.hit_availability_api( self.item_bib )
+    #     self.item_id = self.extract_item_id( avail_dct, self.item_barcode )
+    #     log.debug( 'item_id, `%s`' % self.item_id )
+    #     return
 
     def hit_availability_api( self, bibnum ):
         """ Returns availability-api dct.
@@ -58,23 +67,54 @@ class Millennium( object ):
             r = requests.get( availability_api_url )
             avail_dct = r.json()
             log.debug( 'partial availability-api-response, `%s`' % pprint.pformat(avail_dct)[0:200] )
-        except Exception as e:
-            log.error( 'exception, %s' % str(e) )
+        except:
+            log.exception( 'problem hitting availability-service; traceback follows, but processing will continue' )
         log.debug( 'avail_dct, ```%s```' % avail_dct )
         return avail_dct
+
+    # def hit_availability_api( self, bibnum ):
+    #     """ Returns availability-api dct.
+    #         Called by get_item_id() """
+    #     avail_dct = {}
+    #     availability_api_url = '%sbib/%s' % ( self.AVAILABILITY_API_URL_ROOT, bibnum )
+    #     log.debug( 'availability_api_url, ```%s```' % availability_api_url )
+    #     try:
+    #         r = requests.get( availability_api_url )
+    #         avail_dct = r.json()
+    #         log.debug( 'partial availability-api-response, `%s`' % pprint.pformat(avail_dct)[0:200] )
+    #     except Exception as e:
+    #         log.error( 'exception, %s' % str(e) )
+    #     log.debug( 'avail_dct, ```%s```' % avail_dct )
+    #     return avail_dct
 
     def extract_item_id( self, avail_dct, item_barcode ):
         """ Uses barcode to get item_id.
             Called by get_item_id() """
-        results = avail_dct['response']['backend_response']
-        for result in results:
-            items = result['items_data']
-            for item in items:
-                if item_barcode == item['barcode']:
-                    # callnumber = item['callnumber_interpreted'].replace( ' None', '' )
-                    item_id = item['item_id'][:-1]  # removes trailing check-digit
+        item_id = None
+        try:
+            results = avail_dct['response']['backend_response']
+            for result in results:
+                items = result['items_data']
+                for item in items:
+                    if item_barcode == item['barcode']:
+                        item_id = item['item_id'][:-1]  # removes trailing check-digit
+        except:
+            log.exception( 'problem getting item_id; traceback follows, but processing will continue' )
         log.debug( 'item_id, `%s`' % item_id )
         return item_id
+
+    # def extract_item_id( self, avail_dct, item_barcode ):
+    #     """ Uses barcode to get item_id.
+    #         Called by get_item_id() """
+    #     results = avail_dct['response']['backend_response']
+    #     for result in results:
+    #         items = result['items_data']
+    #         for item in items:
+    #             if item_barcode == item['barcode']:
+    #                 # callnumber = item['callnumber_interpreted'].replace( ' None', '' )
+    #                 item_id = item['item_id'][:-1]  # removes trailing check-digit
+    #     log.debug( 'item_id, `%s`' % item_id )
+    #     return item_id
 
     def place_hold( self ):
         """ Calls lib to place hold.
