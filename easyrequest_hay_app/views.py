@@ -113,7 +113,6 @@ def shib_login_handler( request ):
 
 def processor( request ):
     """ Handles item request:,
-        - Ensures user is authenticated.
         - Gets item-id.
         - Places hold.
         - Emails patron.
@@ -122,11 +121,8 @@ def processor( request ):
     aeon_url_bldr = AeonUrlBuilder()
     shortlink = request.GET['shortlink']
     log.debug( 'shortlink, `%s`' % shortlink )
-    # item_id = millennium.get_item_id( shortlink )
-    # err = millennium.place_hold( item_id )
     millennium.prep_item_data( shortlink )
     millennium.place_hold()
-    # err = emailer.send_email( shortlink )
     aeon_url_bldr.make_millennium_note( millennium.item_id )
     aeon_url = aeon_url_bldr.build_aeon_url( shortlink )
     return HttpResponseRedirect( aeon_url )
