@@ -23,7 +23,7 @@ log = logging.getLogger(__name__)
 
 cnfrm_helper = ConfirmHelper()
 cnfrm_hndlr_helper = ConfirmHandlerHelper()
-millennium = Millennium()
+# millennium = Millennium()
 sess = SessionHelper()
 shib_view_helper = ShibViewHelper()
 stats_builder = StatsBuilder()
@@ -120,14 +120,15 @@ def processor( request ):
         - Redirects user to Aeon.
         Triggered after a successful shib_login (along with patron-api lookup) """
     log.debug( 'starting processor(); request.__dict__, ```%s```' % request.__dict__ )
+    millennium = Millennium()
     aeon_url_bldr = AeonUrlBuilder()
     shortlink = request.GET['shortlink']
     log.debug( 'shortlink, `%s`' % shortlink )
     millennium.prep_item_data( shortlink )
     if millennium.item_id:  # if we couldn't get an item-id, we can't place a hold
-        millennium.place_hold()
+        millennium.call_place_hold()
     # aeon_url_bldr.make_millennium_note( millennium.item_id )
-    aeon_url_bldr.make_millennium_note( millennium.item_id, millennium.item_barcode, millennium.patron_barcode )
+    aeon_url_bldr.make_millennium_note( millennium.item_id, millennium.item_barcode, millennium.patron_barcode, millennium.hold_status )
     aeon_url = aeon_url_bldr.build_aeon_url( shortlink )
     return HttpResponseRedirect( aeon_url )
 
