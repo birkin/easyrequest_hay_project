@@ -21,6 +21,7 @@ class AeonUrlBuilder( object ):
             'ItemPublisher': '',
             'ItemTitle': '',
             'Location': '',
+            'ItemInfo3': '',  # catalog-url
             'ReferenceNumber': '',  # item_bib
             'SpecialRequest': ''  # notes for staff; default
         }
@@ -63,6 +64,7 @@ class AeonUrlBuilder( object ):
         self.aeon_params['ItemPublisher'] = request_dct['item_publisher']
         self.aeon_params['ItemTitle'] = request_dct['item_title']
         self.aeon_params['Location'] = request_dct['item_location']
+        self.aeon_params['ItemInfo3'] = f'https://search.library.brown.edu/catalog/{request_dct["item_bib"]}'
         self.aeon_params['ReferenceNumber'] = request_dct['item_bib']
         return
 
