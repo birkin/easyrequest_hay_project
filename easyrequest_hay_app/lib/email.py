@@ -16,6 +16,12 @@ class Emailer():
         pass
 
 
+    def run_send_check( self, patron_dct, item_dct, millennium.id, millennium.hold_status ):
+        """ Checks to see if problem-email to staff needs to be sent, and sends it.
+            Called by views.processor() """
+        pass
+
+
     def email_patron( self, patron_email, patron_name, item_title, item_callnumber, item_bib, item_id, patron_barcode, item_barcode, pickup_location_code ):
         """ Emails patron confirmation.
             Called by views.processor() """

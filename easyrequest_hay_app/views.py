@@ -1,6 +1,5 @@
-# -*- coding: utf-8 -*-
-
 import datetime, json, logging, os, pprint, time
+
 from . import settings_app
 from django.conf import settings as project_settings
 from django.contrib.auth import logout
@@ -23,7 +22,6 @@ log = logging.getLogger(__name__)
 
 cnfrm_helper = ConfirmHelper()
 cnfrm_hndlr_helper = ConfirmHandlerHelper()
-# millennium = Millennium()
 sess = SessionHelper()
 shib_view_helper = ShibViewHelper()
 stats_builder = StatsBuilder()
