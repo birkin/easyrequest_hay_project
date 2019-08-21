@@ -1,4 +1,7 @@
-# -*- coding: utf-8 -*-
+""""
+Contains code for connecting to Sierra, mimic-ing a patron using classic-Josiah to log in and initiate a request.
+Triggered initially by views.processor()
+"""
 
 import logging, os, pprint, time
 import requests

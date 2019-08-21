@@ -1,4 +1,9 @@
-# -*- coding: utf-8 -*-
+""""
+Contains:
+- ShibLoginHelper(), which prepares a forced-authentication url for lib.confirm_helper.ConfirmHandlerHelper()
+- ShibViewHelper(), called by ConfirmHandlerHelper(), which directs data-extraction and validity checks.
+- ShibChecker(), called by ShibViewHelper, which actually performs the data-extraction and validity checks.
+"""
 
 import json, logging, os, pprint
 from django.conf import settings as project_settings
@@ -11,9 +16,7 @@ from easyrequest_hay_app.lib.patron_api import PatronApiHelper
 from easyrequest_hay_app.models import ItemRequest
 
 
-
 log = logging.getLogger(__name__)
-
 papi_helper = PatronApiHelper()
 
 
@@ -177,20 +180,6 @@ class ShibChecker( object ):
             pass
         log.debug( 'check_flag, `%s`' % check_flag )
         return check_flag
-
-    # def all_values_present( self, shib_dct ):
-    #     """ Returns boolean.
-    #         Called by evaluate_shib_info() """
-    #     present_check = False
-    #     if sorted( shib_dct.keys() ) == ['email', 'eppn', 'firstname', 'lastname', 'member_of', 'patron_barcode']:
-    #         value_test = 'init'
-    #         for (key, value) in shib_dct.items():
-    #             if len( value.strip() ) == 0:
-    #                 value_test = 'fail'
-    #         if value_test == 'init':
-    #             present_check = True
-    #     log.debug( 'present_check, `%s`' % present_check )
-    #     return present_check
 
     def brown_user_confirmed( self, shib_dct ):
         """ Returns boolean.

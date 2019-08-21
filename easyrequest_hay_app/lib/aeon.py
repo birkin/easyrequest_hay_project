@@ -1,7 +1,6 @@
-# -*- coding: utf-8 -*-
-
 """"
 Builds the Aeon url the user will be redirected to.
+Triggered initially by views.processor()
 """
 
 import datetime, json, logging, urllib

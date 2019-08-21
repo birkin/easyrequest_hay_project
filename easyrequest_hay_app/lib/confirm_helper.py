@@ -1,4 +1,7 @@
-# -*- coding: utf-8 -*-
+""""
+Contains helper class for view.confirm(), which displays the initial landing-page confirmation-form,
+  and helper class for view.confirm_handler(), which handles the confirmation-form.
+"""
 
 import datetime, json, logging, os, pprint, urllib
 from django.core.urlresolvers import reverse

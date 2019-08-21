@@ -1,3 +1,8 @@
+""""
+Contains code for preparing and returning stats.
+Triggered by views.stats_v1()
+"""
+
 import datetime, json, logging, pprint
 from django.core.urlresolvers import reverse
 from easyrequest_hay_app.models import ItemRequest

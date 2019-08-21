@@ -1,4 +1,8 @@
-# -*- coding: utf-8 -*-
+""""
+Contains code to call the Sierra patron-api.
+The resulting 'ptype' is checked for validity.
+Triggered initially by views.shib_login()
+"""
 
 import json, logging, os, pprint
 import requests
@@ -18,22 +22,6 @@ class PatronApiHelper( object ):
         self.PATRON_API_BASIC_AUTH_PASSWORD = settings_app.PATRON_API_BASIC_AUTH_PASSWORD
         self.PATRON_API_LEGIT_PTYPES = settings_app.PATRON_API_LEGIT_PTYPES
         self.ptype_validity = False
-        # self.patron_name = None  # will be last, first middle (used only by BarcodeHandler)
-        # self.patron_email = None  # will be lower-case (used only by BarcodeHandler)
-        # self.process_barcode( patron_barcode )
-
-    # def process_barcode( self, patron_barcode ):
-    #     """ Hits patron-api and populates attributes.
-    #         Called by __init__(); triggered by BarcodeHandlerHelper.authorize() and eventually a shib function. """
-    #     api_dct = self.hit_api( patron_barcode )
-    #     if api_dct is False:
-    #         return
-    #     self.ptype_validity = self.check_ptype( api_dct )
-    #     if self.ptype_validity is False:
-    #         return
-    #     self.patron_name = api_dct['response']['patrn_name']['value']  # last, first middle
-    #     self.patron_email = api_dct['response']['e-mail']['value'].lower()
-    #     return
 
     def process_barcode( self, patron_barcode ):
         """ Hits patron-api and populates attributes.
@@ -44,8 +32,6 @@ class PatronApiHelper( object ):
         self.ptype_validity = self.check_ptype( api_dct )
         if self.ptype_validity is False:
             return
-        # self.patron_name = api_dct['response']['patrn_name']['value']  # last, first middle
-        # self.patron_email = api_dct['response']['e-mail']['value'].lower()
         return
 
     def hit_api( self, patron_barcode ):

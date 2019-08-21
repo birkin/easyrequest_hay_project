@@ -1,4 +1,7 @@
-# -*- coding: utf-8 -*-
+""""
+Validates initial landing-page request.
+Triggered by views.confirm()
+"""
 
 import json, logging, os, urllib
 from django.http import HttpResponseBadRequest
@@ -9,7 +12,7 @@ log = logging.getLogger(__name__)
 
 
 class Validator( object ):
-    """ Validates source and params for incoming `time_period` request. """
+    """ Validates source and params. """
 
     def __init__( self ):
         """ Holds env-vars. """
@@ -53,17 +56,6 @@ class Validator( object ):
                         return_val = True
         log.debug( 'return_val, `%s`' % return_val )
         return return_val
-
-    # def validate_params( self, request ):
-    #     """ Checks params.
-    #         Called by views.login()
-    #         Note: `barcode` here is the item-barcode. """
-    #     return_val = False
-    #     if sorted( request.GET.keys() ) == ['barcode', 'bibnum']:
-    #         if len(request.GET['bibnum']) == 8 and len(request.GET['barcode']) == 14:
-    #             return_val = True
-    #     log.debug( 'return_val, `%s`' % return_val )
-    #     return return_val
 
     def prepare_badrequest_response( self, request ):
         """ Prepares bad-request response when validation fails.

@@ -1,4 +1,8 @@
-# -*- coding: utf-8 -*-
+""""
+Contains code to display minimal json info.
+Triggered initially by views.info() when format=json param is given.
+Still active, but no longer used.
+"""
 
 import datetime, logging, pprint
 from easyrequest_hay_app import settings_app

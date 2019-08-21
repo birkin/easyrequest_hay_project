@@ -1,4 +1,7 @@
-# -*- coding: utf-8 -*-
+""""
+Ensures P.I.Info is removed for older records.
+Triggered by cron job.
+"""
 
 import datetime, json, logging, os, sys
 import django

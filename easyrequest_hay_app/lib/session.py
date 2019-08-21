@@ -1,4 +1,9 @@
-# -*- coding: utf-8 -*-
+""""
+TODO: remove this and the single call to it.
+This was originally used when lots of data was stored in the session,
+  but that architecture was replaced by quickly creating a shortlink and storing essential data temporarily in the db.
+Triggered initially by views.confirm()
+"""
 
 import logging, pprint
 
@@ -30,11 +35,3 @@ class SessionHelper( object ):
             request.session[key] = ''
         log.debug( 'request.session after initialization, ```%s```' % pprint.pformat(request.session.items()) )
         return
-
-    # def update_session( self, request, key, val ):
-    #     """ Updates session value.
-    #         Called by views.time_period() """
-    #     assert key in self.item_info_keys + self.patron_info_keys + self.other_info_keys
-    #     request.session[key] = val
-    #     log.debug( 'request.session after update, ```%s```' % pprint.pformat(request.session.items()) )
-    #     return
