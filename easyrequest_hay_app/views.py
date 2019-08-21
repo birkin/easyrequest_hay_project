@@ -122,15 +122,36 @@ def processor( request ):
     log.debug( 'starting processor(); request.__dict__, ```%s```' % request.__dict__ )
     millennium = Millennium()
     aeon_url_bldr = AeonUrlBuilder()
+    emailer = Emailer()
     shortlink = request.GET['shortlink']
     log.debug( 'shortlink, `%s`' % shortlink )
     millennium.prep_item_data( shortlink )
     if millennium.item_id:  # if we couldn't get an item-id, we can't place a hold
         millennium.call_place_hold()
-    # aeon_url_bldr.make_millennium_note( millennium.item_id )
+    emailer.run_send_check( patron_dct, item_dct, millennium.id, millennium.hold_status )
     aeon_url_bldr.make_millennium_note( millennium.item_id, millennium.item_barcode, millennium.patron_barcode, millennium.hold_status )
     aeon_url = aeon_url_bldr.build_aeon_url( shortlink )
     return HttpResponseRedirect( aeon_url )
+
+
+# def processor( request ):
+#     """ Behind-the-scenes url which handles item request...
+#         - Gets item-id.
+#         - Attempts to place hold in Sierra.
+#         - Redirects user to Aeon.
+#         Triggered after a successful shib_login (along with patron-api lookup) """
+#     log.debug( 'starting processor(); request.__dict__, ```%s```' % request.__dict__ )
+#     millennium = Millennium()
+#     aeon_url_bldr = AeonUrlBuilder()
+#     shortlink = request.GET['shortlink']
+#     log.debug( 'shortlink, `%s`' % shortlink )
+#     millennium.prep_item_data( shortlink )
+#     if millennium.item_id:  # if we couldn't get an item-id, we can't place a hold
+#         millennium.call_place_hold()
+#     # aeon_url_bldr.make_millennium_note( millennium.item_id )
+#     aeon_url_bldr.make_millennium_note( millennium.item_id, millennium.item_barcode, millennium.patron_barcode, millennium.hold_status )
+#     aeon_url = aeon_url_bldr.build_aeon_url( shortlink )
+#     return HttpResponseRedirect( aeon_url )
 
 
 def problem( request ):
