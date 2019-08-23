@@ -57,7 +57,7 @@ def confirm( request ):
     """ Triggered by user clicking on an Annex-Hay Josiah `request-access` link.
         Stores referring url, bib, and item-barcode to db.
         Presents shib and non-shib proceed buttons on confirmation screen. """
-    log.debug( 'request.__dict__, ```%s```' % request.__dict__ )
+    log.debug( f'request.__dict__, ```{ pprint.pformat(request.__dict__) }```' )
     if validator.validate_source(request) is False or validator.validate_params(request) is False:
         resp = validator.prepare_badrequest_response( request )
     else:
@@ -127,7 +127,7 @@ def processor( request ):
     mill_hlpr.prep_item_data( shortlink )
     if mill_hlpr.item_id:  # if we couldn't get an item-id, we can't place a hold
         mill_hlpr.call_place_hold()
-    emailer.run_send_check( mill_hlpr.id, mill_hlpr.hold_status, shortlink )
+    emailer.run_send_check( mill_hlpr.item_id, mill_hlpr.hold_status, shortlink )
     aeon_url_bldr.make_millennium_note( mill_hlpr.item_id, mill_hlpr.item_barcode, mill_hlpr.patron_barcode, mill_hlpr.hold_status )
     aeon_url = aeon_url_bldr.build_aeon_url( shortlink )
     return HttpResponseRedirect( aeon_url )

@@ -3,33 +3,33 @@ Contains code for checking whether a 'problem' email needs to be sent to staff, 
 Triggered initially by views.processor()
 """
 
-import logging
+import json, logging
 
 from django.core.mail import EmailMessage
+from easyrequest_hay_app import settings_app
+from easyrequest_hay_app.models import ItemRequest
 
 
 log = logging.getLogger(__name__)
 
 
-class Emailer():
+class Emailer:
 
     def __init__( self ):
-        self.EMAIL_FROM
-        self.EMAIL_REPLY_TO
-        self.EMAIL_TO
+        self.email_subject = 'easyrequest_hay auto-annex-request failure'
 
-    def run_send_check( self, millennium_id, millennium_hold_status, shortlink ):
+    def run_send_check( self, millennium_item_id, millennium_hold_status, shortlink ):
         """ Checks to see if problem-email to staff needs to be sent, and sends it.
             Called by views.processor() """
-        if item_id and hold_status:  ## happy path
+        if millennium_item_id and millennium_hold_status:  ## happy path
             log.debug( 'no need to send staff email' )
             return
         else:
             itmrqst = ItemRequest.objects.get( short_url_segment=shortlink )
             item_json = itmrqst.full_url_params  # json
             patron_json = self.extract_basic_patron_info( json.loads(itmrqst.patron_info) )
-            self.email_staff()
-            log.debug( 'staff emailed' )
+            self.email_staff( patron_json, item_json )
+            log.debug( 'email attempt complete' )
         return
 
     def extract_basic_patron_info( self, patron_dct ):
@@ -44,7 +44,7 @@ class Emailer():
             'lastname': patron_dct['lastname'],
             'patron_barcode': patron_dct['patron_barcode']
             }
-        patron_json = json.dumps( sub_dct, sort_key=True, indent=2 )
+        patron_json = json.dumps( sub_dct, sort_keys=True, indent=2 )
         log.debug( f'patron_json, ```{patron_json}```' )
         return patron_json
 
@@ -53,9 +53,9 @@ class Emailer():
             Called by run_send_check() """
         try:
             body = self.build_email_body( patron_json, item_json )
-            ffrom = self.EMAIL_FROM  # `from` reserved
-            to = [ self.EMAIL_TO ]
-            extra_headers = { 'Reply-To': self.EMAIL_REPLY_TO }
+            ffrom = settings_app.STAFF_EMAIL_FROM  # `from` reserved
+            to = [ settings_app.STAFF_EMAIL_TO ]
+            extra_headers = { 'Reply-To': settings_app.STAFF_EMAIL_REPLYTO }
             email = EmailMessage( self.email_subject, body, ffrom, to, headers=extra_headers )
             email.send()
             log.debug( 'mail sent' )
@@ -89,4 +89,4 @@ FYI, the patron info...
 '''
         ## end def build_email_body()
 
-    ## end class Emailer()
+    ## end class Emailer
