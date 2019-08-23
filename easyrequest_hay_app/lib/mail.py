@@ -28,9 +28,9 @@ class Emailer():
             itmrqst = ItemRequest.objects.get( short_url_segment=shortlink )
             item_json = itmrqst.full_url_params  # json
             patron_json = self.extract_basic_patron_info( json.loads(itmrqst.patron_info) )
-            self.email_staff( )
-        pass
-
+            self.email_staff()
+            log.debug( 'staff emailed' )
+        return
 
     def extract_basic_patron_info( self, patron_dct ):
         """ Returns subset of captured patron data.

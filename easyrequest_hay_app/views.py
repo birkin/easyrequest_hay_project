@@ -10,6 +10,7 @@ from django.utils.http import urlquote as django_urlquote
 from easyrequest_hay_app.lib import info_view_helper, version_helper
 from easyrequest_hay_app.lib.aeon import AeonUrlBuilder
 from easyrequest_hay_app.lib.confirm_helper import ConfirmHelper, ConfirmHandlerHelper
+from easyrequest_hay_app.lib.mail import Emailer
 from easyrequest_hay_app.lib.millennium import Millennium
 from easyrequest_hay_app.lib.session import SessionHelper
 from easyrequest_hay_app.lib.shib_helper import ShibViewHelper
@@ -22,6 +23,7 @@ log = logging.getLogger(__name__)
 
 cnfrm_helper = ConfirmHelper()
 cnfrm_hndlr_helper = ConfirmHandlerHelper()
+emailer = Emailer()
 sess = SessionHelper()
 shib_view_helper = ShibViewHelper()
 stats_builder = StatsBuilder()
@@ -120,7 +122,6 @@ def processor( request ):
     log.debug( 'starting processor(); request.__dict__, ```%s```' % request.__dict__ )
     mill_hlpr = Millennium()
     aeon_url_bldr = AeonUrlBuilder()
-    emailer = Emailer()
     shortlink = request.GET['shortlink']
     log.debug( 'shortlink, `%s`' % shortlink )
     mill_hlpr.prep_item_data( shortlink )
