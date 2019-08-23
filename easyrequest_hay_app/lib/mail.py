@@ -53,6 +53,7 @@ class Emailer:
             Called by run_send_check() """
         try:
             body = self.build_email_body( patron_json, item_json )
+            # log.debug( f'body, ```{body}```' )
             ffrom = settings_app.STAFF_EMAIL_FROM  # `from` reserved
             to = [ settings_app.STAFF_EMAIL_TO ]
             extra_headers = { 'Reply-To': settings_app.STAFF_EMAIL_REPLYTO }
@@ -85,8 +86,10 @@ FYI, the patron info...
 
 {item_json}
 
-::: Annex Item-Requesting -- a service of the Brown University Library :::
+::: END :::
 '''
+        return body
+
         ## end def build_email_body()
 
     ## end class Emailer
