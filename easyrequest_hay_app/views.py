@@ -65,6 +65,7 @@ def confirm( request ):
         shortlink = cnfrm_helper.save_data( json.dumps(request.GET, sort_keys=True, indent=2) )
         context = cnfrm_helper.prepare_context( request.GET, shortlink )
         resp = cnfrm_helper.prepare_response( request, context )
+    log.debug( 'returning resp' )
     return resp
 
 
@@ -72,19 +73,18 @@ def confirm_handler( request ):
     """ Triggered by confirmation screen's `shib=yes/no` selection.
         If `shib=no`, builds Aeon url and redirects.
         Otherwise redirects to behind-the-scenes `shib_login` url, which will ultimately redirect, behind-the-scenes, to the `processor` url. """
+    log.debug( 'confirm_handler() begin' )
+    if validator.validate_source(request) is False or validator.validate_confirm_handler_params(request) is False:
+        return validator.prepare_badrequest_response( request )
     type_value = request.GET.get( 'type', '' ).lower()
-    log.debug( 'type_value, `%s`' % type_value )
     cnfrm_hndlr_helper.update_status( type_value, request.GET['shortlink'] )
     if type_value == 'brown shibboleth login':
         resp = HttpResponseRedirect( cnfrm_hndlr_helper.prep_shib_login_stepA(request) )
     elif type_value == 'non-brown login':
         resp = HttpResponseRedirect( cnfrm_hndlr_helper.make_aeon_url(request) )
     else:
-        referring_url = cnfrm_hndlr_helper.get_referring_url( request )
-        if referring_url:
-            resp = HttpResponseRedirect( cnfrm_hndlr_helper.get_referring_url(request) )
-        else:
-            resp = render( request, 'easyrequest_hay_app_templates/problem.html', {} )
+        resp = HttpResponseRedirect( cnfrm_hndlr_helper.get_referring_url(request) )
+    log.debug( 'returning resp' )
     return resp
 
 

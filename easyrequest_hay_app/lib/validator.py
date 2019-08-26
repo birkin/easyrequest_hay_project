@@ -22,7 +22,7 @@ class Validator( object ):
 
     def validate_source( self, request ):
         """ Ensures app is accessed from legit source.
-            Called by views.login() """
+            Called by views.confirm() """
         return_val = False
         if '127.0.0.1' in request.get_host() and project_settings.DEBUG == True:
             return_val = True
@@ -45,7 +45,7 @@ class Validator( object ):
 
     def validate_params( self, request ):
         """ Checks params.
-            Called by views.login()
+            Called by views.confirm()
             Note: `barcode` here is the item-barcode. """
         return_val = False
         if 'item_barcode' in request.GET.keys():
@@ -55,6 +55,15 @@ class Validator( object ):
                 if len(request.GET['item_bib']) > 0:
                     if len(request.GET['item_barcode']) > 0:
                         return_val = True
+        log.debug( 'return_val, `%s`' % return_val )
+        return return_val
+
+    def validate_confirm_handler_params( self, request ):
+        """ Checks params.
+            Called by views.confirm_handler() """
+        return_val = False
+        if 'shortkey' in request.GET.keys():
+            return_val = True
         log.debug( 'return_val, `%s`' % return_val )
         return return_val
 
