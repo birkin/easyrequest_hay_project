@@ -5,8 +5,8 @@ Contains helper class for view.confirm(), which displays the initial landing-pag
 
 import datetime, json, logging, os, pprint, urllib
 from django.core.urlresolvers import reverse
-from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseRedirect
-from django.shortcuts import render
+from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseRedirect, Http404
+from django.shortcuts import get_object_or_404, render
 from django.template import loader
 from easyrequest_hay_app.lib.aeon import AeonUrlBuilder
 from easyrequest_hay_app.lib.shib_helper import ShibLoginHelper
@@ -92,7 +92,13 @@ class ConfirmHandlerHelper( object ):
     def update_status( self, handle_type, shortlink ):
         """ Updates status, primarily for stats-tracking.
             Called by views.confirm_handler() """
-        itmrqst = ItemRequest.objects.get( short_url_segment=shortlink )
+        # itmrqst = ItemRequest.objects.get( short_url_segment=shortlink )
+        # itmrqst = get_object_or_404( ItemRequest, short_url_segment=shortlink )  # works (returns 404, but I want to log this)
+        try:
+            itmrqst = ItemRequest.objects.get( short_url_segment=shortlink )
+        except:
+            log.warning( f'no item found for shortlink, `{shortlink}`; returning 404.' )
+            raise Http404( 'Not Found' )
         if handle_type == 'brown shibboleth login':
             status = 'to_aeon_via_shib'
         elif handle_type == 'non-brown login':
@@ -125,7 +131,8 @@ class ConfirmHandlerHelper( object ):
         shortlink = request.GET['shortlink']
         item_request = ItemRequest.objects.get( short_url_segment=shortlink )
         item_dct = json.loads( item_request.full_url_params )
-        referring_url = item_dct['referring_url']
+        # referring_url = item_dct['referring_url']
+        referring_url = item_dct.get( 'referring_url', '' )
         log.debug( 'referring_url ```%s```' % referring_url )
         return referring_url
 
