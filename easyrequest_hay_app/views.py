@@ -88,22 +88,6 @@ def confirm_handler( request ):
     return resp
 
 
-# def confirm_handler( request ):
-#     """ Triggered by confirmation screen's `shib=yes/no` selection.
-#         If `shib=no`, builds Aeon url and redirects.
-#         Otherwise redirects to behind-the-scenes `shib_login` url, which will ultimately redirect, behind-the-scenes, to the `processor` url. """
-#     type_value = request.GET.get( 'type', '' ).lower()
-#     log.debug( 'type_value, `%s`' % type_value )
-#     cnfrm_hndlr_helper.update_status( type_value, request.GET['shortlink'] )
-#     if type_value == 'brown shibboleth login':
-#         resp = HttpResponseRedirect( cnfrm_hndlr_helper.prep_shib_login_stepA(request) )
-#     elif type_value == 'non-brown login':
-#         resp = HttpResponseRedirect( cnfrm_hndlr_helper.make_aeon_url(request) )
-#     else:
-#         resp = HttpResponseRedirect( cnfrm_hndlr_helper.get_referring_url(request) )
-#     return resp
-
-
 def shib_login( request ):
     """ Redirects to shib-SP-login url.
         Specifies the post-login url as the `shib_login_handler` url. """
@@ -160,15 +144,15 @@ def processor( request ):
 #         - Redirects user to Aeon.
 #         Triggered after a successful shib_login (along with patron-api lookup) """
 #     log.debug( 'starting processor(); request.__dict__, ```%s```' % request.__dict__ )
-#     millennium = Millennium()
+#     mill_hlpr = Millennium()
 #     aeon_url_bldr = AeonUrlBuilder()
 #     shortlink = request.GET['shortlink']
 #     log.debug( 'shortlink, `%s`' % shortlink )
-#     millennium.prep_item_data( shortlink )
-#     if millennium.item_id:  # if we couldn't get an item-id, we can't place a hold
-#         millennium.call_place_hold()
-#     # aeon_url_bldr.make_millennium_note( millennium.item_id )
-#     aeon_url_bldr.make_millennium_note( millennium.item_id, millennium.item_barcode, millennium.patron_barcode, millennium.hold_status )
+#     mill_hlpr.prep_item_data( shortlink )
+#     if mill_hlpr.item_id:  # if we couldn't get an item-id, we can't place a hold
+#         mill_hlpr.call_place_hold()
+#     emailer.run_send_check( mill_hlpr.item_id, mill_hlpr.hold_status, shortlink )
+#     aeon_url_bldr.make_millennium_note( mill_hlpr.item_id, mill_hlpr.item_barcode, mill_hlpr.patron_barcode, mill_hlpr.hold_status )
 #     aeon_url = aeon_url_bldr.build_aeon_url( shortlink )
 #     return HttpResponseRedirect( aeon_url )
 
