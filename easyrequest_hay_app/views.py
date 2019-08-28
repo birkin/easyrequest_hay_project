@@ -74,6 +74,7 @@ def confirm_handler( request ):
         If `shib=no`, builds Aeon url and redirects.
         Otherwise redirects to behind-the-scenes `shib_login` url, which will ultimately redirect, behind-the-scenes, to the `processor` url. """
     log.debug( 'confirm_handler() begin' )
+    log.debug( f'request.__dict__, ```{ pprint.pformat(request.__dict__) }```' )
     if validator.validate_source(request) is False or validator.validate_confirm_handler_params(request) is False:
         return validator.prepare_badrequest_response( request )
     type_value = request.GET.get( 'type', '' ).lower()

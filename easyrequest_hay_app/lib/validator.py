@@ -62,7 +62,7 @@ class Validator( object ):
         """ Checks params.
             Called by views.confirm_handler() """
         return_val = False
-        if 'shortkey' in request.GET.keys():
+        if 'shortlink' in request.GET.keys():
             return_val = True
         log.debug( 'return_val, `%s`' % return_val )
         return return_val
@@ -75,6 +75,7 @@ class Validator( object ):
             'help_email': self.EMAIL_AUTH_HELP,
         }
         bad_resp = HttpResponseBadRequest( template.render(context, request) )
+        log.debug( 'returning bad-request response' )
         return bad_resp
 
     # end class Validator
