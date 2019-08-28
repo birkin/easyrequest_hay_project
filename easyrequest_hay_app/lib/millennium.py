@@ -54,14 +54,30 @@ class Millennium( object ):
         log.debug( 'item_id, `%s`' % self.item_id )
         return
 
+    # def hit_availability_api( self, bibnum ):
+    #     """ Returns availability-api dct.
+    #         Called by get_item_id() """
+    #     avail_dct = {}
+    #     availability_api_url = '%sbib/%s' % ( self.AVAILABILITY_API_URL_ROOT, bibnum )
+    #     log.debug( 'availability_api_url, ```%s```' % availability_api_url )
+    #     try:
+    #         r = requests.get( availability_api_url )
+    #         avail_dct = r.json()
+    #         log.debug( 'partial availability-api-response, `%s`' % pprint.pformat(avail_dct)[0:200] )
+    #     except:
+    #         log.exception( 'problem hitting availability-service; traceback follows, but processing will continue' )
+    #     log.debug( 'avail_dct, ```%s```' % avail_dct )
+    #     return avail_dct
+
     def hit_availability_api( self, bibnum ):
         """ Returns availability-api dct.
             Called by get_item_id() """
         avail_dct = {}
-        availability_api_url = '%sbib/%s' % ( self.AVAILABILITY_API_URL_ROOT, bibnum )
+        # availability_api_url = '%sbib/%s' % ( self.AVAILABILITY_API_URL_ROOT, bibnum )
+        availability_api_url = f'{self.AVAILABILITY_API_URL_ROOT}/v2/bib_items/{bibnum}/'
         log.debug( 'availability_api_url, ```%s```' % availability_api_url )
         try:
-            r = requests.get( availability_api_url )
+            r = requests.get( availability_api_url, headers={'user-agent': settings_app.USER_AGENT}, timeout=15 )
             avail_dct = r.json()
             log.debug( 'partial availability-api-response, `%s`' % pprint.pformat(avail_dct)[0:200] )
         except:
@@ -74,16 +90,30 @@ class Millennium( object ):
             Called by get_item_id() """
         item_id = None
         try:
-            results = avail_dct['response']['backend_response']
-            for result in results:
-                items = result['items_data']
-                for item in items:
-                    if item_barcode == item['barcode']:
-                        item_id = item['item_id'][:-1]  # removes trailing check-digit
+            items = avail_dct['response']['items']
+            for item in items:
+                if item_barcode == item['barcode']:
+                    item_id = item['item_id'][:-1]  # removes trailing check-digit
         except:
             log.exception( 'problem getting item_id; traceback follows, but processing will continue' )
         log.debug( 'item_id, `%s`' % item_id )
         return item_id
+
+    # def extract_item_id( self, avail_dct, item_barcode ):
+    #     """ Uses barcode to get item_id.
+    #         Called by get_item_id() """
+    #     item_id = None
+    #     try:
+    #         results = avail_dct['response']['backend_response']
+    #         for result in results:
+    #             items = result['items_data']
+    #             for item in items:
+    #                 if item_barcode == item['barcode']:
+    #                     item_id = item['item_id'][:-1]  # removes trailing check-digit
+    #     except:
+    #         log.exception( 'problem getting item_id; traceback follows, but processing will continue' )
+    #     log.debug( 'item_id, `%s`' % item_id )
+    #     return item_id
 
     def call_place_hold( self ):
         """ Calls lib to place hold.
