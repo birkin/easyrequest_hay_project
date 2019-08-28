@@ -62,7 +62,7 @@ class Validator( object ):
         """ Checks params.
             Called by views.confirm_handler() """
         return_val = False
-        if 'shortkey' in request.GET.keys():
+        if 'shortlink' in request.GET.keys():
             return_val = True
         log.debug( 'return_val, `%s`' % return_val )
         return return_val
