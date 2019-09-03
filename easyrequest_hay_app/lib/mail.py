@@ -55,7 +55,7 @@ class Emailer:
             body = self.build_email_body( patron_json, item_json )
             # log.debug( f'body, ```{body}```' )
             ffrom = settings_app.STAFF_EMAIL_FROM  # `from` reserved
-            to = [ settings_app.STAFF_EMAIL_TO ]
+            to = settings_app.STAFF_EMAIL_TO  # list
             extra_headers = { 'Reply-To': settings_app.STAFF_EMAIL_REPLYTO }
             email = EmailMessage( self.email_subject, body, ffrom, to, headers=extra_headers )
             email.send()
