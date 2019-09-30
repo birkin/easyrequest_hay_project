@@ -30,29 +30,6 @@ stats_builder = StatsBuilder()
 validator = Validator()
 
 
-def bul_search( request ):
-    """ Triggered by user entering search term into banner-search-field.
-        Redirects query to search.library.brown.edu """
-    log.debug( 'request.__dict__, ```%s```' % request.__dict__ )
-    redirect_url = 'https://search.library.brown.edu?%s' % request.META['QUERY_STRING']
-    return HttpResponseRedirect( redirect_url )
-
-
-def info( request ):
-    """ Returns basic info about the easyrequest_hay webapp.
-        Triggered by root easyrequest_hay url. """
-    log.debug( 'request.__dict__, ```%s```' % request.__dict__ )
-    start = datetime.datetime.now()
-    if request.GET.get('format', '') == 'json':
-        context = info_view_helper.build_json_context( start, request.scheme, request.META['HTTP_HOST'], request.META.get('REQUEST_URI', request.META['PATH_INFO'])  )
-        context_json = json.dumps(context, sort_keys=True, indent=2)
-        resp = HttpResponse( context_json, content_type='application/javascript; charset=utf-8' )
-    else:
-        context = {}
-        resp = render( request, 'easyrequest_hay_app_templates/info.html', context )
-    return resp
-
-
 def confirm( request ):
     """ Triggered by user clicking on an Annex-Hay Josiah `request-access` link.
         Stores referring url, bib, and item-barcode to db.
@@ -130,6 +107,7 @@ def processor( request ):
     shortlink = request.GET['shortlink']
     log.debug( 'shortlink, `%s`' % shortlink )
     sierra_hlpr.prep_item_data( shortlink )
+    1/0
     if sierra_hlpr.item_id:  # if we couldn't get an item-id, we can't place a hold
         sierra_hlpr.call_place_hold()
     if sierra_hlpr.run_problem_check() == 'problem':
@@ -180,6 +158,35 @@ def stats( request ):
     ## build response
     stats_builder.build_response( data, request.scheme, request.META['HTTP_HOST'], request.GET )
     return HttpResponse( stats_builder.output, content_type=u'application/javascript; charset=utf-8' )
+
+
+# ===========================
+# helpers
+# ===========================
+
+
+def bul_search( request ):
+    """ Triggered by user entering search term into banner-search-field.
+        Redirects query to search.library.brown.edu """
+    log.debug( 'request.__dict__, ```%s```' % request.__dict__ )
+    redirect_url = 'https://search.library.brown.edu?%s' % request.META['QUERY_STRING']
+    return HttpResponseRedirect( redirect_url )
+
+
+def info( request ):
+    """ Returns basic info about the easyrequest_hay webapp.
+        Triggered by root easyrequest_hay url. """
+    log.debug( 'request.__dict__, ```%s```' % request.__dict__ )
+    start = datetime.datetime.now()
+    if request.GET.get('format', '') == 'json':
+        context = info_view_helper.build_json_context( start, request.scheme, request.META['HTTP_HOST'], request.META.get('REQUEST_URI', request.META['PATH_INFO'])  )
+        context_json = json.dumps(context, sort_keys=True, indent=2)
+        resp = HttpResponse( context_json, content_type='application/javascript; charset=utf-8' )
+    else:
+        context = {}
+        resp = render( request, 'easyrequest_hay_app_templates/info.html', context )
+    return resp
+
 
 
 # ===========================
