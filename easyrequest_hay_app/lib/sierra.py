@@ -21,17 +21,17 @@ class SierraHelper( object ):
     """ Gets item_id and places hold. """
 
     def __init__( self ):
-        self.AVAILABILITY_API_URL_ROOT =
-        self.LOCATION_CODE =
-        self.SIERRA_API_URL_ROOT =
-        self.SIERRA_API_KEY =
-        self.SIERRA_API_SECRET =
+        self.AVAILABILITY_API_URL_ROOT = ''
+        self.LOCATION_CODE = ''
+        self.SIERRA_API_URL_ROOT = ''
+        self.SIERRA_API_KEY = ''
+        self.SIERRA_API_SECRET = ''
 
         self.item_bib = ''
         self.item_barcode = ''
         self.item_id = None
         self.patron_barcode = ''
-        self.patron_login_name = ''
+        # self.patron_login_name = ''
         self.hold_status = None  # updated in call_place_hold()
 
     def prep_item_data( self, shortlink ):
@@ -45,7 +45,7 @@ class SierraHelper( object ):
         self.item_bib = item_dct['item_bib']
         self.item_barcode = item_dct['item_barcode']
         self.patron_barcode = patron_dct['patron_barcode']
-        self.patron_login_name = patron_dct['firstname']
+        # self.patron_login_name = patron_dct['firstname']
         self.get_item_id()
         log.debug( 'bib, `%s`; item_barcode, `%s`; patron_barcode, `%s`' % (self.item_bib, self.item_barcode, self.patron_barcode) )
         log.debug( 'instance-info, ```%s```' % pprint.pformat(self.__dict__) )
