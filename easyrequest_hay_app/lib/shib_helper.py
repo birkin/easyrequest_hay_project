@@ -197,7 +197,8 @@ class ShibChecker( object ):
         if '127.0.0.1' in request.get_host() and project_settings.DEBUG == True:
             authZ_check = True
         else:
-            papi_helper.process_barcode( patron_barcode )
+            # papi_helper.process_barcode( patron_barcode )
+            papi_helper.process_barcode( patron_barcode, request.GET['shortlink'] )
             if papi_helper.ptype_validity is True:
                 authZ_check = True
         log.debug( 'authZ_check, `%s`' % authZ_check )

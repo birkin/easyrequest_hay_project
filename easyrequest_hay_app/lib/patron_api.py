@@ -7,6 +7,7 @@ Triggered initially by views.shib_login()
 import json, logging, os, pprint
 import requests
 from easyrequest_hay_app import settings_app
+from easyrequest_hay_app.models import ItemRequest
 
 
 log = logging.getLogger(__name__)
@@ -23,13 +24,16 @@ class PatronApiHelper( object ):
         self.PATRON_API_LEGIT_PTYPES = settings_app.PATRON_API_LEGIT_PTYPES
         self.ptype_validity = False
 
-    def process_barcode( self, patron_barcode ):
-        """ Hits patron-api and populates attributes.
+    def process_barcode( self, patron_barcode, shortlink ):
+        """ Hits patron-api to extract sierra-patron-id, and to check the p-type.
             Called by lib/shib_helper.ShibChecker.authorize() """
-        api_dct = self.hit_api( patron_barcode )
-        if api_dct is False:
+        papi_dct = self.hit_api( patron_barcode )
+        if papi_dct is False:
             return
-        self.ptype_validity = self.check_ptype( api_dct )
+        id_check = self.extract_sierra_patron_id( papi_dct, shortlink )
+        if id_check is False:
+            return
+        self.ptype_validity = self.check_ptype( papi_dct )
         if self.ptype_validity is False:
             return
         return
@@ -45,6 +49,25 @@ class PatronApiHelper( object ):
             log.error( 'exception, `%s`' % str(e) )
             return False
         return r.json()
+
+    def extract_sierra_patron_id( self, papi_dct, shortlink ):
+        """ Extracts and saves sierra-patron-id if possible.
+            Calle by process_barcode() """
+        id_check = False
+        try:
+            item_request = ItemRequest.objects.get( short_url_segment=shortlink )
+            patron_dct = json.loads( item_request.patron_info )
+            log.debug( 'patron_dct, ```%s```' % pprint.pformat(patron_dct) )
+            if 'sierra_patron_id' not in patron_dct.keys():
+                sierra_patron_id = papi_dct['record_']['value'][1:]  # strips initial character from, eg, '=1234567'
+                patron_dct['sierra_patron_id'] = sierra_patron_id
+                item_request.patron_info = json.dumps( patron_dct, sort_keys=True, indent=2 )
+                item_request.save()
+                id_check = True
+        except:
+            log.exception( 'problem extracting or saving sierra-patron-id; traceback follows; returning `False`' )
+        log.debug( f'id_check, `{id_check}`' )
+        return id_check
 
     def check_ptype( self, api_dct ):
         """ Sees if ptype is valid.
