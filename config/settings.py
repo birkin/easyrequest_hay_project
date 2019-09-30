@@ -177,7 +177,7 @@ LOGGING = {
             'propagate': False,
             },
         'easyrequest_hay_app': {
-            'handlers': ['logfile', 'console'],
+            'handlers': ['logfile' ],
             'level': os.environ.get(u'EZRQST_HAY__LOG_LEVEL'),
             'propagate': False
         },
