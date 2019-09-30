@@ -124,18 +124,39 @@ def processor( request ):
         - Attempts to place hold in Sierra.
         - Redirects user to Aeon.
         Triggered after a successful shib_login (along with patron-api lookup) """
-    log.debug( 'starting processor(); request.__dict__, ```%s```' % request.__dict__ )
-    mill_hlpr = Millennium()
+    log.debug( f'starting processor(); request.__dict__, ```{request.__dict__}```' )
+    sierra_hlpr = Sierra_Helper()
     aeon_url_bldr = AeonUrlBuilder()
     shortlink = request.GET['shortlink']
     log.debug( 'shortlink, `%s`' % shortlink )
-    mill_hlpr.prep_item_data( shortlink )
-    if mill_hlpr.item_id:  # if we couldn't get an item-id, we can't place a hold
-        mill_hlpr.call_place_hold()
-    emailer.run_send_check( mill_hlpr.item_id, mill_hlpr.hold_status, shortlink )
-    aeon_url_bldr.make_millennium_note( mill_hlpr.item_id, mill_hlpr.item_barcode, mill_hlpr.patron_barcode, mill_hlpr.hold_status )
+    sierra_hlpr.prep_item_data( shortlink )
+    if sierra_hlpr.item_id:  # if we couldn't get an item-id, we can't place a hold
+        sierra_hlpr.call_place_hold()
+    if sierra_hlpr.run_problem_check() == 'problem':
+        emailer.send_staff_problem_email()
+    aeon_url_bldr.make_millennium_note( sierra_hlpr.item_id, sierra_hlpr.item_barcode, sierra_hlpr.patron_barcode, sierra_hlpr.hold_status )
     aeon_url = aeon_url_bldr.build_aeon_url( shortlink )
     return HttpResponseRedirect( aeon_url )
+
+
+# def processor( request ):
+#     """ Behind-the-scenes url which handles item request...
+#         - Gets item-id.
+#         - Attempts to place hold in Sierra.
+#         - Redirects user to Aeon.
+#         Triggered after a successful shib_login (along with patron-api lookup) """
+#     log.debug( 'starting processor(); request.__dict__, ```%s```' % request.__dict__ )
+#     mill_hlpr = Millennium()
+#     aeon_url_bldr = AeonUrlBuilder()
+#     shortlink = request.GET['shortlink']
+#     log.debug( 'shortlink, `%s`' % shortlink )
+#     mill_hlpr.prep_item_data( shortlink )
+#     if mill_hlpr.item_id:  # if we couldn't get an item-id, we can't place a hold
+#         mill_hlpr.call_place_hold()
+#     emailer.run_send_check( mill_hlpr.item_id, mill_hlpr.hold_status, shortlink )
+#     aeon_url_bldr.make_millennium_note( mill_hlpr.item_id, mill_hlpr.item_barcode, mill_hlpr.patron_barcode, mill_hlpr.hold_status )
+#     aeon_url = aeon_url_bldr.build_aeon_url( shortlink )
+#     return HttpResponseRedirect( aeon_url )
 
 
 def problem( request ):
