@@ -32,6 +32,7 @@ class SierraHelper( object ):
         self.item_id = None
         self.patron_barcode = ''
         # self.patron_login_name = ''
+        self.patron_sierra_id = ''
         self.hold_status = None  # updated in call_place_hold()
 
     def prep_item_data( self, shortlink ):
@@ -46,12 +47,12 @@ class SierraHelper( object ):
         self.item_barcode = item_dct['item_barcode']
         self.patron_barcode = patron_dct['patron_barcode']
         # self.patron_login_name = patron_dct['firstname']
-        self.get_item_id()
+        self.patron_sierra_id = patron_dct['sierra_patron_id']
         log.debug( 'bib, `%s`; item_barcode, `%s`; patron_barcode, `%s`' % (self.item_bib, self.item_barcode, self.patron_barcode) )
         log.debug( 'instance-info, ```%s```' % pprint.pformat(self.__dict__) )
         return
 
-    def manage_place_hold( self )
+    # def manage_place_hold( self )
 
     def get_token( self ):
         token = 'init'
