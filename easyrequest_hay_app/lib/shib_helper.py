@@ -73,10 +73,20 @@ class ShibViewHelper( object ):
             Called by views.shib_login_handler() """
         request.session['shib_login_error'] = 'Problem on authorization.'
         request.session['shib_authorized'] = False
-        redirect_url = '%s?shortlink=%s' % ( reverse('problem_url'), request.GET['shortlink'] )
+        redirect_url = reverse( 'problem_url' )
         log.debug( 'ShibViewHelper redirect_url, `%s`' % redirect_url )
         resp = HttpResponseRedirect( redirect_url )
         return resp
+
+    # def prep_login_redirect( self, request ):
+    #     """ Prepares redirect response-object to views.problem() on bad authZ (p-type problem).
+    #         Called by views.shib_login_handler() """
+    #     request.session['shib_login_error'] = 'Problem on authorization.'
+    #     request.session['shib_authorized'] = False
+    #     redirect_url = '%s?shortlink=%s' % ( reverse('problem_url'), request.GET['shortlink'] )
+    #     log.debug( 'ShibViewHelper redirect_url, `%s`' % redirect_url )
+    #     resp = HttpResponseRedirect( redirect_url )
+    #     return resp
 
     def build_processor_response( self, shortlink, shib_dct ):
         """ Saves user info & redirects to behind-the-scenes processor page.
