@@ -4,7 +4,7 @@ The resulting 'ptype' is checked for validity.
 Triggered initially by views.shib_login()
 """
 
-import json, logging, os, pprint
+import json, logging, os, pprint, time
 import requests
 from easyrequest_hay_app import settings_app
 from easyrequest_hay_app.models import ItemRequest
@@ -45,10 +45,27 @@ class PatronApiHelper( object ):
             r = requests.get( self.PATRON_API_URL, params={'patron_barcode': patron_barcode}, timeout=5, auth=(self.PATRON_API_BASIC_AUTH_USERNAME, self.PATRON_API_BASIC_AUTH_PASSWORD) )
             r.raise_for_status()  # will raise an http_error if not 200
             log.debug( 'r.content, ```%s```' % str(r.content) )
-        except Exception as e:
-            log.error( 'exception, `%s`' % str(e) )
-            return False
+        except:
+            log.exception( 'problem getting data for patron_barcode, `%s`; traceback follows; will try a 2nd time' % patron_barcode  )
+            time.sleep( 1 )
+            try:
+                r = requests.get( self.PATRON_API_URL, params={'patron_barcode': patron_barcode}, timeout=5, auth=(self.PATRON_API_BASIC_AUTH_USERNAME, self.PATRON_API_BASIC_AUTH_PASSWORD) )
+            except:
+                log.exception( 'problem on 2nd try getting patron-api data; traceback follows; return `False`' )
+                return False
         return r.json()
+
+    # def hit_api( self, patron_barcode ):
+    #     """ Runs web-query.
+    #         Called by process_barcode() """
+    #     try:
+    #         r = requests.get( self.PATRON_API_URL, params={'patron_barcode': patron_barcode}, timeout=10, auth=(self.PATRON_API_BASIC_AUTH_USERNAME, self.PATRON_API_BASIC_AUTH_PASSWORD) )
+    #         r.raise_for_status()  # will raise an http_error if not 200
+    #         log.debug( 'r.content, ```%s```' % str(r.content) )
+    #     except Exception as e:
+    #         log.error( 'exception, `%s`' % str(e) )
+    #         return False
+    #     return r.json()
 
     def extract_sierra_patron_id( self, papi_dct, shortlink ):
         """ Extracts and saves sierra-patron-id if possible.
@@ -59,7 +76,7 @@ class PatronApiHelper( object ):
             patron_dct = json.loads( item_request.patron_info )
             log.debug( 'patron_dct, ```%s```' % pprint.pformat(patron_dct) )
             if 'sierra_patron_id' not in patron_dct.keys():
-                sierra_patron_id = papi_dct['record_']['value'][1:]  # strips initial character from, eg, '=1234567'
+                sierra_patron_id = papi_dct['response']['record_']['value'][1:]  # strips initial character from, eg, '=1234567'
                 patron_dct['sierra_patron_id'] = sierra_patron_id
                 item_request.patron_info = json.dumps( patron_dct, sort_keys=True, indent=2 )
                 item_request.save()
