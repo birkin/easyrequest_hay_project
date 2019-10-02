@@ -35,7 +35,8 @@ def confirm( request ):
     """ Triggered by user clicking on an Annex-Hay Josiah `request-access` link.
         Stores referring url, bib, and item-barcode to db.
         Presents shib and non-shib proceed buttons on confirmation screen. """
-    log.debug( f'request.__dict__, ```{ pprint.pformat(request.__dict__) }```' )
+    # log.debug( f'request.__dict__, ```{ pprint.pformat(request.__dict__) }```' )
+    log.debug( f'request.__dict__, ```{ request.__dict__ }```' )
     if validator.validate_source(request) is False or validator.validate_params(request) is False:
         resp = validator.prepare_badrequest_response( request )
     else:
