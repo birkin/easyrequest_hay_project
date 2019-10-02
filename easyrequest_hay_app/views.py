@@ -14,6 +14,7 @@ from easyrequest_hay_app.lib.mail import Emailer
 from easyrequest_hay_app.lib.millennium import Millennium
 from easyrequest_hay_app.lib.session import SessionHelper
 from easyrequest_hay_app.lib.shib_helper import ShibViewHelper
+from easyrequest_hay_app.lib.sierra import SierraHelper
 from easyrequest_hay_app.lib.stats import StatsBuilder
 from easyrequest_hay_app.lib.validator import Validator
 from easyrequest_hay_app.models import ItemRequest
@@ -102,7 +103,7 @@ def processor( request ):
         - Redirects user to Aeon.
         Triggered after a successful shib_login (along with patron-api lookup) """
     log.debug( f'starting processor(); request.__dict__, ```{request.__dict__}```' )
-    sierra_hlpr = Sierra_Helper()
+    sierra_hlpr = SierraHelper()
     aeon_url_bldr = AeonUrlBuilder()
     shortlink = request.GET['shortlink']
     log.debug( 'shortlink, `%s`' % shortlink )
