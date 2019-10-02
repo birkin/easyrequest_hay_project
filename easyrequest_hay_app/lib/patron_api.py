@@ -23,6 +23,7 @@ class PatronApiHelper( object ):
         self.PATRON_API_BASIC_AUTH_PASSWORD = settings_app.PATRON_API_BASIC_AUTH_PASSWORD
         self.PATRON_API_LEGIT_PTYPES = settings_app.PATRON_API_LEGIT_PTYPES
         self.ptype_validity = False
+        self.id_check = False
 
     def process_barcode( self, patron_barcode, shortlink ):
         """ Hits patron-api to extract sierra-patron-id, and to check the p-type.
@@ -30,8 +31,8 @@ class PatronApiHelper( object ):
         papi_dct = self.hit_api( patron_barcode )
         if papi_dct is False:
             return
-        id_check = self.extract_sierra_patron_id( papi_dct, shortlink )
-        if id_check is False:
+        self.id_check = self.extract_sierra_patron_id( papi_dct, shortlink )
+        if self.id_check is False:
             return
         self.ptype_validity = self.check_ptype( papi_dct )
         if self.ptype_validity is False:
