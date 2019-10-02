@@ -17,7 +17,7 @@ from easyrequest_hay_app.models import ItemRequest
 
 
 log = logging.getLogger(__name__)
-papi_helper = PatronApiHelper()
+# papi_helper = PatronApiHelper()
 
 
 class ShibLoginHelper( object ):
@@ -204,14 +204,29 @@ class ShibChecker( object ):
         """ Returns boolean.
             Called by evaluate_shib_info() """
         authZ_check = False
+        papi_helper = PatronApiHelper()
+        papi_helper.process_barcode( patron_barcode, request.GET['shortlink'] )
         if '127.0.0.1' in request.get_host() and project_settings.DEBUG == True:
             authZ_check = True
         else:
             # papi_helper.process_barcode( patron_barcode )
-            papi_helper.process_barcode( patron_barcode, request.GET['shortlink'] )
-            if papi_helper.ptype_validity is True:
+            if papi_helper.ptype_validity is True and papi_helper.id_check is True:
                 authZ_check = True
         log.debug( 'authZ_check, `%s`' % authZ_check )
         return authZ_check
+
+    # def authorized( self, patron_barcode, request ):
+    #     """ Returns boolean.
+    #         Called by evaluate_shib_info() """
+    #     authZ_check = False
+    #     if '127.0.0.1' in request.get_host() and project_settings.DEBUG == True:
+    #         authZ_check = True
+    #     else:
+    #         # papi_helper.process_barcode( patron_barcode )
+    #         papi_helper.process_barcode( patron_barcode, request.GET['shortlink'] )
+    #         if papi_helper.ptype_validity is True:
+    #             authZ_check = True
+    #     log.debug( 'authZ_check, `%s`' % authZ_check )
+    #     return authZ_check
 
     ## end class ShibChecker
