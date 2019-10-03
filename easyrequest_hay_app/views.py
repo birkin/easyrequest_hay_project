@@ -112,7 +112,7 @@ def processor( request ):
     sierra_hlpr.prep_item_data( shortlink )
     if sierra_hlpr.item_id:  # if we couldn't get an item-id, we can't place a hold
         log.debug( 'here' )
-        sierra_hlpr.call_place_hold()
+        sierra_hlpr.manage_place_hold()
     if sierra_hlpr.run_problem_check() == 'problem':
         emailer.send_staff_problem_email()
     aeon_url_bldr.make_millennium_note( sierra_hlpr.item_id, sierra_hlpr.item_barcode, sierra_hlpr.patron_barcode, sierra_hlpr.hold_status )

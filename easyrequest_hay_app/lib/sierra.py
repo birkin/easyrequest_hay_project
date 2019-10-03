@@ -52,7 +52,13 @@ class SierraHelper( object ):
         log.debug( 'instance-info, ```%s```' % pprint.pformat(self.__dict__) )
         return
 
-    # def manage_place_hold( self )
+    def manage_place_hold( self ):
+        """ Gets token and places hold.
+            Called by views.processor() """
+        token = self.get_token()
+        self.place_hold( token )
+        log.debug( 'manage_place_hold() done.' )
+        return
 
     def get_token( self ):
         token = 'init'
@@ -69,7 +75,7 @@ class SierraHelper( object ):
             log.exception( 'problem getting token; traceback follows' )
             raise Exception( 'exception getting token' )
 
-    def place_hold( self ):
+    def place_hold( self, token ):
         log.info( 'placing hold' )
         request_url = f'{SIERRA_API_URL}/patrons/{SIERRA_PATRON_ID}/holds/requests'
         custom_headers = {'Authorization': f'Bearer {token}' }
@@ -84,3 +90,8 @@ class SierraHelper( object ):
             log.exception( 'problem hitting api to request item; traceback follows' )
         log.debug( f'hold_status, `{self.hold_status}`' )
         return
+
+    def run_problem_check( self ):
+        return 'all good!'
+
+    ## end class SierraHelper()
