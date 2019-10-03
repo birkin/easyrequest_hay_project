@@ -77,6 +77,7 @@ class PatronApiHelper( object ):
         id_check = False
         try:
             item_request = ItemRequest.objects.get( short_url_segment=shortlink )
+            log.debug( f'item_request.patron_info, ```{item_request.patron_info}```' )
             patron_dct = json.loads( item_request.patron_info )
             log.debug( 'patron_dct, ```%s```' % pprint.pformat(patron_dct) )
             if 'sierra_patron_id' not in patron_dct.keys():
