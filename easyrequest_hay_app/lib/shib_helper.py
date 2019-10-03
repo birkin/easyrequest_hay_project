@@ -95,11 +95,28 @@ class ShibViewHelper( object ):
         log.debug( 'shortlink, `%s`' % shortlink )
         log.debug( 'shib_dct, ```%s```' % shib_dct )
         item_request = ItemRequest.objects.get( short_url_segment=shortlink )
+        if item_request.patron_info:
+            existing_dct = json.loads( item_request.patron_info )  # should be the sierra_patron_id from the patron-api lookup
+            shib_dct.update( existing_dct )
+            log.debug( f'shib_dct now, ```{shib_dct}```' )
         item_request.patron_info = json.dumps( shib_dct, sort_keys=True, indent=2 )
         item_request.save()
         redirect_url = '%s?shortlink=%s' % ( reverse('processor_url'), shortlink )
         log.debug( 'leaving ShibViewHelper; redirect_url `%s`' % redirect_url )
         return HttpResponseRedirect( redirect_url )
+
+    # def build_processor_response( self, shortlink, shib_dct ):
+    #     """ Saves user info & redirects to behind-the-scenes processor page.
+    #         Called by views.shib_login_handler() """
+    #     log.debug( 'starting build_response()' )
+    #     log.debug( 'shortlink, `%s`' % shortlink )
+    #     log.debug( 'shib_dct, ```%s```' % shib_dct )
+    #     item_request = ItemRequest.objects.get( short_url_segment=shortlink )
+    #     item_request.patron_info = json.dumps( shib_dct, sort_keys=True, indent=2 )
+    #     item_request.save()
+    #     redirect_url = '%s?shortlink=%s' % ( reverse('processor_url'), shortlink )
+    #     log.debug( 'leaving ShibViewHelper; redirect_url `%s`' % redirect_url )
+    #     return HttpResponseRedirect( redirect_url )
 
     ## end class ShibViewHelper
 
