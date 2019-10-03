@@ -71,25 +71,50 @@ class PatronApiHelper( object ):
     #         return False
     #     return r.json()
 
+
     def extract_sierra_patron_id( self, papi_dct, shortlink ):
         """ Extracts and saves sierra-patron-id if possible.
             Calle by process_barcode() """
         id_check = False
         try:
+            sierra_patron_id = papi_dct['response']['record_']['value'][1:]  # strips initial character from, eg, '=1234567'
+            log.debug( f'sierra_patron_id, `{sierra_patron_id}`' )
             item_request = ItemRequest.objects.get( short_url_segment=shortlink )
             log.debug( f'item_request.patron_info, ```{item_request.patron_info}```' )
-            patron_dct = json.loads( item_request.patron_info )
-            log.debug( 'patron_dct, ```%s```' % pprint.pformat(patron_dct) )
-            if 'sierra_patron_id' not in patron_dct.keys():
-                sierra_patron_id = papi_dct['response']['record_']['value'][1:]  # strips initial character from, eg, '=1234567'
+            if item_request.patron_info:
+                patron_dct = json.loads( item_request.patron_info )
+                log.debug( 'patron_dct, ```%s```' % pprint.pformat(patron_dct) )
                 patron_dct['sierra_patron_id'] = sierra_patron_id
-                item_request.patron_info = json.dumps( patron_dct, sort_keys=True, indent=2 )
-                item_request.save()
-                id_check = True
+            else:
+                patron_dct = { 'sierra_patron_id': sierra_patron_id }
+            item_request.patron_info = json.dumps( patron_dct, sort_keys=True, indent=2 )
+            item_request.save()
+            id_check = True
         except:
             log.exception( 'problem extracting or saving sierra-patron-id; traceback follows; returning `False`' )
         log.debug( f'id_check, `{id_check}`' )
         return id_check
+
+
+    # def extract_sierra_patron_id( self, papi_dct, shortlink ):
+    #     """ Extracts and saves sierra-patron-id if possible.
+    #         Calle by process_barcode() """
+    #     id_check = False
+    #     try:
+    #         item_request = ItemRequest.objects.get( short_url_segment=shortlink )
+    #         log.debug( f'item_request.patron_info, ```{item_request.patron_info}```' )
+    #         patron_dct = json.loads( item_request.patron_info )
+    #         log.debug( 'patron_dct, ```%s```' % pprint.pformat(patron_dct) )
+    #         if 'sierra_patron_id' not in patron_dct.keys():
+    #             sierra_patron_id = papi_dct['response']['record_']['value'][1:]  # strips initial character from, eg, '=1234567'
+    #             patron_dct['sierra_patron_id'] = sierra_patron_id
+    #             item_request.patron_info = json.dumps( patron_dct, sort_keys=True, indent=2 )
+    #             item_request.save()
+    #             id_check = True
+    #     except:
+    #         log.exception( 'problem extracting or saving sierra-patron-id; traceback follows; returning `False`' )
+    #     log.debug( f'id_check, `{id_check}`' )
+    #     return id_check
 
     def check_ptype( self, api_dct ):
         """ Sees if ptype is valid.
