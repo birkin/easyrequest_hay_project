@@ -110,8 +110,8 @@ def processor( request ):
     shortlink = request.GET['shortlink']
     log.debug( 'shortlink, `%s`' % shortlink )
     sierra_hlpr.prep_item_data( shortlink )
-    1/0
     if sierra_hlpr.item_id:  # if we couldn't get an item-id, we can't place a hold
+        log.debug( 'here' )
         sierra_hlpr.call_place_hold()
     if sierra_hlpr.run_problem_check() == 'problem':
         emailer.send_staff_problem_email()
