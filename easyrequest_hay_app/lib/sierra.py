@@ -33,7 +33,7 @@ class SierraHelper( object ):
         self.patron_barcode = ''
         # self.patron_login_name = ''
         self.patron_sierra_id = ''
-        self.hold_status = None  # updated in call_place_hold()
+        self.hold_status = ''  # updated in place_hold()
 
     def prep_item_data( self, shortlink ):
         """ Preps item-data from item_request.
@@ -79,5 +79,8 @@ class SierraHelper( object ):
             log.info( f'r.status_code, `{r.status_code}`' )
             log.info( f'r.url, `{r.url}`' )
             log.info( f'r.content, `{r.content}`' )
+            self.hold_status = 'request_placed'
         except:
             log.exception( 'problem hitting api to request item; traceback follows' )
+        log.debug( f'hold_status, `{self.hold_status}`' )
+        return
