@@ -42,19 +42,22 @@ class PatronApiHelper( object ):
     def hit_api( self, patron_barcode ):
         """ Runs web-query.
             Called by process_barcode() """
+        papi_dct = False
         try:
             r = requests.get( self.PATRON_API_URL, params={'patron_barcode': patron_barcode}, timeout=5, auth=(self.PATRON_API_BASIC_AUTH_USERNAME, self.PATRON_API_BASIC_AUTH_PASSWORD) )
             r.raise_for_status()  # will raise an http_error if not 200
+            papi_dct = r.json()
             log.debug( 'r.content, ```%s```' % str(r.content) )
         except:
             log.exception( 'problem getting data for patron_barcode, `%s`; traceback follows; will try a 2nd time' % patron_barcode  )
             time.sleep( 1 )
             try:
                 r = requests.get( self.PATRON_API_URL, params={'patron_barcode': patron_barcode}, timeout=5, auth=(self.PATRON_API_BASIC_AUTH_USERNAME, self.PATRON_API_BASIC_AUTH_PASSWORD) )
+                r.raise_for_status()  # will raise an http_error if not 200
+                papi_dct = r.json()
             except:
-                log.exception( 'problem on 2nd try getting patron-api data; traceback follows; return `False`' )
-                return False
-        return r.json()
+                log.exception( 'problem on 2nd try getting patron-api data; traceback follows; will return `False`' )
+        return papi_dct
 
     # def hit_api( self, patron_barcode ):
     #     """ Runs web-query.
