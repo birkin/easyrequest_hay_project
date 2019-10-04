@@ -9,9 +9,11 @@ Triggered initially by views.processor()
 """
 
 import json, logging, os, pprint
+
 import requests
 from easyrequest_hay_app import settings_app
 from easyrequest_hay_app.models import ItemRequest
+from requests.auth import HTTPBasicAuth
 
 
 log = logging.getLogger(__name__)
