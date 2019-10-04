@@ -97,7 +97,7 @@ class SierraHelper( object ):
         """ Gets token and places hold.
             Called by views.processor() """
         token = self.get_token()
-        self.place_hold( token, sierra_patron_id, sierra_item_id )
+        self.place_hold( token )
         log.debug( 'manage_place_hold() done.' )
         return
 
@@ -123,11 +123,13 @@ class SierraHelper( object ):
         # payload = '{"recordType": "i", "recordNumber": 10883346, "pickupLocation": "r0001", "note": "birkin_api_testing"}'  # ZMM item, https://library.brown.edu/availability_api/v2/bib_items/b1815113/
         payload_dct = {
             'recordType': 'i',
-            'recordNumber': self.item_id,
+            'recordNumber': self.item_id[1:],  # removes initial 'i'
             'pickupLocation': settings_app.HAY_LOCATION_CODE,
             'note': 'easyrequest_hay_api_request'
             }
+        log.debug( f'payload_dct, ```{pprint.pformat(payload_dct)}```' )
         payload = json.dumps( payload_dct )
+        log.debug( f'payload-json-string, ```{payload}```' )
         try:
             r = requests.post( request_url, headers=custom_headers, data=payload, timeout=30 )
             log.info( f'r.status_code, `{r.status_code}`' )
