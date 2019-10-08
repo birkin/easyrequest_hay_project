@@ -112,6 +112,7 @@ class SierraHelper( object ):
             log.debug( 'token r.content, ```%s```' % r.content )
             token = r.json()['access_token']
             log.debug( 'token, ```%s```' % token )
+            return token
         except:
             log.exception( 'problem getting token; traceback follows' )
             raise Exception( 'exception getting token' )
@@ -120,10 +121,11 @@ class SierraHelper( object ):
         log.info( 'placing hold' )
         request_url = f'{settings_app.SIERRA_API_ROOT_URL}/patrons/{self.patron_sierra_id}/holds/requests'
         custom_headers = {'Authorization': f'Bearer {token}' }
+        log.debug( f'custom_headers, ```{custom_headers}```' )
         # payload = '{"recordType": "i", "recordNumber": 10883346, "pickupLocation": "r0001", "note": "birkin_api_testing"}'  # ZMM item, https://library.brown.edu/availability_api/v2/bib_items/b1815113/
         payload_dct = {
             'recordType': 'i',
-            'recordNumber': self.item_id[1:],  # removes initial 'i'
+            'recordNumber': int(self.item_id[1:]),  # removes initial 'i'
             'pickupLocation': settings_app.HAY_LOCATION_CODE,
             'note': 'easyrequest_hay_api_request'
             }
@@ -135,7 +137,7 @@ class SierraHelper( object ):
             log.info( f'r.status_code, `{r.status_code}`' )
             log.info( f'r.url, `{r.url}`' )
             log.info( f'r.content, `{r.content}`' )
-            self.hold_status = 'request_placed'
+            # self.hold_status = 'request_placed'
         except:
             log.exception( 'problem hitting api to request item; traceback follows' )
         log.debug( f'hold_status, `{self.hold_status}`' )
