@@ -34,7 +34,7 @@ class SierraHelper( object ):
         self.patron_barcode = ''
         # self.patron_login_name = ''
         self.patron_sierra_id = ''
-        self.hold_status = ''  # updated in place_hold()
+        self.hold_status = 'problem'  # updated in place_hold()
 
     def prep_item_data( self, shortlink ):
         """ Preps item-data from item_request.
@@ -137,13 +137,20 @@ class SierraHelper( object ):
             log.info( f'r.status_code, `{r.status_code}`' )
             log.info( f'r.url, `{r.url}`' )
             log.info( f'r.content, `{r.content}`' )
-            # self.hold_status = 'request_placed'
+            if r.status_code == 200:
+                self.hold_status = 'hold_placed'
         except:
             log.exception( 'problem hitting api to request item; traceback follows' )
         log.debug( f'hold_status, `{self.hold_status}`' )
         return
 
     def run_problem_check( self ):
-        return 'all good!'
+        if self.hold_status == 'hold_placed':
+            return 'all good!'
+        ## query all requests for past half-hour where title == self.title
+        ## loop through them
+            ## if the admin-note indicates that a staff email was sent, enter into the current ItemRequest the admin note "Staff email already sent"
+
+
 
     ## end class SierraHelper()
