@@ -28,6 +28,7 @@ class SierraHelper( object ):
         # self.SIERRA_API_URL_ROOT = ''
         # self.SIERRA_API_KEY = ''
         # self.SIERRA_API_SECRET = ''
+        self.item_dct = {}  # populated by prep_item_data() for use in aeon.build_aeon_url()
         self.item_bib = ''
         self.item_barcode = ''
         self.item_id = None
@@ -40,7 +41,7 @@ class SierraHelper( object ):
         """ Preps item-data from item_request.
             Called by views.processor() """
         item_request = ItemRequest.objects.get( short_url_segment=shortlink )
-        item_dct = json.loads( item_request.full_url_params )
+        self.item_dct = item_dct = json.loads( item_request.full_url_params )
         log.debug( 'item_dct, ```%s```' % pprint.pformat(item_dct) )
         patron_dct = json.loads( item_request.patron_info )
         log.debug( 'patron_dct, ```%s```' % pprint.pformat(patron_dct) )
