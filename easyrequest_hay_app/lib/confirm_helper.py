@@ -87,7 +87,7 @@ class ConfirmHandlerHelper( object ):
 
     def __init__( self ):
         """ Holds env-vars. """
-        pass
+        self.item_dct = {}  # updated by update_status() for use in get_referring_url()
 
     def update_status( self, handle_type, shortlink ):
         """ Updates status, primarily for stats-tracking.
@@ -96,6 +96,7 @@ class ConfirmHandlerHelper( object ):
         # itmrqst = get_object_or_404( ItemRequest, short_url_segment=shortlink )  # works (returns 404, but I want to log this)
         try:
             itmrqst = ItemRequest.objects.get( short_url_segment=shortlink )
+            self.item_dct = json.loads( itmrqst.full_url_params )
         except:
             log.warning( f'no item found for shortlink, `{shortlink}`; returning 404.' )
             raise Http404( 'Not Found' )
@@ -125,14 +126,13 @@ class ConfirmHandlerHelper( object ):
         log.debug( 'aeon_url, ```%s```' % aeon_url )
         return aeon_url
 
-    def get_referring_url( self, request ):
+    def get_referring_url( self ):
         """ Returns referring url.
             Called by views.confirm_handler() """
-        shortlink = request.GET['shortlink']
-        item_request = ItemRequest.objects.get( short_url_segment=shortlink )
-        item_dct = json.loads( item_request.full_url_params )
-        # referring_url = item_dct['referring_url']
-        referring_url = item_dct.get( 'referring_url', '' )
+        # shortlink = request.GET['shortlink']
+        # item_request = ItemRequest.objects.get( short_url_segment=shortlink )
+        # item_dct = json.loads( item_request.full_url_params )
+        referring_url = self.item_dct.get( 'referring_url', '' )
         log.debug( 'referring_url ```%s```' % referring_url )
         return referring_url
 
