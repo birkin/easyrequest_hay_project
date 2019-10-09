@@ -10,7 +10,7 @@ class ItemRequest( models.Model ):
     """ Contains user & item data.
         Called by Processor(). """
     item_title = models.CharField( max_length=200, blank=True, null=True, help_text="used by Sierra & Aeon" )
-    status = models.CharField( max_length=200, blank=True, null=True )
+    status = models.CharField( max_length=200, blank=True, null=True )  # indicates shib, direct-to-aeon, or back-to-josiah
     source_url = models.TextField( blank=True, null=True )
     create_datetime = models.DateTimeField( auto_now_add=True, blank=True, null=True )  # blank=True for backward compatibility
     modified_datetime = models.DateTimeField( auto_now=True, blank=True, null=True )  # blank=True for backward compatibility

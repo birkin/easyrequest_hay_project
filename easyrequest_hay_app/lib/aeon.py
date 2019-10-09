@@ -29,10 +29,9 @@ class AeonUrlBuilder( object ):
         """ Sets the staff note when an item has been auto-requested through Millennium, or on failure.
             Called by views.processor() """
         now_str = datetime.datetime.now().strftime( '%Y-%b-%d-%a-%I:%M:%S%p' )  # '2018-Jan-23-Tue-03:41:35PM'
-        if item_id and hold_status:  ## happy path
+        if item_id and hold_status == 'hold_placed':  ## happy path
             note = 'Auto-requested via easyRequest-Hay at `%s`; item_id, `%s`' % ( now_str, item_id )
         else:
-            # note = f'UNABLE to auto-request Annex item in Sierra at `{now_str}`. Additional info: item_barcode, `{item_barcode}`; patron_barcode, `{patron_barcode}`'
             note = f'HAY STAFF: ({now_str}) Please request this Annex item for the patron. Additional info: item_barcode, `{item_barcode}`; patron_barcode, `{patron_barcode}`'
         self.aeon_params['SpecialRequest'] = note
         log.debug( f'staff-note, ```{self.aeon_params["SpecialRequest"]}```' )
