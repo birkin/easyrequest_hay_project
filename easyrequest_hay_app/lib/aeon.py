@@ -37,24 +37,27 @@ class AeonUrlBuilder( object ):
         log.debug( f'staff-note, ```{self.aeon_params["SpecialRequest"]}```' )
         return
 
-    # def make_millennium_note( self, item_id ):
-    #     """ Sets the staff note when an item has been auto-requested through Millennium.
-    #         Called by views.processor() """
-    #     now_str = datetime.datetime.now().strftime( '%Y-%b-%d-%a-%I:%M:%S%p' )  # '2018-Jan-23-Tue-03:41:35PM'
-    #     self.aeon_params['SpecialRequest'] = 'Auto-requested via easyRequest-Hay at `%s`; item_id, `%s`' % ( now_str, item_id )
-    #     return
+    # def build_aeon_url( self, shortlink ):
+    #     """ Saves data.
+    #         Called by views.time_period() """
+    #     itmrqst = ItemRequest.objects.get( short_url_segment=shortlink )
+    #     request_dct = json.loads( itmrqst.full_url_params )
+    #     self.update_params( request_dct )
+    #     aeon_url = '%s&%s' % ( self.aeon_root_url, urllib.parse.urlencode(self.aeon_params) )
+    #     log.debug( 'aeon_url, ```%s```' % aeon_url )
+    #     return aeon_url
 
-    def build_aeon_url( self, shortlink ):
+    def build_aeon_url( self, item_dct ):
         """ Saves data.
             Called by views.time_period() """
-        itmrqst = ItemRequest.objects.get( short_url_segment=shortlink )
-        request_dct = json.loads( itmrqst.full_url_params )
-        self.update_params( request_dct )
+        # itmrqst = ItemRequest.objects.get( short_url_segment=shortlink )
+        # request_dct = json.loads( itmrqst.full_url_params )
+        self.update_params( item_dct )
         aeon_url = '%s&%s' % ( self.aeon_root_url, urllib.parse.urlencode(self.aeon_params) )
         log.debug( 'aeon_url, ```%s```' % aeon_url )
         return aeon_url
 
-    def update_params( self, request_dct ):
+    def update_params( self, item_dct ):
         """ Updates data.
             Called by build_aeon_url() """
         self.aeon_params['CallNumber'] = request_dct['item_callnumber']
