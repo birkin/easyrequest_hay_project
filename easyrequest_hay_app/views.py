@@ -108,14 +108,14 @@ def processor( request ):
     aeon_url_bldr = AeonUrlBuilder()
     shortlink = request.GET['shortlink']
     log.debug( 'shortlink, `%s`' % shortlink )
-    sierra_hlpr.prep_item_data( shortlink )
+    sierra_hlpr.prep_item_data( shortlink )  # performs db lookup and contains instantiated orm object
     if sierra_hlpr.item_id:  # if we couldn't get an item-id, we can't place a hold
-        log.debug( 'here' )
         sierra_hlpr.manage_place_hold()
     if sierra_hlpr.run_problem_check() == 'problem':
         emailer.send_staff_problem_email()
     aeon_url_bldr.make_millennium_note( sierra_hlpr.item_id, sierra_hlpr.item_barcode, sierra_hlpr.patron_barcode, sierra_hlpr.hold_status )
-    aeon_url = aeon_url_bldr.build_aeon_url( shortlink )
+    # aeon_url = aeon_url_bldr.build_aeon_url( shortlink )
+    aeon_url = aeon_url_bldr.build_aeon_url( sierra_hlpr.item_dct )
     return HttpResponseRedirect( aeon_url )
 
 

@@ -122,7 +122,8 @@ class ConfirmHandlerHelper( object ):
             Called by views.confirm_handler() """
         aeon_url_bldr = AeonUrlBuilder()
         shortlink = request.GET['shortlink']
-        aeon_url = aeon_url_bldr.build_aeon_url( shortlink )
+        # aeon_url = aeon_url_bldr.build_aeon_url( shortlink )
+        aeon_url = aeon_url_bldr.build_aeon_url( item-dct-goes-here )
         log.debug( 'aeon_url, ```%s```' % aeon_url )
         return aeon_url
 
