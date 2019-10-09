@@ -60,13 +60,13 @@ class AeonUrlBuilder( object ):
     def update_params( self, item_dct ):
         """ Updates data.
             Called by build_aeon_url() """
-        self.aeon_params['CallNumber'] = request_dct['item_callnumber']
-        self.aeon_params['ItemAuthor'] = request_dct['item_author']
-        self.aeon_params['ItemPublisher'] = request_dct['item_publisher']
-        self.aeon_params['ItemTitle'] = request_dct['item_title']
-        self.aeon_params['Location'] = request_dct['item_location']
-        self.aeon_params['ItemInfo3'] = f'https://search.library.brown.edu/catalog/{request_dct["item_bib"]}'
-        self.aeon_params['ReferenceNumber'] = request_dct['item_bib']
+        self.aeon_params['CallNumber'] = item_dct['item_callnumber']
+        self.aeon_params['ItemAuthor'] = item_dct['item_author']
+        self.aeon_params['ItemPublisher'] = item_dct['item_publisher']
+        self.aeon_params['ItemTitle'] = item_dct['item_title']
+        self.aeon_params['Location'] = item_dct['item_location']
+        self.aeon_params['ItemInfo3'] = f'https://search.library.brown.edu/catalog/{item_dct["item_bib"]}'
+        self.aeon_params['ReferenceNumber'] = item_dct['item_bib']
         return
 
     ## end class AeonUrlBuilder()
