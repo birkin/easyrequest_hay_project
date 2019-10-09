@@ -23,7 +23,6 @@ from easyrequest_hay_app.models import ItemRequest
 log = logging.getLogger(__name__)
 
 cnfrm_helper = ConfirmHelper()
-cnfrm_hndlr_helper = ConfirmHandlerHelper()
 emailer = Emailer()
 sess = SessionHelper()
 shib_view_helper = ShibViewHelper()
@@ -52,9 +51,8 @@ def confirm_handler( request ):
     """ Triggered by confirmation screen's `shib=yes/no` selection.
         If `shib=no`, builds Aeon url and redirects.
         Otherwise redirects to behind-the-scenes `shib_login` url, which will ultimately redirect, behind-the-scenes, to the `processor` url. """
-    log.debug( 'confirm_handler() begin' )
-    # log.debug( f'request.__dict__, ```{ pprint.pformat(request.__dict__) }```' )
     log.debug( f'request.__dict__, ```{ request.__dict__ }```' )
+    cnfrm_hndlr_helper = ConfirmHandlerHelper()
     if validator.validate_source(request) is False or validator.validate_confirm_handler_params(request) is False:
         return validator.prepare_badrequest_response( request )
     type_value = request.GET.get( 'type', '' ).lower()
@@ -64,7 +62,8 @@ def confirm_handler( request ):
     elif type_value == 'non-brown login':
         resp = HttpResponseRedirect( cnfrm_hndlr_helper.make_aeon_url(request) )
     else:
-        resp = HttpResponseRedirect( cnfrm_hndlr_helper.get_referring_url(request) )
+        # resp = HttpResponseRedirect( cnfrm_hndlr_helper.get_referring_url(request) )
+        resp = HttpResponseRedirect( cnfrm_hndlr_helper.get_referring_url() )
     log.debug( 'returning resp' )
     return resp
 
