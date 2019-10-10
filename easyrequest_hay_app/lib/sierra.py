@@ -160,6 +160,9 @@ class SierraHelper( object ):
         if self.hold_status == 'hold_placed':
             pass
         else:  # hold-try failed, but was an email already recently sent?
+            current_notes = self.item_request.admin_notes  # TODO: disallow `null` in db
+            if current_notes is None:
+                current_notes = ''
             now_time = datetime.datetime.now()
             half_hour_ago =  now_time - datetime.timedelta( minutes=30 )
             ## query all requests for past half-hour where past-request.item-id == current-item.item-id
@@ -175,12 +178,12 @@ class SierraHelper( object ):
                         if poss_dup.admin_notes:
                             if 'will send staff-email' in poss_dup.admin_notes.lower():
                                 recent_email_sent = True
-                                updated_notes = 'Not sending staff-email re unable-to-request-via-sierra; already sent.' + '\n\n' + self.item_request.admin_notes
+                                updated_notes = 'Not sending staff-email re unable-to-request-via-sierra; already sent.' + '\n\n' + current_notes
                                 self.item_request.admin_notes = updated_notes.strip()
                                 break
             if recent_email_sent is False:
                 return_check = True
-                updated_notes = 'Will send staff-email re unable-to-request-via-sierra.' + '\n\n' + self.item_request.admin_notes
+                updated_notes = 'Will send staff-email re unable-to-request-via-sierra.' + '\n\n' + current_notes
                 self.item_request.admin_notes = updated_notes.strip()
             log.debug( f'updated admin notes, ```{self.item_request.admin_notes}```' )
         log.debug( f'return_check, `{return_check}`' )
