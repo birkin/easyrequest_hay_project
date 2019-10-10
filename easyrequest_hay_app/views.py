@@ -111,7 +111,8 @@ def processor( request ):
     sierra_hlpr.prep_item_data( shortlink )  # performs db lookup and contains instantiated orm object
     if sierra_hlpr.item_id:  # if we couldn't get an item-id, we can't place a hold
         sierra_hlpr.manage_place_hold()
-    if sierra_hlpr.run_problem_check() == 'problem':
+    if sierra_hlpr.send_email_check() is True:
+        1/0
         emailer.send_staff_problem_email()
     aeon_url_bldr.make_millennium_note( sierra_hlpr.item_id, sierra_hlpr.item_barcode, sierra_hlpr.patron_barcode, sierra_hlpr.hold_status )
     # aeon_url = aeon_url_bldr.build_aeon_url( shortlink )
