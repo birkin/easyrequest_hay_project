@@ -49,7 +49,7 @@ class Emailer:
     #     return patron_json
 
     def email_staff( self, patron_json, item_json ):
-        """ Emails staff problem allert.
+        """ Emails staff problem alert.
             Called by run_send_check() """
         try:
             body = self.build_email_body( patron_json, item_json )
