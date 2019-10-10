@@ -8,7 +8,7 @@ Contains code to:
 Triggered initially by views.processor()
 """
 
-import json, logging, os, pprint
+import datetime, json, logging, os, pprint
 
 import requests
 from easyrequest_hay_app import settings_app
@@ -172,11 +172,12 @@ class SierraHelper( object ):
                 if poss_dup_item_dct['item_barcode'] == self.item_barcode:
                     if poss_dup_patron_dct['patron_barcode'] == self.patron_barcode:
                         ## ok poss_dup _is_ a duplicate
-                        if 'will send staff-email' in poss_dup.admin_notes.lower():
-                            recent_email_sent = True
-                            updated_notes = 'Not sending staff-email re unable-to-request-via-sierra; already sent.' + '\n\n' + self.item_request.admin_notes
-                            self.item_request.admin_notes = updated_notes.strip()
-                            break
+                        if poss_dup.admin_notes:
+                            if 'will send staff-email' in poss_dup.admin_notes.lower():
+                                recent_email_sent = True
+                                updated_notes = 'Not sending staff-email re unable-to-request-via-sierra; already sent.' + '\n\n' + self.item_request.admin_notes
+                                self.item_request.admin_notes = updated_notes.strip()
+                                break
             if recent_email_sent is False:
                 return_check = True
                 updated_notes = 'Will send staff-email re unable-to-request-via-sierra.' + '\n\n' + self.item_request.admin_notes
