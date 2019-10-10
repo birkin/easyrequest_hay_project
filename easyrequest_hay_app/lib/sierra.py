@@ -29,10 +29,10 @@ class SierraHelper( object ):
         # self.SIERRA_API_KEY = ''
         # self.SIERRA_API_SECRET = ''
         self.item_request = None
-        self.item_dct = {}  # populated by prep_item_data() for use in aeon.build_aeon_url()
+        self.item_dct = {}  # populated by prep_item_data(); used by views.processor(), which passes this to aeon.build_aeon_url()
         self.item_bib = ''
         self.item_barcode = ''
-        self.item_id = None
+        self.item_id = None  # populated by get_item_id(); _no_ trailing check-digit
         self.item_title = ''
         self.patron_barcode = ''
         # self.patron_login_name = ''
@@ -43,7 +43,6 @@ class SierraHelper( object ):
         """ Preps item-data from item_request.
             Called by views.processor() """
         self.item_request = ItemRequest.objects.get( short_url_segment=shortlink )
-
         self.item_dct = item_dct = json.loads( self.item_request.full_url_params )
         log.debug( 'item_dct, ```%s```' % pprint.pformat(item_dct) )
         patron_dct = json.loads( self.item_request.patron_info )
@@ -92,6 +91,7 @@ class SierraHelper( object ):
             items = avail_dct['response']['items']
             for item in items:
                 if item_barcode == item['barcode']:
+                    self.item_dct['item_id_with_checkdigit'] = item['item_id']  # item_dct used in mail.email_staff() if necessary
                     item_id = item['item_id'][:-1]  # removes trailing check-digit
         except:
             log.exception( 'problem getting item_id; traceback follows, but processing will continue' )
