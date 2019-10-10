@@ -16,37 +16,37 @@ log = logging.getLogger(__name__)
 class Emailer:
 
     def __init__( self ):
-        self.email_subject = 'easyrequest_hay auto-annex-request failure'
+        self.email_subject = 'easyrequest_hay auto-annex-request unsuccessful'
 
-    def run_send_check( self, millennium_item_id, millennium_hold_status, shortlink ):
-        """ Checks to see if problem-email to staff needs to be sent, and sends it.
-            Called by views.processor() """
-        if millennium_item_id and millennium_hold_status:  ## happy path
-            log.debug( 'no need to send staff email' )
-            return
-        else:
-            itmrqst = ItemRequest.objects.get( short_url_segment=shortlink )
-            item_json = itmrqst.full_url_params  # json
-            patron_json = self.extract_basic_patron_info( json.loads(itmrqst.patron_info) )
-            self.email_staff( patron_json, item_json )
-            log.debug( 'email attempt complete' )
-        return
+    # def run_send_check( self, millennium_item_id, millennium_hold_status, shortlink ):
+    #     """ Checks to see if problem-email to staff needs to be sent, and sends it.
+    #         Called by views.processor() """
+    #     if millennium_item_id and millennium_hold_status:  ## happy path
+    #         log.debug( 'no need to send staff email' )
+    #         return
+    #     else:
+    #         itmrqst = ItemRequest.objects.get( short_url_segment=shortlink )
+    #         item_json = itmrqst.full_url_params  # json
+    #         patron_json = self.extract_basic_patron_info( json.loads(itmrqst.patron_info) )
+    #         self.email_staff( patron_json, item_json )
+    #         log.debug( 'email attempt complete' )
+    #     return
 
-    def extract_basic_patron_info( self, patron_dct ):
-        """ Returns subset of captured patron data.
-            Called by run_send_check() """
-        sub_dct = {
-            'HTTP_SHIBBOLETH_BROWNTYPE': patron_dct['HTTP_SHIBBOLETH_BROWNTYPE'],
-            'HTTP_SHIBBOLETH_DEPARTMENT': patron_dct['HTTP_SHIBBOLETH_DEPARTMENT'],
-            'email': patron_dct['email'],
-            'eppn': patron_dct['eppn'],
-            'firstname': patron_dct['firstname'],
-            'lastname': patron_dct['lastname'],
-            'patron_barcode': patron_dct['patron_barcode']
-            }
-        patron_json = json.dumps( sub_dct, sort_keys=True, indent=2 )
-        log.debug( f'patron_json, ```{patron_json}```' )
-        return patron_json
+    # def extract_basic_patron_info( self, patron_dct ):
+    #     """ Returns subset of captured patron data.
+    #         Called by run_send_check() """
+    #     sub_dct = {
+    #         'HTTP_SHIBBOLETH_BROWNTYPE': patron_dct['HTTP_SHIBBOLETH_BROWNTYPE'],
+    #         'HTTP_SHIBBOLETH_DEPARTMENT': patron_dct['HTTP_SHIBBOLETH_DEPARTMENT'],
+    #         'email': patron_dct['email'],
+    #         'eppn': patron_dct['eppn'],
+    #         'firstname': patron_dct['firstname'],
+    #         'lastname': patron_dct['lastname'],
+    #         'patron_barcode': patron_dct['patron_barcode']
+    #         }
+    #     patron_json = json.dumps( sub_dct, sort_keys=True, indent=2 )
+    #     log.debug( f'patron_json, ```{patron_json}```' )
+    #     return patron_json
 
     def email_staff( self, patron_json, item_json ):
         """ Emails staff problem allert.
@@ -72,7 +72,7 @@ class Emailer:
 
 This is an automated email from the easyRequest_Hay web-app.
 
-This was sent because a patron attempted to request an AnnexHay item, and the behind-the-scenes automated attempt to request the item (on behalf of the patron) through Sierra -- failed.
+This was sent because a patron requested an AnnexHay item, but the item could not be auto-requested (behind-the-scenes) from Sierra.
 
 The patron landed at the Aeon request form (where a staff note about the failure was auto-inserted).
 
