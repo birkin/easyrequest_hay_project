@@ -195,7 +195,7 @@ class SierraHelper( object ):
         """ Prepares subset of full patron info for hay-staff email.
             Called by views.processor() """
         email_patron_dct = {}
-        patron_dct = json.loads( item_request.patron_info )
+        patron_dct = json.loads( self.item_request.patron_info )
         target_key_segments = [ 'browntype', 'department', 'email', 'eppn', 'firstname', 'lastname', 'patron_barcode', 'sierra_patron_id' ]
         for key in patron_dct.keys():
             for segment in target_key_segments:
