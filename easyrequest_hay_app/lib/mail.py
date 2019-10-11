@@ -74,7 +74,7 @@ This is an automated email from the easyRequest_Hay web-app.
 
 This was sent because a patron requested an AnnexHay item, but the item could not be auto-requested (behind-the-scenes) from Sierra.
 
-The patron landed at the Aeon request form (where a staff note about the failure was auto-inserted).
+The patron landed at the Aeon request form (where a staff note about Sierra was auto-inserted).
 
 (Note that the patron may or may not have actually submitted the Aeon request.)
 
