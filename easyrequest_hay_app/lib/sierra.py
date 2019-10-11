@@ -180,11 +180,13 @@ class SierraHelper( object ):
                                 recent_email_sent = True
                                 updated_notes = 'Not sending staff-email re unable-to-request-via-sierra; already sent.' + '\n\n' + current_notes
                                 self.item_request.admin_notes = updated_notes.strip()
+                                self.item_request.save()
                                 break
             if recent_email_sent is False:
                 return_check = True
                 updated_notes = 'Will send staff-email re unable-to-request-via-sierra.' + '\n\n' + current_notes
                 self.item_request.admin_notes = updated_notes.strip()
+                self.item_request.save()
             log.debug( f'updated admin notes, ```{self.item_request.admin_notes}```' )
         log.debug( f'return_check, `{return_check}`' )
         return return_check
