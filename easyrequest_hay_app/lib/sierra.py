@@ -191,4 +191,18 @@ class SierraHelper( object ):
         log.debug( f'return_check, `{return_check}`' )
         return return_check
 
+    def prep_email_patron_json( self ):
+        """ Prepares subset of full patron info for hay-staff email.
+            Called by views.processor() """
+        email_patron_dct = {}
+        patron_dct = json.loads( item_request.patron_info )
+        target_key_segments = [ 'browntype', 'department', 'email', 'eppn', 'firstname', 'lastname', 'patron_barcode', 'sierra_patron_id' ]
+        for key in patron_dct.keys():
+            for segment in target_key_segments:
+                if segment in key.lower():
+                    email_patron_dct[key] = patron_dct[key]
+        email_patron_json = json.dumps( email_patron_dct, sort_keys=True, indent=2 )
+        log.debug( f'email_patron_json, ```{email_patron_json}```' )
+        return email_patron_json
+
     ## end class SierraHelper()
