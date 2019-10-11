@@ -113,7 +113,7 @@ def processor( request ):
         sierra_hlpr.manage_place_hold()
     if sierra_hlpr.send_email_check() is True:
         item_json = json.dumps(sierra_hlpr.item_dct, sort_keys=True, indent=2)
-        emailer.send_staff_problem_email( sierra_hlpr.item_request.patron_info, item_json )
+        emailer.email_staff( sierra_hlpr.item_request.patron_info, item_json )
     aeon_url_bldr.make_millennium_note( sierra_hlpr.item_id, sierra_hlpr.item_barcode, sierra_hlpr.patron_barcode, sierra_hlpr.hold_status )
     # aeon_url = aeon_url_bldr.build_aeon_url( shortlink )
     aeon_url = aeon_url_bldr.build_aeon_url( sierra_hlpr.item_dct )
