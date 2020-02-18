@@ -44,7 +44,7 @@ class PatronApiHelper( object ):
             Called by process_barcode() """
         papi_dct = False
         try:
-            r = requests.get( self.PATRON_API_URL, params={'patron_barcode': patron_barcode}, timeout=5, auth=(self.PATRON_API_BASIC_AUTH_USERNAME, self.PATRON_API_BASIC_AUTH_PASSWORD) )
+            r = requests.get( self.PATRON_API_URL, params={'patron_barcode': patron_barcode}, timeout=10, auth=(self.PATRON_API_BASIC_AUTH_USERNAME, self.PATRON_API_BASIC_AUTH_PASSWORD) )
             r.raise_for_status()  # will raise an http_error if not 200
             papi_dct = r.json()
             log.debug( 'r.content, ```%s```' % str(r.content) )
@@ -52,7 +52,7 @@ class PatronApiHelper( object ):
             log.exception( 'problem getting data for patron_barcode, `%s`; traceback follows; will try a 2nd time' % patron_barcode  )
             time.sleep( 1 )
             try:
-                r = requests.get( self.PATRON_API_URL, params={'patron_barcode': patron_barcode}, timeout=5, auth=(self.PATRON_API_BASIC_AUTH_USERNAME, self.PATRON_API_BASIC_AUTH_PASSWORD) )
+                r = requests.get( self.PATRON_API_URL, params={'patron_barcode': patron_barcode}, timeout=10, auth=(self.PATRON_API_BASIC_AUTH_USERNAME, self.PATRON_API_BASIC_AUTH_PASSWORD) )
                 r.raise_for_status()  # will raise an http_error if not 200
                 papi_dct = r.json()
             except:
