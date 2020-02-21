@@ -146,8 +146,8 @@ class SierraHelper( object ):
             log.info( f'r.status_code, `{r.status_code}`' )
             log.info( f'r.url, `{r.url}`' )
             log.info( f'r.content, `{r.content}`' )
-            # if r.status_code in [ 200, 204 ]:
-            if r.status_code == 200:
+            if r.status_code in [ 200, 204 ]:
+            # if r.status_code == 200:
                 self.hold_status = 'hold_placed'
         except:
             log.exception( 'problem hitting api to request item; traceback follows; processing will continue' )
