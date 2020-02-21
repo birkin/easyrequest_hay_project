@@ -40,7 +40,7 @@ class SierraHelper( object ):
         self.hold_status = 'problem'  # updated in place_hold()
 
     def prep_item_data( self, shortlink ):
-        """ Preps item-data from item_request.
+        """ Preps item-data -- and some patron-data -- from item_request.
             Called by views.processor() """
         self.item_request = ItemRequest.objects.get( short_url_segment=shortlink )
         self.item_dct = item_dct = json.loads( self.item_request.full_url_params )

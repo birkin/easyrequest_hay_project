@@ -35,7 +35,7 @@ def confirm( request ):
         Stores referring url, bib, and item-barcode to db.
         Presents shib and non-shib proceed buttons on confirmation screen. """
     # log.debug( f'request.__dict__, ```{ pprint.pformat(request.__dict__) }```' )
-    log.debug( f'request.__dict__, ```{ request.__dict__ }```' )
+    log.debug( f'\n\nstarting confirm(); request.__dict__, ```{ request.__dict__ }```' )
     if validator.validate_source(request) is False or validator.validate_params(request) is False:
         resp = validator.prepare_badrequest_response( request )
     else:
@@ -51,11 +51,12 @@ def confirm_handler( request ):
     """ Triggered by confirmation screen's `shib=yes/no` selection.
         If `shib=no`, builds Aeon url and redirects.
         Otherwise redirects to behind-the-scenes `shib_login` url, which will ultimately redirect, behind-the-scenes, to the `processor` url. """
-    log.debug( f'request.__dict__, ```{ request.__dict__ }```' )
+    log.debug( f'\n\nstarting confirm_handler(); request.__dict__, ```{ request.__dict__ }```' )
     cnfrm_hndlr_helper = ConfirmHandlerHelper()
     if validator.validate_source(request) is False or validator.validate_confirm_handler_params(request) is False:
         return validator.prepare_badrequest_response( request )
-    type_value = request.GET.get( 'type', '' ).lower()
+    type_value: str = request.GET.get( 'type', '' ).lower()
+    log.debug( f'type_value, ```{type_value}```' )
     cnfrm_hndlr_helper.update_status( type_value, request.GET['shortlink'] )
     if type_value == 'brown shibboleth login':
         resp = HttpResponseRedirect( cnfrm_hndlr_helper.prep_shib_login_stepA(request) )
@@ -72,7 +73,7 @@ def shib_login( request ):
     """ Redirects to shib-SP-login url.
         Specifies the post-login url as the `shib_login_handler` url. """
     time.sleep( .5 )  # in case the IDP logout just-completed needs a breath
-    log.debug( 'request.__dict__, ```%s```' % request.__dict__ )
+    log.debug( '\n\nstarting shib_login(); request.__dict__, ```%s```' % request.__dict__ )
     shortlink = request.GET['shortlink']
     target_url = '%s?shortlink=%s' % ( reverse('shib_login_handler_url'), shortlink )
     log.debug( 'target_url, ```%s```' % target_url )
@@ -87,7 +88,7 @@ def shib_login( request ):
 def shib_login_handler( request ):
     """ Behind-the-scenes, examines shib headers.
         Redirects user to behind-the-scenes processor() view. """
-    log.debug( 'starting shib_login_handler(); request.__dict__, ```%s```' % request.__dict__ )
+    log.debug( '\n\nstarting shib_login_handler(); request.__dict__, ```%s```' % request.__dict__ )
     ( validity, shib_dict ) = shib_view_helper.check_shib_headers( request )
     if validity is False:  # TODO: implement this
         resp = shib_view_helper.prep_login_redirect( request )
@@ -103,7 +104,7 @@ def processor( request ):
         - Attempts to place hold in Sierra.
         - Redirects user to Aeon.
         Triggered after a successful shib_login (along with patron-api lookup) """
-    log.debug( f'starting processor(); request.__dict__, ```{request.__dict__}```' )
+    log.debug( f'\n\nstarting processor(); request.__dict__, ```{request.__dict__}```' )
     sierra_hlpr = SierraHelper()
     aeon_url_bldr = AeonUrlBuilder()
     shortlink = request.GET['shortlink']
@@ -145,13 +146,14 @@ def problem( request ):
     """ Displays to user a problem message.
         Could be used by a variety of failure situations.
         Currently used by failure of shib-authentication. """
+    log.debug( f'\n\nstarting problem(); ; request.__dict__, ```{request.__dict__}```' )
     resp = render( request, 'easyrequest_hay_app_templates/problem.html', {} )
     return resp
 
 
 def stats( request ):
     """ Prepares stats for given dates; returns json. """
-    log.debug( 'request.__dict__, ```%s```' % pprint.pformat(request.__dict__) )
+    log.debug( '\n\nstarting stats(); request.__dict__, ```%s```' % pprint.pformat(request.__dict__) )
     ## grab & validate params
     if stats_builder.check_params( request.GET, request.scheme, request.META['HTTP_HOST'] ) == False:
         return HttpResponseBadRequest( stats_builder.output, content_type=u'application/javascript; charset=utf-8' )
@@ -172,7 +174,7 @@ def stats( request ):
 def bul_search( request ):
     """ Triggered by user entering search term into banner-search-field.
         Redirects query to search.library.brown.edu """
-    log.debug( 'request.__dict__, ```%s```' % request.__dict__ )
+    log.debug( '\n\nstarting bul_search(); request.__dict__, ```%s```' % request.__dict__ )
     redirect_url = 'https://search.library.brown.edu?%s' % request.META['QUERY_STRING']
     return HttpResponseRedirect( redirect_url )
 
@@ -180,7 +182,7 @@ def bul_search( request ):
 def info( request ):
     """ Returns basic info about the easyrequest_hay webapp.
         Triggered by root easyrequest_hay url. """
-    log.debug( 'request.__dict__, ```%s```' % request.__dict__ )
+    log.debug( '\n\nstarting info(); request.__dict__, ```%s```' % request.__dict__ )
     start = datetime.datetime.now()
     if request.GET.get('format', '') == 'json':
         context = info_view_helper.build_json_context( start, request.scheme, request.META['HTTP_HOST'], request.META.get('REQUEST_URI', request.META['PATH_INFO'])  )

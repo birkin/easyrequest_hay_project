@@ -4,12 +4,14 @@ Contains helper class for view.confirm(), which displays the initial landing-pag
 """
 
 import datetime, json, logging, os, pprint, urllib
+
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseRedirect, Http404
 from django.shortcuts import get_object_or_404, render
 from django.template import loader
 from easyrequest_hay_app.lib.aeon import AeonUrlBuilder
 from easyrequest_hay_app.lib.shib_helper import ShibLoginHelper
+from easyrequest_hay_app.lib.sierra import SierraHelper
 from easyrequest_hay_app.models import ItemRequest
 
 
@@ -89,7 +91,7 @@ class ConfirmHandlerHelper( object ):
         """ Holds env-vars. """
         self.item_dct = {}  # updated by update_status() for use in get_referring_url()
 
-    def update_status( self, handle_type, shortlink ):
+    def update_status( self, handle_type, shortlink ) -> None:
         """ Updates status, primarily for stats-tracking.
             Called by views.confirm_handler() """
         # itmrqst = ItemRequest.objects.get( short_url_segment=shortlink )
@@ -119,13 +121,28 @@ class ConfirmHandlerHelper( object ):
 
     def make_aeon_url( self, request ):
         """ Prepares aeon url.
-            Called by views.confirm_handler() """
+            Called by views.confirm_handler() on a non-Brown login """
+        log.debug( 'starting make_aeon_url()' )
         aeon_url_bldr = AeonUrlBuilder()
         shortlink = request.GET['shortlink']
-        # aeon_url = aeon_url_bldr.build_aeon_url( shortlink )
-        aeon_url = aeon_url_bldr.build_aeon_url( item-dct-goes-here )
+
+        item_request = ItemRequest.objects.get( short_url_segment=shortlink )
+        item_dct = json.loads( item_request.full_url_params )
+
+        aeon_url = aeon_url_bldr.build_aeon_url( item_dct )
         log.debug( 'aeon_url, ```%s```' % aeon_url )
+
         return aeon_url
+
+    # def make_aeon_url( self, request ):
+    #     """ Prepares aeon url.
+    #         Called by views.confirm_handler() """
+    #     aeon_url_bldr = AeonUrlBuilder()
+    #     shortlink = request.GET['shortlink']
+    #     # aeon_url = aeon_url_bldr.build_aeon_url( shortlink )
+    #     aeon_url = aeon_url_bldr.build_aeon_url( item-dct-goes-here )
+    #     log.debug( 'aeon_url, ```%s```' % aeon_url )
+    #     return aeon_url
 
     def get_referring_url( self ):
         """ Returns referring url.
