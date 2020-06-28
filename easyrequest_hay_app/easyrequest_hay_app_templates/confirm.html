@@ -12,7 +12,8 @@ easyrequest-hay confirm
         margin-top: 2em;
     }
     form {
-        margin-top: 1.25em;
+        /*margin-top: 1.25em;*/
+        margin-top: 2em;
     }
     input#shib {
         margin-right: 2em;
@@ -51,9 +52,18 @@ easyrequest-hay confirm
         padding-right: 8em;
     }
 
+    div#reminder p.reminder_text {
+        line-height: 150%;
+        color: maroon;
+        font-size: 120%;
+    }
+
+/*
     div#reminder h2#longline {
         line-height: 150%;
     }
+*/
+
     h2 {
         color: maroon;
         font-size: 160%;
@@ -103,10 +113,17 @@ easyrequest-hay confirm
     </div>
 
     <div id="reminder">
+        <h2>Note...</h2>
+        <p class="reminder_text">Remote access to Special Collections materials is only available to Brown community members at this time.</p>
+        <p class="reminder_text">Please click on the Brown Login to initiate your request. A Library staff member will contact you to confirm the details of your request.</p
+    </div>
+
+<!--
+    <div id="reminder">
         <h2>Reminder...</h2>
         <h2 id="longline">This item may only be used within the Special Collections Reading Room of the John Hay Library.</h2>
     </div>
-
+ -->
 
 <!--
     <div id="reminder">
@@ -118,11 +135,15 @@ easyrequest-hay confirm
     <form action="{{ action_url }}" method="GET">
         <input type="hidden" name="shortlink" value="{{ shortlink }}">
         <div id="shib">
-            <input id="shib" type="submit" value="Brown Shibboleth Login" name="type">
+            <input id="shib" type="submit" value="Brown Login" name="type">
         </div>
+
+<!--
         <div id="nonshib">
             <input id="nonshib" type="submit" value="Non-Brown Login" name="type">
         </div>
+ -->
+
         <div id="cancel">
             <input type="submit" value="Cancel; return to Josiah" name="type">
         </div>
