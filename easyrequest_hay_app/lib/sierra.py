@@ -174,19 +174,25 @@ class SierraHelper( object ):
             recent_email_sent = False
             for poss_dup in possible_duplicates:
                 poss_dup_item_dct = json.loads( poss_dup.full_url_params )
-                poss_dup_patron_dct = json.loads( poss_dup.patron_info )
-                # if poss_dup_item_dct['item_barcode'] == self.item_barcode:
-                if poss_dup_item_dct.get('item_barcode', None) == self.item_barcode:
-                    # if poss_dup_patron_dct['patron_barcode'] == self.patron_barcode:
-                    if poss_dup_patron_dct.get('patron_barcode', None) == self.patron_barcode:
-                        ## ok poss_dup _is_ a duplicate
-                        if poss_dup.admin_notes:
-                            if 'will send staff-email' in poss_dup.admin_notes.lower():
-                                recent_email_sent = True
-                                updated_notes = 'Not sending staff-email re unable-to-request-via-sierra; already sent.' + '\n\n' + current_notes
-                                self.item_request.admin_notes = updated_notes.strip()
-                                self.item_request.save()
-                                break
+
+                poss_dup_patron_dct = None
+                try:
+                    poss_dup_patron_dct = json.loads( poss_dup.patron_info )
+                except:
+                    log.exception( 'problem getting expected patron-dct; processing continues' )
+
+                if poss_dup_patron_dct:
+
+                    if poss_dup_item_dct.get('item_barcode', None) == self.item_barcode:
+                        if poss_dup_patron_dct.get('patron_barcode', None) == self.patron_barcode:
+                            ## ok poss_dup _is_ a duplicate
+                            if poss_dup.admin_notes:
+                                if 'will send staff-email' in poss_dup.admin_notes.lower():
+                                    recent_email_sent = True
+                                    updated_notes = 'Not sending staff-email re unable-to-request-via-sierra; already sent.' + '\n\n' + current_notes
+                                    self.item_request.admin_notes = updated_notes.strip()
+                                    self.item_request.save()
+                                    break
             log.debug( f'recent_email_sent, ```{recent_email_sent}```' )
             if recent_email_sent is False:
                 return_check = True
@@ -196,6 +202,49 @@ class SierraHelper( object ):
             log.debug( f'updated admin notes, ```{self.item_request.admin_notes}```' )
         log.debug( f'return_check, `{return_check}`' )
         return return_check
+
+    # def send_email_check( self ):
+    #     """ Evaluates whether an email needs to be sent.
+    #         Called by views.processor() """
+    #     log.debug( 'starting send_email_check()' )
+    #     return_check = False
+    #     if self.hold_status == 'hold_placed':
+    #         pass
+    #     else:  # hold-try failed, but was an email already recently sent?
+    #         log.debug( f'checking for duplicate against self.item_barcode, ```{self.item_barcode}``` and self.patron_barcode, ```{self.patron_barcode}```' )
+    #         current_notes = self.item_request.admin_notes  # TODO: disallow `null` in db
+    #         if current_notes is None:
+    #             current_notes = ''
+    #         now_time = datetime.datetime.now()
+    #         half_hour_ago = now_time - datetime.timedelta( minutes=30 )
+    #         ## query all requests for past half-hour where past-request.item-id == current-item.item-id
+    #         possible_duplicates = ItemRequest.objects.filter( item_title=self.item_title, create_datetime__gte=half_hour_ago )  # add `, patron_info__isnull=False`? I don't think so, because this path assumes shib, so there should always be patron info
+    #         ## loop through them
+    #         recent_email_sent = False
+    #         for poss_dup in possible_duplicates:
+    #             poss_dup_item_dct = json.loads( poss_dup.full_url_params )
+    #             poss_dup_patron_dct = json.loads( poss_dup.patron_info )
+    #             # if poss_dup_item_dct['item_barcode'] == self.item_barcode:
+    #             if poss_dup_item_dct.get('item_barcode', None) == self.item_barcode:
+    #                 # if poss_dup_patron_dct['patron_barcode'] == self.patron_barcode:
+    #                 if poss_dup_patron_dct.get('patron_barcode', None) == self.patron_barcode:
+    #                     ## ok poss_dup _is_ a duplicate
+    #                     if poss_dup.admin_notes:
+    #                         if 'will send staff-email' in poss_dup.admin_notes.lower():
+    #                             recent_email_sent = True
+    #                             updated_notes = 'Not sending staff-email re unable-to-request-via-sierra; already sent.' + '\n\n' + current_notes
+    #                             self.item_request.admin_notes = updated_notes.strip()
+    #                             self.item_request.save()
+    #                             break
+    #         log.debug( f'recent_email_sent, ```{recent_email_sent}```' )
+    #         if recent_email_sent is False:
+    #             return_check = True
+    #             updated_notes = 'Will send staff-email re unable-to-request-via-sierra.' + '\n\n' + current_notes
+    #             self.item_request.admin_notes = updated_notes.strip()
+    #             self.item_request.save()
+    #         log.debug( f'updated admin notes, ```{self.item_request.admin_notes}```' )
+    #     log.debug( f'return_check, `{return_check}`' )
+    #     return return_check
 
     def prep_email_patron_json( self ):
         """ Prepares subset of full patron info for hay-staff email.
