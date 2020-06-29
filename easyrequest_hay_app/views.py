@@ -58,7 +58,8 @@ def confirm_handler( request ):
     type_value: str = request.GET.get( 'type', '' ).lower()
     log.debug( f'type_value, ```{type_value}```' )
     cnfrm_hndlr_helper.update_status( type_value, request.GET['shortlink'] )
-    if type_value == 'brown shibboleth login':
+    # if type_value == 'brown shibboleth login':
+    if type_value == 'brown login':
         resp = HttpResponseRedirect( cnfrm_hndlr_helper.prep_shib_login_stepA(request) )
     elif type_value == 'non-brown login':
         resp = HttpResponseRedirect( cnfrm_hndlr_helper.make_aeon_url(request) )

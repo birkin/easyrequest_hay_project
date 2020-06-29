@@ -102,7 +102,8 @@ class ConfirmHandlerHelper( object ):
         except:
             log.warning( f'no item found for shortlink, `{shortlink}`; returning 404.' )
             raise Http404( 'Not Found' )
-        if handle_type == 'brown shibboleth login':
+        # if handle_type == 'brown shibboleth login':
+        if handle_type == 'brown login':
             status = 'to_aeon_via_shib'
         elif handle_type == 'non-brown login':
             status = 'to_aeon_directly'
