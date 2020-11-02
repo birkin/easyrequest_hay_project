@@ -1,5 +1,5 @@
 beautifulsoup4==4.6.0
 Django==1.11.28
 git+https://github.com/birkin/shellvars-py.git
-PyMySQL==0.7.11
+PyMySQL==0.10.1
 requests==2.21.0
